@@ -319,7 +319,10 @@ const dataService = {
     const ref = storage.ref().child(`candidates/${candidateId}/photo.jpg`);
     await ref.put(file);
     const url = await ref.getDownloadURL();
-    await db.collection("candidates").doc(candidateId).update({ photoURL: url });
+    await db.collection("candidates").doc(candidateId).update({
+      photoURL: url,
+      status: "pending",
+    });
     return url;
   },
 
@@ -330,6 +333,7 @@ const dataService = {
     const url = await ref.getDownloadURL();
     await db.collection("candidates").doc(candidateId).update({
       [`docs.${docKey}`]: { url, uploadedAt: new Date().toISOString(), name: file.name },
+      status: "pending",
     });
     return url;
   },
