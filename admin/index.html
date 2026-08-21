@@ -194,25 +194,49 @@ const adminService = {
     const SUPER_ADMIN_EMAIL = "Agastya_Technext";
     const SUPER_ADMIN_PASSWORD = "Technext@1910";
 
-    const adminsSnap = await db.collection("admins").limit(1).get();
+    // 1. Try to sign in first
+    let cred;
+    let loginFailed = false;
+    try {
+      cred = await auth.signInWithEmailAndPassword(email, password);
+    } catch (e) {
+      loginFailed = true;
+    }
 
-    if (adminsSnap.empty) {
-      // Bootstrap: only these exact credentials can create the very first Super Admin.
-      if (rawEmail !== SUPER_ADMIN_EMAIL || password !== SUPER_ADMIN_PASSWORD) {
+    if (loginFailed) {
+      // If login failed, check if this is the bootstrap admin credentials trying to register
+      if (rawEmail === SUPER_ADMIN_EMAIL && password === SUPER_ADMIN_PASSWORD) {
+        try {
+          cred = await auth.createUserWithEmailAndPassword(email, password);
+        } catch (err) {
+          if (err.code === "auth/admin-restricted-operation") {
+            throw new Error("Firebase Console માં User Sign-up (User creation) બંધ છે. કૃપા કરીને Authentication -> Settings -> User actions માં જઈને 'Enable create (sign-up)' ચાલુ કરો, લોગીન કરો, પછી પાછું બંધ કરી શકો છો.");
+          } else {
+            throw err;
+          }
+        }
+        // Create the admin document
+        await db.collection("admins").doc(cred.user.uid).set({
+          name: "Super Admin", email, role: "super",
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        });
+        return { success: true, id: cred.user.uid, name: "Super Admin", email, role: "super" };
+      } else {
         throw new Error("Email અથવા Password ખોટા છે");
       }
-      let cred;
-      try {
-        cred = await auth.createUserWithEmailAndPassword(email, password);
-      } catch (err) {
-        if (err.code === "auth/email-already-in-use") {
-          cred = await auth.signInWithEmailAndPassword(email, password);
-        } else if (err.code === "auth/admin-restricted-operation") {
-          throw new Error("Firebase Console માં User Sign-up (User creation) બંધ છે. કૃપા કરીને Authentication -> Settings -> User actions માં જઈને 'Enable create (sign-up)' ચાલુ કરો, લોગીન કરો, પછી પાછું બંધ કરી શકો છો.");
-        } else {
-          throw err;
-        }
-      }
+    }
+
+    // 2. If sign-in succeeded, check if the admin document exists
+    const adminDoc = await db.collection("admins").doc(cred.user.uid).get();
+    if (adminDoc.exists) {
+      const data = adminDoc.data();
+      return { success: true, id: cred.user.uid, name: data.name, email: data.email, role: data.role };
+    }
+
+    // 3. If signed in, but admin doc does not exist, check if the collection is empty (Bootstrap case)
+    const adminsSnap = await db.collection("admins").limit(1).get();
+    if (adminsSnap.empty) {
+      // Bootstrapping the signed-in user as Super Admin
       await db.collection("admins").doc(cred.user.uid).set({
         name: "Super Admin", email, role: "super",
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
@@ -220,19 +244,9 @@ const adminService = {
       return { success: true, id: cred.user.uid, name: "Super Admin", email, role: "super" };
     }
 
-    let cred;
-    try {
-      cred = await auth.signInWithEmailAndPassword(email, password);
-    } catch (e) {
-      throw new Error("Email અથવા Password ખોટા છે");
-    }
-    const adminDoc = await db.collection("admins").doc(cred.user.uid).get();
-    if (!adminDoc.exists) {
-      await auth.signOut();
-      throw new Error("આ account Admin તરીકે register નથી. Super Admin ને contact કરો.");
-    }
-    const data = adminDoc.data();
-    return { success: true, id: cred.user.uid, name: data.name, email: data.email, role: data.role };
+    // Not authorized
+    await auth.signOut();
+    throw new Error("આ account Admin તરીકે register નથી. Super Admin ને contact કરો.");
   },
 
   async getAdmins() {
