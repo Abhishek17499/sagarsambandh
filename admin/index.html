@@ -207,6 +207,8 @@ const adminService = {
       } catch (err) {
         if (err.code === "auth/email-already-in-use") {
           cred = await auth.signInWithEmailAndPassword(email, password);
+        } else if (err.code === "auth/admin-restricted-operation") {
+          throw new Error("Firebase Console માં User Sign-up (User creation) બંધ છે. કૃપા કરીને Authentication -> Settings -> User actions માં જઈને 'Enable create (sign-up)' ચાલુ કરો, લોગીન કરો, પછી પાછું બંધ કરી શકો છો.");
         } else {
           throw err;
         }
@@ -393,7 +395,7 @@ function renderLogin(){
     e.target.disabled=true; e.target.textContent="Checking...";
     try{
       await authReadyPromise;
-      if(firebaseError) throw new Error(firebaseError);
+      if(firebaseError && !firebaseError.startsWith("Auth failed:")) throw new Error(firebaseError);
       const r = await adminService.login(email,pass);
       state.loggedIn=true; state.adminName=r.name; state.adminEmail=r.email; state.adminRole=r.role; render();
     }catch(err){

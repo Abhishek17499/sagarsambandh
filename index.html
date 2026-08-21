@@ -445,7 +445,7 @@ function renderChecking(){
       return;
     }
     await authReadyPromise;
-    if(firebaseError){
+    if(firebaseError && !firebaseError.startsWith("Auth failed:")){
       app.innerHTML = `
         <div class="header"><div class="header-title">⚠ Connection Issue</div></div>
         <div class="content">
