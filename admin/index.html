@@ -201,7 +201,16 @@ const adminService = {
       if (rawEmail !== SUPER_ADMIN_EMAIL || password !== SUPER_ADMIN_PASSWORD) {
         throw new Error("Email અથવા Password ખોટા છે");
       }
-      const cred = await auth.createUserWithEmailAndPassword(email, password);
+      let cred;
+      try {
+        cred = await auth.createUserWithEmailAndPassword(email, password);
+      } catch (err) {
+        if (err.code === "auth/email-already-in-use") {
+          cred = await auth.signInWithEmailAndPassword(email, password);
+        } else {
+          throw err;
+        }
+      }
       await db.collection("admins").doc(cred.user.uid).set({
         name: "Super Admin", email, role: "super",
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
