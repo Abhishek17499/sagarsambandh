@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<!-- SAGAR SAMBANDH — USER APP — v11 (21 Aug 2026) — Photo Show/Hide toggle added (candidate-controlled, default Hidden for new profiles, existing profiles unaffected). -->
+<html lang="gu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sagar Sambandh - User App</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Gujarati:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<!-- Firebase (compat SDK — works with plain <script> tags, no build step needed) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check-compat.js"></script>
+
+<style>
+  :root{
+    --navy:#0C2A46; --primary:#145C82; --primary-light:#1C93C9;
+    --sky:#7FC7E0; --ice:#D9EAF0; --accent:#E8A33D;
+    --text-dark:#0C2A46; --text-mid:#5A7A8C; --border:#DCE7EC;
+    --success:#2E9E6B; --danger:#D8544A;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    background: linear-gradient(180deg, #DCEBF2 0%, #EAF3F7 45%);
+    font-family:'Noto Sans Gujarati','Poppins',sans-serif;
+    min-height:100vh;
+  }
+  .phone{
+    width:100%; max-width:480px; margin:0 auto;
+    background:#F5F9FB;
+    min-height:100vh;
+    position:relative;
+    display:flex; flex-direction:column;
+  }
+  .notch{ display:none; }
+  .header{ background: linear-gradient(135deg, var(--navy) 0%, var(--primary) 60%, var(--primary-light) 100%); padding:28px 20px 20px; color:#fff; flex-shrink:0; }
+  .header-title{ font-size:18px; font-weight:800; }
+  .header-sub{ font-size:12px; opacity:0.82; margin-top:3px; }
+  .content{ flex:1; padding:20px 20px 100px; max-width:480px; margin:0 auto; width:100%; }
+  .field{ margin-bottom:15px; }
+  .field label{ display:block; font-size:12px; font-weight:600; color:var(--text-dark); margin-bottom:6px; }
+  .input-wrap{ display:flex; align-items:center; border:1.5px solid var(--border); border-radius:12px; background:#fff; padding:0 13px; }
+  .input-wrap:focus-within{ border-color:var(--primary-light); box-shadow:0 0 0 3px rgba(28,147,201,0.12); }
+  .input-wrap input{ border:none; outline:none; padding:12px 0; font-size:13.5px; width:100%; font-family:inherit; color:var(--text-dark); background:transparent; }
+  .btn{ width:100%; padding:14px; border-radius:12px; border:none; font-size:13.5px; font-weight:700; font-family:inherit; cursor:pointer; }
+  .btn-primary{ background:linear-gradient(135deg,var(--navy),var(--primary-light)); color:#fff; box-shadow:0 10px 20px -8px rgba(12,42,70,0.5); }
+  .btn-primary:disabled{ opacity:0.45; cursor:not-allowed; box-shadow:none; }
+  .btn-ghost{ background:var(--ice); color:var(--primary); margin-top:10px; }
+  .center-note{ text-align:center; font-size:12px; color:var(--text-mid); margin-top:14px; }
+  .declaration{ display:flex; gap:10px; align-items:flex-start; background:var(--ice); border:1.5px solid var(--sky); border-radius:12px; padding:13px 14px; margin:16px 0; }
+  .declaration input{ margin-top:3px; accent-color:var(--navy); width:16px; height:16px; flex-shrink:0; }
+  .declaration p{ font-size:12px; color:var(--text-dark); line-height:1.55; }
+  .search-bar{ margin-top:14px; background:rgba(255,255,255,0.95); border-radius:14px; padding:11px 14px; display:flex; align-items:center; gap:10px; color:var(--text-mid); font-size:13px; }
+  .filters-row{ display:flex; gap:8px; padding:12px 0 4px; overflow-x:auto; }
+  .chip{ flex-shrink:0; font-size:11.5px; font-weight:600; color:var(--primary); background:var(--ice); border:1px solid var(--sky); padding:7px 13px; border-radius:20px; white-space:nowrap; cursor:pointer; }
+  .chip.active{ background:var(--navy); color:#fff; border-color:var(--navy); }
+  .card{ background:#fff; border-radius:18px; box-shadow:0 6px 18px -8px rgba(12,42,70,0.18); display:flex; overflow:hidden; margin-bottom:14px; border:1px solid #EDF4F7; cursor:pointer; }
+  .card-photo{ width:100px; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:32px; color:#fff; position:relative; }
+  .verified-tag{ position:absolute; bottom:6px; left:6px; right:6px; background:rgba(12,42,70,0.75); color:#fff; font-size:8px; font-weight:700; text-align:center; padding:3px 0; border-radius:6px; }
+  .card-body{ padding:12px 13px; flex:1; }
+  .card-name{ font-size:14px; font-weight:700; color:var(--navy); }
+  .card-sub{ font-size:11px; color:var(--text-mid); margin-top:2px; }
+  .loading{ text-align:center; padding:60px 20px; color:var(--text-mid); font-size:13px; }
+  .empty{ text-align:center; padding:60px 20px; color:var(--text-mid); font-size:12.5px; }
+  .bottom-nav{ position:fixed; bottom:0; left:0; right:0; background:#fff; border-top:1px solid var(--border); display:flex; justify-content:center; gap:0; padding:10px 6px calc(10px + env(safe-area-inset-bottom)); flex-shrink:0; z-index:50; }
+  .bottom-nav-inner{ display:flex; justify-content:space-around; width:100%; max-width:480px; }
+  .nav-item{ display:flex; flex-direction:column; align-items:center; gap:3px; font-size:9.5px; color:var(--text-mid); font-weight:600; cursor:pointer; }
+  .nav-item.active{ color:var(--primary); }
+  .nav-icon{ font-size:17px; }
+  .back-row{ display:flex; align-items:center; gap:12px; }
+  .back-btn{ width:30px; height:30px; border-radius:9px; background:rgba(255,255,255,0.18); display:flex; align-items:center; justify-content:center; font-size:14px; cursor:pointer; flex-shrink:0; }
+  .toast{ position:fixed; bottom:90px; left:50%; transform:translateX(-50%); background:var(--navy); color:#fff; padding:12px 22px; border-radius:30px; font-size:13px; font-weight:600; z-index:999; box-shadow:0 10px 24px rgba(0,0,0,0.3); max-width:85%; text-align:center; }
+  .status-banner{ padding:10px 14px; border-radius:12px; font-size:11.5px; font-weight:600; margin-bottom:14px; text-align:center; }
+  .mini-btn{ font-size:10.5px; font-weight:700; padding:7px 12px; border-radius:8px; border:none; cursor:pointer; font-family:inherit; }
+  .mini-accept{ background:var(--success); color:#fff; }
+  .mini-decline{ background:#FCEBEA; color:var(--danger); }
+  .status-ok{ background:#E7F6EF; color:var(--success); }
+  .status-err{ background:#FCEBEA; color:var(--danger); }
+  .err-text{ font-size:11.5px; color:var(--danger); margin-top:-6px; margin-bottom:10px; }
+  .status-pending{ font-size:10px; font-weight:700; padding:4px 9px; border-radius:9px; display:inline-block; margin-top:6px; }
+  .detail-row{ display:flex; justify-content:space-between; padding:9px 0; border-bottom:1px solid var(--border); font-size:13px; }
+  .detail-row .k{ color:var(--text-mid); } .detail-row .v{ color:var(--text-dark); font-weight:600; }
+</style>
+</head>
+<body>
+<div class="phone" id="phone"><div class="notch"></div><div id="app"></div></div>
+<div id="recaptcha-container"></div>
+
+<script>
+// ============================================================
+// FIREBASE SETUP
+// ============================================================
+const firebaseConfig = {
+  apiKey: "AIzaSyDeGx5aNtf8aPRviA4rYfdM0Nc65F_35is",
+  authDomain: "sagar-sambandh.firebaseapp.com",
+  projectId: "sagar-sambandh",
+  storageBucket: "sagar-sambandh.firebasestorage.app",
+  messagingSenderId: "822553770547",
+  appId: "1:822553770547:web:ffb69be461f4a38d5d8146",
+};
+
+let db = null;
+let storage = null;
+let auth = null;
+let firebaseReady = false;
+let firebaseError = null;
+
+try {
+  firebase.initializeApp(firebaseConfig);
+  db = firebase.firestore();
+  storage = firebase.storage();
+  auth = firebase.auth();
+  firebaseReady = true;
+} catch (e) {
+  firebaseError = e.message;
+}
+
+// App Check — verifies requests come from this real website, not a
+// copy-pasted config used in someone else's script/page. Team must replace
+// RECAPTCHA_V3_SITE_KEY below with the real key from Firebase Console
+// (Build → App Check → register a reCAPTCHA v3 site). Wrapped so a
+// missing/placeholder key never breaks the rest of the app.
+const RECAPTCHA_V3_SITE_KEY = "REPLACE_WITH_RECAPTCHA_V3_SITE_KEY";
+if (firebaseReady && RECAPTCHA_V3_SITE_KEY !== "REPLACE_WITH_RECAPTCHA_V3_SITE_KEY") {
+  try {
+    firebase.appCheck().activate(
+      new firebase.appCheck.ReCaptchaV3Provider(RECAPTCHA_V3_SITE_KEY),
+      true
+    );
+  } catch (e) { console.warn("App Check activation failed:", e.message); }
+}
+
+// Anonymous sign-in: gives every visitor a silent Firebase Auth session.
+// This lets Firestore/Storage Rules require request.auth != null, which blocks
+// Waits for Firebase to restore any existing session first (a returning
+// member's phone-verified login persists automatically). Only falls back to
+// a silent Anonymous session if nobody is signed in — this way Firestore
+// Rules can always require request.auth != null, even for pre-login browsing.
+let authReadyPromise = firebaseReady
+  ? new Promise((resolve) => {
+      auth.onAuthStateChanged(async (user) => {
+        if (!user) {
+          try { await auth.signInAnonymously(); }
+          catch (e) { firebaseError = "Auth failed: " + e.message; }
+        }
+        resolve();
+      });
+    })
+  : Promise.resolve();
+
+let pendingConfirmationResult = null;
+function getRecaptchaVerifier(){
+  if (!window._recaptchaVerifier) {
+    window._recaptchaVerifier = new firebase.auth.RecaptchaVerifier("recaptcha-container", { size: "invisible" }, auth);
+  }
+  return window._recaptchaVerifier;
+}
+
+// ============================================================
+// DATA SERVICE — real Firestore calls
+// Collections used:
+//   users      { name, mobile, village, createdAt } — doc ID = Firebase Auth uid
+//   candidates { name, gender, age, education, city, occupation, rashi,
+//                maritalStatus, fatherName, motherName, height,
+//                siblings, status: "approved"|"pending", photoEmoji, photoColor, createdAt }
+//   interests  { fromUserId, toCandidateId, status: "pending", createdAt }
+// ============================================================
+const dataService = {
+  // Real Phone OTP requires Firebase's Blaze (pay-as-you-go) plan and the
+  // "Phone" sign-in provider enabled in Firebase Console → Authentication.
+  async sendOtp(mobile) {
+    if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
+    const verifier = getRecaptchaVerifier();
+    const fullPhone = "+91" + mobile;
+    pendingConfirmationResult = await auth.signInWithPhoneNumber(fullPhone, verifier);
+    return { success: true };
+  },
+
+  // Returns { isNewUser, id, name, mobile, village } — for a new user,
+  // name/village will be empty and the caller must collect them next.
+  async confirmOtp(code) {
+    if (!pendingConfirmationResult) throw new Error("પહેલા OTP મોકલો");
+    const result = await pendingConfirmationResult.confirm(code);
+    const uid = result.user.uid;
+    const userDoc = await db.collection("users").doc(uid).get();
+    if (userDoc.exists) {
+      const data = userDoc.data();
+      if (data.blocked) throw new Error("તમારું account block કરવામાં આવ્યું છે. Admin નો સંપર્ક કરો.");
+      return { isNewUser: false, id: uid, name: data.name, mobile: data.mobile, village: data.village };
+    }
+    return { isNewUser: true, id: uid, mobile: result.user.phoneNumber };
+  },
+
+  async completeProfile(uid, { name, village, mobile }) {
+    if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
+    await db.collection("users").doc(uid).set({
+      name, village, mobile, createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+    });
+    return { id: uid, name, mobile, village };
+  },
+
+  async logout() {
+    if (auth) await auth.signOut();
+  },
+
+  async getProfiles(userId) {
+    if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
+    const snap = await db.collection("candidates").where("status", "==", "approved").get();
+    let profiles = snap.docs.map(d => ({ id: d.id, ...d.data() })).filter(p => !p.deactivated);
+
+    // Match Score: compare against the logged-in user's own (opposite-gender) candidate profile.
+    // If user hasn't created a profile yet, no score is shown — matching needs a reference point.
+    let myRef = null;
+    if (userId) {
+      const mySnap = await db.collection("candidates").where("createdByUserId", "==", userId).get();
+      const myCandidates = mySnap.docs.map(d => d.data());
+      if (myCandidates.length > 0) myRef = myCandidates[0];
+    }
+    const COMPATIBLE_RASHI = {
+      "મેષ":["સિંહ","ધન"], "વૃષભ":["કન્યા","મકર"], "મિથુન":["તુલા","કુંભ"], "કર્ક":["વૃશ્ચિક","મીન"],
+      "સિંહ":["મેષ","ધન"], "કન્યા":["વૃષભ","મકર"], "તુલા":["મિથુન","કુંભ"], "વૃશ્ચિક":["કર્ક","મીન"],
+      "ધન":["મેષ","સિંહ"], "મકર":["વૃષભ","કન્યા"], "કુંભ":["મિથુન","તુલા"], "મીન":["કર્ક","વૃશ્ચિક"],
+    };
+    profiles = profiles.map(p => {
+      if (!myRef) return { ...p, matchScore: null };
+      let score = 0;
+      if (myRef.city && p.city && myRef.city === p.city) score += 1;
+      const ageDiff = Math.abs((myRef.age||0) - (p.age||0));
+      if (ageDiff <= 5) score += 2; else if (ageDiff <= 8) score += 1;
+      if (myRef.rashi && p.rashi) {
+        if (myRef.rashi === p.rashi) score += 1;
+        else if ((COMPATIBLE_RASHI[myRef.rashi]||[]).includes(p.rashi)) score += 1.5;
+      }
+      if (myRef.education && p.education && myRef.education === p.education) score += 1;
+      const finalScore = Math.min(5, Math.round(score * 2) / 2);
+      return { ...p, matchScore: finalScore };
+    });
+    return profiles;
+  },
+
+  async getProfileById(id) {
+    if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
+    const d = await db.collection("candidates").doc(id).get();
+    if (!d.exists) return null;
+    return { id: d.id, ...d.data() };
+  },
+
+  async sendInterest(userId, candidateId) {
+    if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
+    await db.collection("interests").add({
+      fromUserId: userId, toCandidateId: candidateId, status: "pending",
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+    });
+    return { success: true };
+  },
+
+  async getReceivedInterests(userId) {
+    if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
+    const myCandidates = await db.collection("candidates").where("createdByUserId", "==", userId).get();
+    const myCandidateIds = myCandidates.docs.map(d => d.id);
+    const candidateNameById = {};
+    myCandidates.docs.forEach(d => { candidateNameById[d.id] = d.data().name; });
+    if (myCandidateIds.length === 0) return [];
+    const results = [];
+    for (const cid of myCandidateIds) {
+      const snap = await db.collection("interests").where("toCandidateId", "==", cid).get();
+      for (const d of snap.docs) {
+        const data = d.data();
+        let fromUserName = "સભ્ય";
+        try {
+          const fromUserDoc = await db.collection("users").doc(data.fromUserId).get();
+          if (fromUserDoc.exists) fromUserName = fromUserDoc.data().name;
+        } catch(e){}
+        results.push({ id: d.id, ...data, forCandidateName: candidateNameById[cid], fromUserName });
+      }
+    }
+    return results.sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
+  },
+
+  async respondToInterest(interestId, response) {
+    if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
+    await db.collection("interests").doc(interestId).update({ status: response });
+    return { success: true };
+  },
+
+  async getMyCandidates(userId) {
+    if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
+    const snap = await db.collection("candidates").where("createdByUserId", "==", userId).get();
+    return snap.docs.map(d => ({ id: d.id, ...d.data() }))
+      .sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
+  },
+
+  async deactivateCandidate(candidateId) {
+    if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
+    await db.collection("candidates").doc(candidateId).update({ deactivated: true });
+    return { success: true };
+  },
+
+  async activateCandidate(candidateId) {
+    if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
+    await db.collection("candidates").doc(candidateId).update({ deactivated: false });
+    return { success: true };
+  },
+
+  async updateCandidate(candidateId, payload) {
+    if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
+    await db.collection("candidates").doc(candidateId).update({
+      ...payload,
+      status: "pending", // edit પછી re-approval જરૂરી, જેમ earlier નક્કી કરેલું
+    });
+    return { success: true };
+  },
+
+  async uploadPhoto(candidateId, file) {
+    if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
+    const ref = storage.ref().child(`candidates/${candidateId}/photo.jpg`);
+    await ref.put(file);
+    const url = await ref.getDownloadURL();
+    await db.collection("candidates").doc(candidateId).update({ photoURL: url });
+    return url;
+  },
+
+  async uploadDocument(candidateId, docKey, file) {
+    if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
+    const ref = storage.ref().child(`candidates/${candidateId}/docs/${docKey}`);
+    await ref.put(file);
+    const url = await ref.getDownloadURL();
+    await db.collection("candidates").doc(candidateId).update({
+      [`docs.${docKey}`]: { url, uploadedAt: new Date().toISOString(), name: file.name },
+    });
+    return url;
+  },
+
+  async createCandidate(userId, payload) {
+    if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
+    const existing = await db.collection("candidates").where("createdByUserId", "==", userId).get();
+    const activeCount = existing.docs.filter(d => !d.data().deactivated).length;
+    if (activeCount >= 4) throw new Error("એક account થી વધુમાં વધુ 4 active profiles બની શકે છે");
+    const photoStyles = [
+      { color:"linear-gradient(160deg,#7FC7E0,#1C93C9)", emoji: payload.gender==="female" ? "👩" : "👨" },
+    ];
+    const ref = await db.collection("candidates").add({
+      ...payload,
+      createdByUserId: userId,
+      status: "pending",
+      photoVisible: false, // નવા profiles માટે Default: Hidden — candidate પોતે My Profiles માંથી Show કરી શકે
+      photoColor: photoStyles[0].color,
+      photoEmoji: photoStyles[0].emoji,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+    });
+    return { id: ref.id };
+  },
+
+  // Photo visibility toggle — candidate પોતાના photo ને બીજા members થી Show/Hide કરી શકે.
+  // આ ફક્ત display-preference છે (candidate ની actual data નહીં), એટલે status ને "pending" નથી કરતું —
+  // re-approval જરૂરી નથી.
+  async setPhotoVisibility(candidateId, visible) {
+    if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
+    await db.collection("candidates").doc(candidateId).update({ photoVisible: visible });
+    return { success: true };
+  },
+};
+// ============================================================
+
+const app = document.getElementById("app");
+let state = { screen: "checking", user: null, openProfileId: null, formDraft: {}, uploadCandidateId: null, editCandidateId: null, lang: "gu" };
+
+// Note: session persistence is now handled natively by Firebase Auth
+// (auth.currentUser survives refresh automatically) — see renderChecking().
+
+// ============================================================
+// LANGUAGE — lightweight Gu/En toggle for key UI strings.
+// Firestore data itself (names, education entered by users) stays as-typed.
+// ============================================================
+const STRINGS = {
+  gu: {
+    welcome: "નમસ્તે 🙏", home: "Home", search: "Search", interest: "Interest", profile: "Profile",
+    myProfiles: "📁 My Profiles", myProfilesSub: "તમે બનાવેલા candidate profiles (max 4)",
+    interestsTitle: "💌 Interests", interestsSub: "તમારા candidates ને મળેલા Interest requests",
+    browseSub: "Community profiles browse કરો (Live Firestore data)",
+  },
+  en: {
+    welcome: "Welcome 🙏", home: "Home", search: "Search", interest: "Interest", profile: "Profile",
+    myProfiles: "📁 My Profiles", myProfilesSub: "Candidate profiles you created (max 4)",
+    interestsTitle: "💌 Interests", interestsSub: "Interest requests received for your candidates",
+    browseSub: "Browse community profiles (Live Firestore data)",
+  },
+};
+function t(key){ return (STRINGS[state.lang] && STRINGS[state.lang][key]) || STRINGS.gu[key] || key; }
+function langToggleHtml(){
+  return `
+    <div style="position:absolute; top:20px; right:20px; display:flex; background:rgba(255,255,255,0.18); border-radius:16px; padding:2px; font-size:10.5px; font-weight:700; z-index:5;">
+      <span data-lang-btn="gu" style="padding:5px 10px;border-radius:14px;cursor:pointer;${state.lang==='gu'?'background:#fff;color:var(--navy);':'color:rgba(255,255,255,0.85);'}">ગુજ</span>
+      <span data-lang-btn="en" style="padding:5px 10px;border-radius:14px;cursor:pointer;${state.lang==='en'?'background:#fff;color:var(--navy);':'color:rgba(255,255,255,0.85);'}">EN</span>
+    </div>
+  `;
+}
+function attachLangToggle(){
+  document.querySelectorAll("[data-lang-btn]").forEach(el=>{
+    el.addEventListener("click", ()=>{ state.lang = el.getAttribute("data-lang-btn"); render(); });
+  });
+}
+
+function render(){
+  if(state.screen==="checking") renderChecking();
+  else if(state.screen==="signup") renderSignup();
+  else if(state.screen==="otp") renderOtp();
+  else if(state.screen==="completeProfile") renderCompleteProfile();
+  else if(state.screen==="home") renderHome();
+  else if(state.screen==="detail") renderDetail();
+  else if(state.screen==="myProfiles") renderMyProfiles();
+  else if(state.screen==="interest") renderInterest();
+  else if(state.screen==="formStep1") renderFormStep1();
+  else if(state.screen==="formStep2") renderFormStep2();
+  else if(state.screen==="formReview") renderFormReview();
+  else if(state.screen==="formDocs") renderFormDocs();
+}
+
+function showToast(msg){
+  const t=document.createElement("div"); t.className="toast"; t.textContent=msg;
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(),2600);
+}
+
+function renderChecking(){
+  app.innerHTML = `<div class="content"><div class="loading">Firebase connection check થઈ રહ્યું છે...</div></div>`;
+  setTimeout(async ()=>{
+    if(!firebaseReady){
+      app.innerHTML = `
+        <div class="header"><div class="header-title">⚠ Connection Issue</div></div>
+        <div class="content">
+          <div class="status-banner status-err">Firebase load ના થયું</div>
+          <p style="font-size:12.5px;color:var(--text-mid);line-height:1.7;">
+            આ preview sandbox માં external Firebase scripts block થઈ શકે છે. Real testing માટે આ file ને Firebase Hosting (અથવા કોઈ પણ live web server) પર deploy કરવી પડશે — ત્યાં આ સમસ્યા નહીં આવે.
+          </p>
+          <p style="font-size:11px;color:var(--danger);margin-top:10px;">Error: ${firebaseError||"unknown"}</p>
+        </div>`;
+      return;
+    }
+    await authReadyPromise;
+    if(firebaseError){
+      app.innerHTML = `
+        <div class="header"><div class="header-title">⚠ Connection Issue</div></div>
+        <div class="content">
+          <div class="status-banner status-err">Authentication setup ના થયું</div>
+          <p style="font-size:12.5px;color:var(--text-mid);line-height:1.7;">
+            Firebase Console માં "Authentication → Sign-in method → Anonymous" enable કરેલું છે કે નહીં ચકાસો.
+          </p>
+          <p style="font-size:11px;color:var(--danger);margin-top:10px;">Error: ${firebaseError}</p>
+        </div>`;
+      return;
+    }
+    const currentUser = auth.currentUser;
+    if(currentUser && !currentUser.isAnonymous){
+      try{
+        const userDoc = await db.collection("users").doc(currentUser.uid).get();
+        if(userDoc.exists){
+          const data = userDoc.data();
+          if(!data.blocked){
+            state.user = { id: currentUser.uid, name: data.name, mobile: data.mobile, village: data.village };
+            state.screen="home"; render(); return;
+          }
+        }
+      }catch(e){ /* fall through to signup if lookup fails */ }
+    }
+    state.screen="signup"; render();
+  }, 400);
+}
+
+function renderSignup(){
+  app.innerHTML = `
+    <div class="header">
+      <div class="header-title">નમસ્તે 🙏 ચાલો શરૂ કરીએ</div>
+      <div class="header-sub">Mobile Number નાખો, OTP થી verify કરો</div>
+    </div>
+    <div class="content">
+      <div class="field"><label>મોબાઈલ નંબર</label><div class="input-wrap"><input id="f-mobile" placeholder="98765 43210" maxlength="10"></div></div>
+      <div id="f-err"></div>
+      <button class="btn btn-primary" id="f-submit">OTP મોકલો →</button>
+      <div class="center-note" style="margin-top:12px; opacity:0.7;">(Real SMS OTP માટે Firebase Blaze Plan + Phone provider enable હોવું જરૂરી છે)</div>
+    </div>
+  `;
+  document.getElementById("f-mobile").addEventListener("input", (e)=>{ e.target.value = e.target.value.replace(/\D/g,'').slice(0,10); });
+
+  document.getElementById("f-submit").addEventListener("click", async (e)=>{
+    const mobile=document.getElementById("f-mobile").value.trim();
+    const errEl=document.getElementById("f-err"); errEl.innerHTML="";
+    if(mobile.length!==10){ errEl.innerHTML = `<div class="err-text">10-અંકનો સાચો મોબાઈલ નંબર નાખો</div>`; return; }
+    e.target.disabled=true; e.target.textContent="OTP મોકલી રહ્યા છીએ...";
+    try{
+      await dataService.sendOtp(mobile);
+      state.pendingMobile = mobile;
+      state.screen="otp"; render();
+    }catch(err){
+      e.target.disabled=false; e.target.textContent="OTP મોકલો →";
+      errEl.innerHTML = `<div class="err-text">${err.message}</div>`;
+    }
+  });
+}
+
+function renderOtp(){
+  app.innerHTML = `
+    <div class="header">
+      <div class="header-title">📱 OTP Verify કરો</div>
+      <div class="header-sub">+91 ${state.pendingMobile} પર 6-અંકનો code મોકલ્યો છે</div>
+    </div>
+    <div class="content">
+      <div class="otp-boxes">
+        ${[0,1,2,3,4,5].map(i=>`<input class="otp-box" maxlength="1" data-otp="${i}">`).join("")}
+      </div>
+      <div id="otp-err"></div>
+      <button class="btn btn-primary" id="otp-submit" disabled>Verify & Continue →</button>
+      <div class="center-note"><b style="color:var(--primary);cursor:pointer;" id="otp-back">← નંબર બદલો</b></div>
+    </div>
+  `;
+  const boxes = Array.from(document.querySelectorAll("[data-otp]"));
+  const submitBtn = document.getElementById("otp-submit");
+  function checkFull(){ submitBtn.disabled = boxes.some(b=>!b.value); }
+  boxes.forEach((b,i)=>{
+    b.addEventListener("input", ()=>{
+      b.value = b.value.replace(/\D/g,'').slice(0,1);
+      if(b.value && boxes[i+1]) boxes[i+1].focus();
+      checkFull();
+    });
+  });
+  document.getElementById("otp-back").addEventListener("click", ()=>{ state.screen="signup"; render(); });
+  submitBtn.addEventListener("click", async (e)=>{
+    const otp = boxes.map(b=>b.value).join("");
+    const errEl=document.getElementById("otp-err"); errEl.innerHTML="";
+    e.target.disabled=true; e.target.textContent="Verify કરી રહ્યા છીએ...";
+    try{
+      const result = await dataService.confirmOtp(otp);
+      if(result.isNewUser){
+        state.newUserUid = result.id; state.newUserMobile = result.mobile;
+        state.screen="completeProfile"; render();
+      } else {
+        state.user = { id: result.id, name: result.name, mobile: result.mobile, village: result.village };
+        state.screen="home"; render();
+      }
+    }catch(err){
+      e.target.disabled=false; e.target.textContent="Verify & Continue →";
+      errEl.innerHTML = `<div class="err-text">OTP ખોટો છે અથવા expire થયો</div>`;
+    }
+  });
+}
+
+function renderCompleteProfile(){
+  app.innerHTML = `
+    <div class="header">
+      <div class="header-title">🙏 છેલ્લું Step</div>
+      <div class="header-sub">તમારી થોડી માહિતી આપો</div>
+    </div>
+    <div class="content">
+      <div class="field"><label>પૂરું નામ</label><div class="input-wrap"><input id="cp-name" placeholder="દા.ત. રમેશ સોલંકી"></div></div>
+      <div class="field"><label>ગામ / શહેર</label><div class="input-wrap"><input id="cp-village" placeholder="દા.ત. પોરબંદર"></div></div>
+      <div class="declaration">
+        <input type="checkbox" id="cp-agree" checked>
+        <p>હું પુષ્ટિ કરું છું કે હું <b>પોરબંદર ખારવા સમાજ</b> નો સભ્ય છું અને આપેલી માહિતી સાચી છે.</p>
+      </div>
+      <div id="cp-err"></div>
+      <button class="btn btn-primary" id="cp-submit">ખાતું બનાવો →</button>
+    </div>
+  `;
+  document.getElementById("cp-submit").addEventListener("click", async (e)=>{
+    const name=document.getElementById("cp-name").value.trim();
+    const village=document.getElementById("cp-village").value.trim();
+    const agreed=document.getElementById("cp-agree").checked;
+    const errEl=document.getElementById("cp-err"); errEl.innerHTML="";
+    if(!name || !village || !agreed){ errEl.innerHTML = `<div class="err-text">બધા fields ભરો</div>`; return; }
+    e.target.disabled=true; e.target.textContent="ખાતું બની રહ્યું છે...";
+    try{
+      const user = await dataService.completeProfile(state.newUserUid, { name, village, mobile: state.newUserMobile });
+      state.user = user; state.screen="home"; render();
+    }catch(err){
+      e.target.disabled=false; e.target.textContent="ખાતું બનાવો →";
+      errEl.innerHTML = `<div class="err-text">${err.message}</div>`;
+    }
+  });
+}
+
+function bottomNavHtml(active){
+  const items=[["home","🏠","Home"],["search","🔍","Search"],["interest","💌","Interest"],["profile","👤","Profile"]];
+  return `<div class="bottom-nav"><div class="bottom-nav-inner">${items.map(([k,i,l])=>`
+    <div class="nav-item ${active===k?'active':''}" data-nav="${k}"><span class="nav-icon">${i}</span>${l}</div>
+  `).join("")}</div></div>`;
+}
+
+function renderHome(){
+  app.innerHTML = `
+    <div class="header" style="position:relative;">
+      ${langToggleHtml()}
+      <div class="header-title">${t('welcome')} ${state.user?.name || "સભ્ય"}</div>
+      <div class="header-sub">${t('browseSub')}</div>
+      <div class="search-bar"><span>🔍</span><input id="home-search" placeholder="નામ, શહેર, વ્યવસાય શોધો..." style="border:none;outline:none;background:transparent;font-family:inherit;font-size:13px;width:100%;color:var(--text-dark);"></div>
+      <div class="filters-row">
+        <div class="chip active" data-gender="">બધા</div>
+        <div class="chip" data-gender="male">યુવક</div>
+        <div class="chip" data-gender="female">યુવતી</div>
+        <div class="chip" data-sort="match">⭐ Best Match</div>
+      </div>
+    </div>
+    <div class="content" id="home-content"><div class="loading">Firestore માંથી profiles load થઈ રહ્યા છે...</div></div>
+    ${bottomNavHtml("home")}
+  `;
+  attachLangToggle();
+  document.querySelectorAll("[data-nav]").forEach(el=>{
+    el.addEventListener("click", ()=>{
+      const k = el.getAttribute("data-nav");
+      if(k==="home") render();
+      else if(k==="profile"){ state.screen="myProfiles"; render(); }
+      else if(k==="interest"){ state.screen="interest"; render(); }
+      else showToast("આ screen આગળના phase માં બનશે");
+    });
+  });
+
+  let allProfiles = [];
+  let activeGender = "";
+  let sortByMatch = false;
+
+  function paintList(list){
+    const el = document.getElementById("home-content");
+    if(!el) return;
+    if(list.length===0){ el.innerHTML = `<div class="empty">કોઈ profile ના મળી</div>`; return; }
+    el.innerHTML = list.map(p=>{
+      const showPhoto = p.photoVisible !== false && p.photoURL; // field ના હોય (જૂના profiles) તો Visible ગણવું
+      return `
+      <div class="card" data-open="${p.id}">
+        <div class="card-photo" style="background:${p.photoColor||'#1C93C9'};${showPhoto?`background-image:url('${p.photoURL}');background-size:cover;background-position:center;`:''}">${showPhoto?'':(p.photoEmoji||'👤')}<div class="verified-tag">✓ VERIFIED</div></div>
+        <div class="card-body">
+          <div class="card-name">${p.name}</div>
+          <div class="card-sub">${p.age} વર્ષ · ${p.education} · ${p.city}</div>
+          ${p.matchScore!=null ? `<div class="stars">${"★".repeat(Math.round(p.matchScore))}${"☆".repeat(5-Math.round(p.matchScore))} <b>${p.matchScore}/5 Match</b></div>` : `<div class="stars" style="color:var(--text-mid);font-size:10px;">પ્રોફાઇલ બનાવો, Match Score જુઓ</div>`}
+        </div>
+      </div>
+    `;
+    }).join("");
+    document.querySelectorAll("[data-open]").forEach(card=>{
+      card.addEventListener("click", ()=>{ state.openProfileId = card.getAttribute("data-open"); state.screen="detail"; render(); });
+    });
+  }
+
+  function applyFilters(){
+    const q = document.getElementById("home-search").value.trim().toLowerCase();
+    let list = allProfiles;
+    if(activeGender) list = list.filter(p => p.gender === activeGender);
+    if(q){
+      list = list.filter(p =>
+        (p.name||"").toLowerCase().includes(q) ||
+        (p.city||"").toLowerCase().includes(q) ||
+        (p.occupation||"").toLowerCase().includes(q) ||
+        (p.education||"").toLowerCase().includes(q)
+      );
+    }
+    if(sortByMatch) list = [...list].sort((a,b) => (b.matchScore||0) - (a.matchScore||0));
+    paintList(list);
+  }
+
+  document.querySelectorAll("[data-gender]").forEach(chip=>{
+    chip.addEventListener("click", ()=>{
+      document.querySelectorAll("[data-gender]").forEach(c=>c.classList.remove("active"));
+      chip.classList.add("active");
+      activeGender = chip.getAttribute("data-gender");
+      applyFilters();
+    });
+  });
+  const sortChip = document.querySelector("[data-sort='match']");
+  sortChip.addEventListener("click", ()=>{
+    sortByMatch = !sortByMatch;
+    sortChip.classList.toggle("active", sortByMatch);
+    applyFilters();
+  });
+
+  dataService.getProfiles(state.user?.id).then(profiles=>{
+    allProfiles = profiles;
+    paintList(allProfiles);
+    document.getElementById("home-search").addEventListener("input", applyFilters);
+  }).catch(err=>{
+    const el = document.getElementById("home-content");
+    if(el) el.innerHTML = `<div class="status-banner status-err">Data load ના થયું: ${err.message}</div>`;
+  });
+}
+
+function renderDetail(){
+  app.innerHTML = `<div class="content"><div class="loading">Load થઈ રહ્યું છે...</div></div>`;
+  dataService.getProfileById(state.openProfileId).then(p=>{
+    if(!p){ app.innerHTML = `<div class="content">Profile ના મળી</div>`; return; }
+    app.innerHTML = `
+      <div class="header" style="padding-bottom:20px;">
+        <div class="back-row"><div class="back-btn" id="back-btn">←</div><div class="header-title">Profile</div></div>
+        <div style="width:90px;height:90px;border-radius:22px;display:flex;align-items:center;justify-content:center;font-size:38px;margin:14px auto 0;border:3px solid rgba(255,255,255,0.4);background:${p.photoColor||'rgba(255,255,255,0.2)'};${(p.photoVisible!==false && p.photoURL)?`background-image:url('${p.photoURL}');background-size:cover;background-position:center;`:''}">${(p.photoVisible!==false && p.photoURL)?'':(p.photoEmoji||'👤')}</div>
+        <div style="text-align:center;font-size:18px;font-weight:800;margin-top:10px;">${p.name}</div>
+        <div style="text-align:center;font-size:11.5px;opacity:0.85;margin-top:3px;">${p.age} વર્ષ · ${p.education} · ${p.city}</div>
+      </div>
+      <div class="content">
+        <div style="font-size:12px;font-weight:700;color:var(--navy);margin:6px 0 8px;">👤 Basic Details</div>
+        <div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px;"><span style="color:var(--text-mid);">પિતાનું નામ</span><span style="font-weight:600;">${p.fatherName||'-'}</span></div>
+        <div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px;"><span style="color:var(--text-mid);">માતાનું નામ</span><span style="font-weight:600;">${p.motherName||'-'}</span></div>
+        <div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px;"><span style="color:var(--text-mid);">રાશી</span><span style="font-weight:600;">${p.rashi||'-'}</span></div>
+        <div style="display:flex;justify-content:space-between;padding:9px 0;font-size:13px;"><span style="color:var(--text-mid);">દરજ્જો</span><span style="font-weight:600;">${p.maritalStatus||'-'}</span></div>
+        <button class="btn btn-primary" style="margin-top:20px;" id="send-interest">💌 Interest મોકલો</button>
+      </div>
+    `;
+    document.getElementById("back-btn").addEventListener("click", ()=>{ state.screen="home"; render(); });
+    document.getElementById("send-interest").addEventListener("click", async ()=>{
+      try{ await dataService.sendInterest(state.user.id, p.id); showToast("💌 Interest મોકલાયું! (Firestore માં save થયું)"); }
+      catch(err){ showToast("Error: "+err.message); }
+    });
+  });
+}
+
+function renderInterest(){
+  app.innerHTML = `
+    <div class="header" style="position:relative;">
+      ${langToggleHtml()}
+      <div class="header-title">${t('interestsTitle')}</div>
+      <div class="header-sub">${t('interestsSub')}</div>
+    </div>
+    <div class="content" id="int-content"><div class="loading">Load થઈ રહ્યું છે...</div></div>
+    ${bottomNavHtml("interest")}
+  `;
+  attachLangToggle();
+  document.querySelectorAll("[data-nav]").forEach(el=>{
+    el.addEventListener("click", ()=>{
+      const k = el.getAttribute("data-nav");
+      if(k==="home"){ state.screen="home"; render(); }
+      else if(k==="profile"){ state.screen="myProfiles"; render(); }
+      else if(k==="interest") render();
+      else showToast("આ screen આગળના phase માં બનશે");
+    });
+  });
+
+  dataService.getReceivedInterests(state.user.id).then(list=>{
+    const el = document.getElementById("int-content");
+    if(!el) return;
+    if(list.length===0){ el.innerHTML = `<div class="empty">હજુ કોઈ Interest નથી આવ્યું</div>`; return; }
+    el.innerHTML = list.map(i=>`
+      <div class="card" style="cursor:default;">
+        <div class="card-photo" style="background:linear-gradient(160deg,#7FC7E0,#1C93C9);">👤</div>
+        <div class="card-body">
+          <div class="card-name">${i.fromUserName}</div>
+          <div class="card-sub">તમારા "${i.forCandidateName}" profile માટે Interest</div>
+          <span class="status-pending" style="background:${i.status==='accepted'?'#E7F6EF':i.status==='declined'?'#FCEBEA':'#FDF1E7'};color:${i.status==='accepted'?'var(--success)':i.status==='declined'?'var(--danger)':'#B4762A'};">
+            ${i.status==='accepted'?'✓ Accepted':i.status==='declined'?'✕ Declined':'⏳ Pending'}
+          </span>
+          ${i.status==='pending' ? `
+            <div style="display:flex;gap:6px;margin-top:8px;">
+              <button class="mini-btn mini-accept" data-accept="${i.id}">✓ Accept</button>
+              <button class="mini-btn mini-decline" data-decline="${i.id}">✕ Decline</button>
+            </div>
+          ` : ""}
+        </div>
+      </div>
+    `).join("");
+    document.querySelectorAll("[data-accept]").forEach(btn=>{
+      btn.addEventListener("click", async ()=>{
+        try{ await dataService.respondToInterest(btn.getAttribute("data-accept"), "accepted"); showToast("✓ Interest Accept થયું"); renderInterest(); }
+        catch(err){ showToast("Error: "+err.message); }
+      });
+    });
+    document.querySelectorAll("[data-decline]").forEach(btn=>{
+      btn.addEventListener("click", async ()=>{
+        try{ await dataService.respondToInterest(btn.getAttribute("data-decline"), "declined"); showToast("Interest Decline થયું"); renderInterest(); }
+        catch(err){ showToast("Error: "+err.message); }
+      });
+    });
+  }).catch(err=>{
+    document.getElementById("int-content").innerHTML = `<div class="status-banner status-err">Data load ના થયું: ${err.message}</div>`;
+  });
+}
+
+function renderMyProfiles(){
+  app.innerHTML = `
+    <div class="header" style="position:relative;">
+      ${langToggleHtml()}
+      <div class="header-title">${t('myProfiles')}</div>
+      <div class="header-sub">${t('myProfilesSub')}</div>
+    </div>
+    <div class="content" id="myp-content"><div class="loading">Load થઈ રહ્યું છે...</div></div>
+    ${bottomNavHtml("profile")}
+  `;
+  attachLangToggle();
+  document.querySelectorAll("[data-nav]").forEach(el=>{
+    el.addEventListener("click", ()=>{
+      const k = el.getAttribute("data-nav");
+      if(k==="home"){ state.screen="home"; render(); }
+      else if(k==="profile") render();
+      else showToast("આ screen આગળના phase માં બનશે");
+    });
+  });
+
+  dataService.getMyCandidates(state.user.id).then(list=>{
+    const el = document.getElementById("myp-content");
+    if(!el) return;
+    const activeCount = list.filter(c=>!c.deactivated).length;
+    const cardsHtml = list.map(c=>`
+      <div class="card" style="cursor:default; flex-direction:column; align-items:stretch;">
+        <div style="display:flex;">
+          <div class="card-photo" style="background:${c.photoColor||'#1C93C9'};${c.photoURL?`background-image:url('${c.photoURL}');background-size:cover;background-position:center;`:''}">${c.photoURL?'':(c.photoEmoji||'👤')}</div>
+          <div class="card-body">
+            <div class="card-name">${c.name}${c.deactivated?' <span style="color:var(--text-mid);font-size:10px;font-weight:700;">(Deactivated)</span>':''}</div>
+            <div class="card-sub">${c.age} વર્ષ · ${c.education||'-'} · ${c.city||'-'}</div>
+            <span class="status-pending" style="background:${c.deactivated?'#EEF1F3':c.status==='approved'?'#E7F6EF':c.status==='rejected'?'#FCEBEA':'#FDF1E7'};color:${c.deactivated?'var(--text-mid)':c.status==='approved'?'var(--success)':c.status==='rejected'?'var(--danger)':'#B4762A'};">
+              ${c.deactivated?'👋 લગ્ન/Settled':c.status==='approved'?'✓ Approved · Live':c.status==='rejected'?'✕ Rejected':'⏳ Admin Review Pending'}
+            </span>
+          </div>
+        </div>
+        ${!c.deactivated ? `
+          <div style="display:flex;gap:8px;padding:0 13px 8px;">
+            <button class="mini-btn" data-edit="${c.id}" style="background:var(--ice);color:var(--primary);flex:1;">✏️ Edit</button>
+            <button class="mini-btn" data-deactivate="${c.id}" style="background:#FCEBEA;color:var(--danger);flex:1;">💍 Married/Settled</button>
+          </div>
+          <div style="padding:0 13px 13px;">
+            <button class="mini-btn" data-toggle-photo="${c.id}" data-visible="${c.photoVisible!==false?'1':'0'}" style="width:100%;background:${c.photoVisible!==false?'#E7F6EF':'var(--ice)'};color:${c.photoVisible!==false?'var(--success)':'var(--primary)'};">
+              ${c.photoVisible!==false ? '👁️ Photo બીજાને દેખાય છે — છુપાવવા Tap કરો' : '🙈 Photo છુપાયેલો છે — દેખાડવા Tap કરો'}
+            </button>
+          </div>
+        ` : `
+          <div style="padding:0 13px 13px;">
+            <button class="mini-btn" data-activate="${c.id}" ${activeCount>=4?"disabled":""} style="width:100%;background:${activeCount>=4?'#EEF1F3':'var(--ice)'};color:${activeCount>=4?'var(--text-mid)':'var(--primary)'};${activeCount>=4?'cursor:not-allowed;':''}">
+              🔄 ફરી Active કરો
+            </button>
+            ${activeCount>=4 ? `<div style="font-size:10px;color:var(--text-mid);margin-top:5px;text-align:center;">4/4 profiles વપરાયેલા — બીજો profile Deactivate કરો પછી જ Active કરી શકાશે</div>` : ""}
+          </div>
+        `}
+      </div>
+    `).join("");
+    const canAddMore = activeCount < 4;
+    el.innerHTML = cardsHtml + (canAddMore ? `
+      <div class="card" id="add-candidate" style="cursor:pointer; border:2px dashed var(--sky); background:var(--ice); justify-content:center; align-items:center; padding:24px; display:flex; flex-direction:column; text-align:center;">
+        <div style="width:44px;height:44px;border-radius:50%;background:#fff;color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;">+</div>
+        <div style="font-size:12.5px;font-weight:700;color:var(--navy);margin-top:10px;">નવો Candidate Profile Add કરો</div>
+        <div style="font-size:10.5px;color:var(--text-mid);margin-top:3px;">તમે હજુ ${4-activeCount} વધુ profiles બનાવી શકો છો</div>
+      </div>
+    ` : `<div class="empty">4/4 profiles વપરાયેલા — વધુ profile બનાવવા માટે limit પૂરી થઈ છે</div>`)
+    + `
+      <div class="card" style="cursor:default; flex-direction:column; align-items:stretch; margin-top:16px;">
+        <div style="padding:14px;">
+          <div style="font-size:11.5px;color:var(--text-mid);margin-bottom:10px;">Logged in as <b style="color:var(--navy);">${state.user.name}</b> (${state.user.mobile})</div>
+          <button class="btn" id="logout-btn" style="background:#FCEBEA;color:var(--danger);width:100%;">🚪 Logout</button>
+        </div>
+      </div>
+    `;
+    const addBtn = document.getElementById("add-candidate");
+    if(addBtn) addBtn.addEventListener("click", ()=>{ state.formDraft={}; state.editCandidateId=null; state.screen="formStep1"; render(); });
+    document.getElementById("logout-btn").addEventListener("click", async ()=>{
+      if(!confirm("શું તમે ખરેખર Logout કરવા માંગો છો?")) return;
+      await dataService.logout();
+      state.user=null; state.screen="signup"; render();
+    });
+    document.querySelectorAll("[data-edit]").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        const candidate = list.find(c=>c.id===btn.getAttribute("data-edit"));
+        state.editCandidateId = candidate.id;
+        state.formDraft = { ...candidate };
+        state.screen="formStep1"; render();
+      });
+    });
+    document.querySelectorAll("[data-toggle-photo]").forEach(btn=>{
+      btn.addEventListener("click", async ()=>{
+        const candidateId = btn.getAttribute("data-toggle-photo");
+        const currentlyVisible = btn.getAttribute("data-visible")==="1";
+        btn.disabled = true;
+        try{
+          await dataService.setPhotoVisibility(candidateId, !currentlyVisible);
+          showToast(currentlyVisible ? "🙈 Photo છુપાવ્યો" : "👁️ Photo દેખાડ્યો");
+          renderMyProfiles();
+        }catch(err){ showToast("Error: "+err.message); btn.disabled=false; }
+      });
+    });
+    document.querySelectorAll("[data-activate]").forEach(btn=>{
+      btn.addEventListener("click", async ()=>{
+        if(activeCount>=4){ showToast("4/4 profiles વપરાયેલા — પહેલા બીજો profile Deactivate કરો"); return; }
+        btn.disabled = true;
+        try{
+          await dataService.activateCandidate(btn.getAttribute("data-activate"));
+          showToast("✓ Profile ફરી Active થયું");
+          renderMyProfiles();
+        }catch(err){ showToast("Error: "+err.message); btn.disabled=false; }
+      });
+    });
+    document.querySelectorAll("[data-deactivate]").forEach(btn=>{
+      btn.addEventListener("click", async ()=>{
+        if(!confirm("શું તમે ખરેખર આ profile ને 'Married/Settled' તરીકે mark કરવા માંગો છો? એ પછી profile બીજા members ને નહીં દેખાય.")) return;
+        try{
+          await dataService.deactivateCandidate(btn.getAttribute("data-deactivate"));
+          showToast("✓ Profile deactivate થયું");
+          renderMyProfiles();
+        }catch(err){ showToast("Error: "+err.message); }
+      });
+    });
+  }).catch(err=>{
+    document.getElementById("myp-content").innerHTML = `<div class="status-banner status-err">Data load ના થયું: ${err.message}</div>`;
+  });
+}
+
+function formHeaderHtml(stepNum, title){
+  return `
+    <div class="header" style="padding-bottom:18px;">
+      <div class="back-row"><div class="back-btn" id="form-back">←</div><div><div class="header-title">${title}</div><div class="header-sub">Step ${stepNum} of 4</div></div></div>
+      <div style="display:flex; gap:5px; margin-top:14px;">
+        ${[1,2,3,4].map(n=>`<div style="flex:1;height:4px;border-radius:4px;background:${n<=stepNum?'#fff':'rgba(255,255,255,0.3)'};"></div>`).join("")}
+      </div>
+    </div>
+  `;
+}
+
+function renderFormStep1(){
+  const d = state.formDraft;
+  app.innerHTML = `
+    ${formHeaderHtml(1, "ઉમેદવાર ફોર્મ")}
+    <div class="content">
+      <div class="field"><label>ઉમેદવારનું પૂરું નામ</label><div class="input-wrap"><input id="ff-name" value="${d.name||''}" placeholder="દા.ત. પ્રિયા કિરીટભાઈ પટેલ"></div></div>
+      <div class="field"><label>Gender</label><div class="input-wrap"><select id="ff-gender">
+        <option value="">પસંદ કરો</option>
+        <option value="male" ${d.gender==='male'?'selected':''}>Male</option>
+        <option value="female" ${d.gender==='female'?'selected':''}>Female</option>
+      </select></div></div>
+      <div class="field"><label>ઉંમર</label><div class="input-wrap"><input id="ff-age" type="number" value="${d.age||''}" placeholder="દા.ત. 26"></div></div>
+      <div class="field"><label>પિતાનું પુરૂનામ</label><div class="input-wrap"><input id="ff-father" value="${d.fatherName||''}" placeholder="પિતાનું પૂરું નામ"></div></div>
+      <div class="field"><label>માતાનું નામ</label><div class="input-wrap"><input id="ff-mother" value="${d.motherName||''}" placeholder="માતાનું પૂરું નામ"></div></div>
+      <div class="field"><label>રાશી</label><div class="input-wrap"><select id="ff-rashi">
+        <option value="">પસંદ કરો</option>
+        ${["મેષ","વૃષભ","મિથુન","કર્ક","સિંહ","કન્યા","તુલા","વૃશ્ચિક","ધન","મકર","કુંભ","મીન"].map(r=>`<option ${d.rashi===r?'selected':''}>${r}</option>`).join("")}
+      </select></div></div>
+      <div id="ff-err"></div>
+      <button class="btn btn-primary" id="ff-next">આગળ વધો →</button>
+    </div>
+  `;
+  document.getElementById("form-back").addEventListener("click", ()=>{ state.screen="myProfiles"; render(); });
+  document.getElementById("ff-next").addEventListener("click", ()=>{
+    const name=document.getElementById("ff-name").value.trim();
+    const gender=document.getElementById("ff-gender").value;
+    const age=document.getElementById("ff-age").value;
+    const fatherName=document.getElementById("ff-father").value.trim();
+    const motherName=document.getElementById("ff-mother").value.trim();
+    const rashi=document.getElementById("ff-rashi").value;
+    const errEl=document.getElementById("ff-err");
+    if(!name||!gender||!age||!fatherName||!motherName){
+      errEl.innerHTML = `<div class="err-text">કૃપા કરીને બધા fields ભરો</div>`; return;
+    }
+    Object.assign(state.formDraft, { name, gender, age:Number(age), fatherName, motherName, rashi });
+    state.screen="formStep2"; render();
+  });
+}
+
+function renderFormStep2(){
+  const d = state.formDraft;
+  app.innerHTML = `
+    ${formHeaderHtml(2, "શિક્ષણ અને સરનામું")}
+    <div class="content">
+      <div class="field"><label>શિક્ષણ</label><div class="input-wrap"><input id="ff-edu" value="${d.education||''}" placeholder="દા.ત. B.Com"></div></div>
+      <div class="field"><label>વ્યવસાય</label><div class="input-wrap"><input id="ff-occ" value="${d.occupation||''}" placeholder="દા.ત. Private Job"></div></div>
+      <div class="field"><label>શહેર / ગામ</label><div class="input-wrap"><input id="ff-city" value="${d.city||''}" placeholder="દા.ત. પોરબંદર"></div></div>
+      <div class="field"><label>દરજ્જો</label><div class="input-wrap"><select id="ff-status">
+        <option value="કુંવારા" ${d.maritalStatus==='કુંવારા'?'selected':''}>કુંવારા</option>
+        <option value="છૂટાછેડા" ${d.maritalStatus==='છૂટાછેડા'?'selected':''}>છૂટાછેડા</option>
+      </select></div></div>
+      <div class="field"><label>ભાઈ-બહેન ની વિગત (Optional)</label><div class="input-wrap"><input id="ff-sib" value="${d.siblings||''}" placeholder="દા.ત. 1 ભાઈ, 0 બહેન"></div></div>
+      <div id="ff2-err"></div>
+      <button class="btn btn-primary" id="ff2-next">આગળ વધો →</button>
+    </div>
+  `;
+  document.getElementById("form-back").addEventListener("click", ()=>{ state.screen="formStep1"; render(); });
+  document.getElementById("ff2-next").addEventListener("click", ()=>{
+    const education=document.getElementById("ff-edu").value.trim();
+    const occupation=document.getElementById("ff-occ").value.trim();
+    const city=document.getElementById("ff-city").value.trim();
+    const maritalStatus=document.getElementById("ff-status").value;
+    const siblings=document.getElementById("ff-sib").value.trim();
+    const errEl=document.getElementById("ff2-err");
+    if(!education||!city){ errEl.innerHTML = `<div class="err-text">શિક્ષણ અને શહેર ભરવા જરૂરી છે</div>`; return; }
+    Object.assign(state.formDraft, { education, occupation, city, maritalStatus, siblings: siblings||null });
+    state.screen="formReview"; render();
+  });
+}
+
+function renderFormReview(){
+  const d = state.formDraft;
+  const isEdit = !!state.editCandidateId;
+  app.innerHTML = `
+    ${formHeaderHtml(3, isEdit ? "Review અને Update" : "Review અને Submit")}
+    <div class="content">
+      <div style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:10px;">તમે ભરેલી વિગતો ચકાસો</div>
+      <div class="detail-row"><span class="k">નામ</span><span class="v">${d.name}</span></div>
+      <div class="detail-row"><span class="k">Gender</span><span class="v">${d.gender}</span></div>
+      <div class="detail-row"><span class="k">ઉંમર</span><span class="v">${d.age}</span></div>
+      <div class="detail-row"><span class="k">પિતાનું નામ</span><span class="v">${d.fatherName}</span></div>
+      <div class="detail-row"><span class="k">માતાનું નામ</span><span class="v">${d.motherName}</span></div>
+      <div class="detail-row"><span class="k">રાશી</span><span class="v">${d.rashi||'-'}</span></div>
+      <div class="detail-row"><span class="k">શિક્ષણ</span><span class="v">${d.education}</span></div>
+      <div class="detail-row"><span class="k">વ્યવસાય</span><span class="v">${d.occupation||'-'}</span></div>
+      <div class="detail-row"><span class="k">શહેર</span><span class="v">${d.city}</span></div>
+      <div class="detail-row"><span class="k">દરજ્જો</span><span class="v">${d.maritalStatus}</span></div>
+      <div class="declaration" style="margin-top:16px;">
+        <span style="font-size:16px;">🔒</span>
+        <p>${isEdit ? "Update કર્યા પછી, profile ફરીથી Admin approval ની રાહ જોશે (re-verification જરૂરી)." : "Submit કર્યા પછી, Admin આ profile ને verify કરશે. Approve થયા પછી જ profile બીજા members ને દેખાશે."}</p>
+      </div>
+      <div id="ff3-err"></div>
+      <button class="btn btn-primary" id="ff3-submit">${isEdit ? "Update કરો ✓" : "Submit કરો ✓"}</button>
+    </div>
+  `;
+  document.getElementById("form-back").addEventListener("click", ()=>{ state.screen="formStep2"; render(); });
+  document.getElementById("ff3-submit").addEventListener("click", async (e)=>{
+    e.target.disabled=true; e.target.textContent = isEdit ? "Update થઈ રહ્યું છે..." : "Submit થઈ રહ્યું છે...";
+    try{
+      if(isEdit){
+        await dataService.updateCandidate(state.editCandidateId, state.formDraft);
+        showToast("✓ Update થયું! Admin ફરી verify કરશે");
+        state.formDraft={}; state.editCandidateId=null;
+        state.screen="myProfiles"; render();
+      } else {
+        const result = await dataService.createCandidate(state.user.id, state.formDraft);
+        state.formDraft={};
+        state.uploadCandidateId = result.id;
+        showToast("✓ Basic details save થયા! હવે Photo/Documents ઉમેરો");
+        state.screen="formDocs"; render();
+      }
+    }catch(err){
+      e.target.disabled=false; e.target.textContent = isEdit ? "Update કરો ✓" : "Submit કરો ✓";
+      document.getElementById("ff3-err").innerHTML = `<div class="err-text">${err.message}</div>`;
+    }
+  });
+}
+
+function renderFormDocs(){
+  const candidateId = state.uploadCandidateId;
+  app.innerHTML = `
+    ${formHeaderHtml(4, "Photo અને Documents")}
+    <div class="content">
+      <div style="border:2px dashed var(--sky); border-radius:16px; background:var(--ice); padding:20px; text-align:center; margin-bottom:16px;">
+        <div style="width:70px;height:70px;border-radius:50%;background:#fff;border:3px solid var(--primary-light);display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 10px;">📷</div>
+        <div style="font-size:12.5px;font-weight:700;color:var(--navy);">Latest Color Photo</div>
+        <div style="font-size:10.5px;color:var(--text-mid);margin-top:3px;">Passport size, સ્પષ્ટ, તાજેતરની</div>
+        <input type="file" accept="image/*" id="photo-input" style="margin-top:10px;font-size:11px;">
+        <div id="photo-status" style="font-size:10.5px;color:var(--success);margin-top:6px;font-weight:600;"></div>
+        <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:12px;">
+          <input type="checkbox" id="photo-visible-toggle" style="accent-color:var(--navy);width:15px;height:15px;">
+          <label for="photo-visible-toggle" style="font-size:11px;color:var(--text-dark);font-weight:600;">મારો Photo બીજા members ને દેખાડો</label>
+        </div>
+        <div style="font-size:10px;color:var(--text-mid);margin-top:3px;">Default: છુપાયેલો — ગમે ત્યારે My Profiles માંથી બદલી શકાય</div>
+      </div>
+
+      <div style="font-size:12px;font-weight:700;color:var(--navy);margin:6px 0 10px;">જરૂરી Documents</div>
+      ${["aadhar","education","lc"].map(key=>`
+        <div style="border:1.5px solid var(--border);border-radius:14px;padding:13px;margin-bottom:10px;background:#fff;">
+          <div style="font-size:12.5px;font-weight:700;color:var(--navy);margin-bottom:6px;">
+            ${key==='aadhar'?'🪪 Aadhar Card':key==='education'?'🎓 શિક્ષણ પ્રમાણપત્ર':'📄 જન્મ તારીખ દાખલો / LC'}
+          </div>
+          <input type="file" accept="image/*,.pdf" data-doc="${key}" style="font-size:11px;">
+          <div id="doc-status-${key}" style="font-size:10.5px;color:var(--success);margin-top:6px;font-weight:600;"></div>
+        </div>
+      `).join("")}
+
+      <div class="declaration" style="margin-top:10px;">
+        <span style="font-size:16px;">🔒</span>
+        <p>Documents ફક્ત Admin verification માટે વપરાશે. Approve થયા પછી server પરથી delete થઈ જશે — ફક્ત Photo રહેશે.</p>
+      </div>
+      <button class="btn btn-primary" style="margin-top:16px;" id="docs-done">Done — My Profiles પર જાવ →</button>
+    </div>
+  `;
+  document.getElementById("form-back").addEventListener("click", ()=>{ state.screen="myProfiles"; render(); });
+
+  document.getElementById("photo-visible-toggle").addEventListener("change", async (e)=>{
+    try{ await dataService.setPhotoVisibility(candidateId, e.target.checked); }
+    catch(err){ showToast("Error: "+err.message); e.target.checked = !e.target.checked; }
+  });
+
+  document.getElementById("photo-input").addEventListener("change", async (e)=>{
+    const file = e.target.files[0]; if(!file) return;
+    const statusEl = document.getElementById("photo-status");
+    statusEl.textContent = "Upload થઈ રહ્યું છે...";
+    try{ await dataService.uploadPhoto(candidateId, file); statusEl.textContent = "✓ Photo uploaded"; }
+    catch(err){ statusEl.style.color="var(--danger)"; statusEl.textContent = "Error: "+err.message; }
+  });
+
+  document.querySelectorAll("[data-doc]").forEach(input=>{
+    input.addEventListener("change", async (e)=>{
+      const key = input.getAttribute("data-doc");
+      const file = e.target.files[0]; if(!file) return;
+      const statusEl = document.getElementById("doc-status-"+key);
+      statusEl.textContent = "Upload થઈ રહ્યું છે...";
+      try{ await dataService.uploadDocument(candidateId, key, file); statusEl.textContent = "✓ Uploaded"; }
+      catch(err){ statusEl.style.color="var(--danger)"; statusEl.textContent = "Error: "+err.message; }
+    });
+  });
+
+  document.getElementById("docs-done").addEventListener("click", ()=>{
+    state.uploadCandidateId = null;
+    state.screen="myProfiles"; render();
+  });
+}
+
+render();
+</script>
+</body>
+</html>
