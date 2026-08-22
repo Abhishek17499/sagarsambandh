@@ -121,7 +121,6 @@ const firebaseConfig = {
   storageBucket: "sagar-sambandh.firebasestorage.app",
   messagingSenderId: "822553770547",
   appId: "1:822553770547:web:ffb69be461f4a38d5d8146",
-  measurementId: "G-17SMPWLEKR"
 };
 let db = null, auth = null, firebaseReady = false, firebaseError = null;
 try {
@@ -136,7 +135,13 @@ try {
 // RECAPTCHA_V3_SITE_KEY below with the real key from Firebase Console
 // (Build → App Check → register a reCAPTCHA v3 site). Wrapped in try/catch
 // so a missing/placeholder key never breaks the rest of the app.
-const RECAPTCHA_V3_SITE_KEY = "6LfIeJEtAAAAABLrVMdO-js6jnYBorm7jbKkaNZj";
+// TEMPORARILY DISABLED (22 Aug 2026): this reCAPTCHA v3 key was not yet
+// registered under Firebase Console → App Check → Apps, causing every
+// token-exchange call to fail with 403 and the Firebase SDK to throttle
+// ALL further auth attempts client-side for ~24 hours. Re-enable only
+// after the key is properly registered in App Check + Google reCAPTCHA
+// Admin Console for the sagarsambandh.in domain.
+const RECAPTCHA_V3_SITE_KEY = "REPLACE_WITH_RECAPTCHA_V3_SITE_KEY";
 if (firebaseReady && RECAPTCHA_V3_SITE_KEY !== "REPLACE_WITH_RECAPTCHA_V3_SITE_KEY") {
   try {
     firebase.appCheck().activate(
