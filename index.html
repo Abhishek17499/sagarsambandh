@@ -480,32 +480,45 @@ function renderChecking(){
   }, 400);
 }
 
+// ============================================================
+// DEMO LOGIN (temporary, for presentation) — 22 Aug 2026
+// Real Phone OTP has a deeper Firebase reCAPTCHA/SDK issue still being
+// diagnosed. Until fixed, this screen lets anyone in instantly for demo
+// purposes using the silent Anonymous Auth session (which works fine) as
+// the account identity. Swap this back for renderSignup+renderOtp once
+// real OTP is resolved — nothing else in the app needs to change.
+// ============================================================
 function renderSignup(){
   app.innerHTML = `
     <div class="header">
       <div class="header-title">નમસ્તે 🙏 ચાલો શરૂ કરીએ</div>
-      <div class="header-sub">Mobile Number નાખો, OTP થી verify કરો</div>
+      <div class="header-sub">Demo Mode — તરત જ અંદર જાવ</div>
     </div>
     <div class="content">
-      <div class="field"><label>મોબાઈલ નંબર</label><div class="input-wrap"><input id="f-mobile" placeholder="98765 43210" maxlength="10"></div></div>
-      <div id="f-err"></div>
-      <button class="btn btn-primary" id="f-submit">OTP મોકલો →</button>
-      <div class="center-note" style="margin-top:12px; opacity:0.7;">(Real SMS OTP માટે Firebase Blaze Plan + Phone provider enable હોવું જરૂરી છે)</div>
+      <div class="field"><label>પૂરું નામ</label><div class="input-wrap"><input id="dl-name" placeholder="દા.ત. રમેશ સોલંકી" value="Demo સભ્ય"></div></div>
+      <div class="field"><label>ગામ / શહેર</label><div class="input-wrap"><input id="dl-village" placeholder="દા.ત. પોરબંદર" value="પોરબંદર"></div></div>
+      <div class="field"><label>મોબાઈલ નંબર (Optional)</label><div class="input-wrap"><input id="dl-mobile" placeholder="98765 43210" maxlength="10" value="9999999999"></div></div>
+      <div id="dl-err"></div>
+      <button class="btn btn-primary" id="dl-submit">🎬 Demo શરૂ કરો →</button>
+      <div class="center-note" style="margin-top:12px; opacity:0.7;">(Temporary demo login — real OTP verification આગળના update માં ઉમેરાશે)</div>
     </div>
   `;
-  document.getElementById("f-mobile").addEventListener("input", (e)=>{ e.target.value = e.target.value.replace(/\D/g,'').slice(0,10); });
+  document.getElementById("dl-mobile").addEventListener("input", (e)=>{ e.target.value = e.target.value.replace(/\D/g,'').slice(0,10); });
 
-  document.getElementById("f-submit").addEventListener("click", async (e)=>{
-    const mobile=document.getElementById("f-mobile").value.trim();
-    const errEl=document.getElementById("f-err"); errEl.innerHTML="";
-    if(mobile.length!==10){ errEl.innerHTML = `<div class="err-text">10-અંકનો સાચો મોબાઈલ નંબર નાખો</div>`; return; }
-    e.target.disabled=true; e.target.textContent="OTP મોકલી રહ્યા છીએ...";
+  document.getElementById("dl-submit").addEventListener("click", async (e)=>{
+    const name=document.getElementById("dl-name").value.trim() || "Demo સભ્ય";
+    const village=document.getElementById("dl-village").value.trim() || "પોરબંદર";
+    const mobile=document.getElementById("dl-mobile").value.trim() || "9999999999";
+    const errEl=document.getElementById("dl-err"); errEl.innerHTML="";
+    e.target.disabled=true; e.target.textContent="શરૂ થઈ રહ્યું છે...";
     try{
-      await dataService.sendOtp(mobile);
-      state.pendingMobile = mobile;
-      state.screen="otp"; render();
+      await authReadyPromise; // ensures the silent Anonymous session exists
+      const currentUser = auth.currentUser;
+      if(!currentUser) throw new Error("Session load ના થયું, page ફરી refresh કરો");
+      const user = await dataService.completeProfile(currentUser.uid, { name, village, mobile });
+      state.user = user; state.screen="home"; render();
     }catch(err){
-      e.target.disabled=false; e.target.textContent="OTP મોકલો →";
+      e.target.disabled=false; e.target.textContent="🎬 Demo શરૂ કરો →";
       errEl.innerHTML = `<div class="err-text">${err.message}</div>`;
     }
   });
