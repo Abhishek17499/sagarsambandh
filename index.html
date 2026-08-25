@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- SAGAR SAMBANDH — USER APP — v11.2 (22 Aug 2026) — Fresh Hostinger Deploy -->
+<!-- SAGAR SAMBANDH — USER APP — v12 (22 Aug 2026) — Mobile + PIN login (temporary fallback; real Phone OTP is throttled by Firebase due to an App Check misconfiguration on 22 Aug — see Sagar-Sambandh-OTP-Bug-Summary.docx). Anonymous Auth (for Firestore/Storage rules) unchanged. -->
 <html lang="gu">
 <head>
 <meta charset="UTF-8">
@@ -9,11 +9,11 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Gujarati:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <!-- Firebase (compat SDK — works with plain <script> tags, no build step needed) -->
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.11.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.11.0/firebase-storage-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.11.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.11.0/firebase-app-check-compat.js"></script>
 
 <style>
   :root{
@@ -41,6 +41,13 @@
   .header-sub{ font-size:12px; opacity:0.82; margin-top:3px; }
   .content{ flex:1; padding:20px 20px 100px; max-width:480px; margin:0 auto; width:100%; }
   .field{ margin-bottom:15px; }
+  .otp-boxes{ display:flex; gap:10px; justify-content:center; margin:10px 0 20px; }
+  .otp-box{
+    width:44px; height:52px; text-align:center; font-size:20px; font-weight:700;
+    border:1.5px solid var(--border); border-radius:12px; background:#fff;
+    color:var(--text-dark); outline:none;
+  }
+  .otp-box:focus{ border-color:var(--primary-light); box-shadow:0 0 0 3px rgba(28,147,201,0.12); }
   .field label{ display:block; font-size:12px; font-weight:600; color:var(--text-dark); margin-bottom:6px; }
   .input-wrap{ display:flex; align-items:center; border:1.5px solid var(--border); border-radius:12px; background:#fff; padding:0 13px; }
   .input-wrap:focus-within{ border-color:var(--primary-light); box-shadow:0 0 0 3px rgba(28,147,201,0.12); }
@@ -87,14 +94,13 @@
 </head>
 <body>
 <div class="phone" id="phone"><div class="notch"></div><div id="app"></div></div>
-<div id="recaptcha-container"></div>
 
 <script>
 // ============================================================
 // FIREBASE SETUP
 // ============================================================
 const firebaseConfig = {
-  apiKey: "AIzaSyB808kwpEQ6IXgyFBUKGKnnH9Y6Lhe74_g",
+  apiKey: "AIzaSyDeGx5aNtf8aPRviA4rYfdM0Nc65F_35is",
   authDomain: "sagar-sambandh.firebaseapp.com",
   projectId: "sagar-sambandh",
   storageBucket: "sagar-sambandh.firebasestorage.app",
@@ -157,13 +163,18 @@ let authReadyPromise = firebaseReady
     })
   : Promise.resolve();
 
-let pendingConfirmationResult = null;
-function getRecaptchaVerifier(){
-  if (!window._recaptchaVerifier) {
-    window._recaptchaVerifier = new firebase.auth.RecaptchaVerifier("recaptcha-container", { size: "invisible" }, auth);
-  }
-  return window._recaptchaVerifier;
-}
+// ⚠️ DEV/TESTING FALLBACK (22 Aug 2026): Real Phone OTP is temporarily
+// throttled server-side by Firebase (App Check misconfiguration earlier
+// today — see Sagar-Sambandh-OTP-Bug-Summary.docx). Until that clears and
+// we consciously decide to switch back, login uses Mobile Number + 4-digit
+// PIN — but under the hood it still creates a REAL (non-anonymous) Firebase
+// Auth session via Email/Password, exactly like admin.html does for Admin
+// login. This matters because Firestore Rules check
+// request.auth.token.firebase.sign_in_provider != 'anonymous' — a plain
+// Anonymous session (no real per-person identity) gets blocked by Rules,
+// which is exactly correct/secure behaviour, not a bug.
+function mobileToEmail(mobile){ return `${mobile}@sagarsambandh.local`; }
+function pinToPassword(pin){ return `sagar${pin}bandh`; } // Firebase needs 6+ chars; PIN itself stays 4 digits in the UI
 
 // ============================================================
 // DATA SERVICE — real Firestore calls
@@ -175,37 +186,42 @@ function getRecaptchaVerifier(){
 //   interests  { fromUserId, toCandidateId, status: "pending", createdAt }
 // ============================================================
 const dataService = {
-  // Real Phone OTP requires Firebase's Blaze (pay-as-you-go) plan and the
-  // "Phone" sign-in provider enabled in Firebase Console → Authentication.
-  async sendOtp(mobile) {
+  // Mobile+PIN fallback — signup creates a real (non-anonymous) Firebase
+  // Auth user, then a matching users/{uid} Firestore doc (doc ID = uid, to
+  // match Security Rules' `request.auth.uid == userId` check).
+  async signup(mobile, pin, name, village) {
     if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
-    const verifier = getRecaptchaVerifier();
-    const fullPhone = "+91" + mobile;
-    pendingConfirmationResult = await auth.signInWithPhoneNumber(fullPhone, verifier);
-    return { success: true };
-  },
-
-  // Returns { isNewUser, id, name, mobile, village } — for a new user,
-  // name/village will be empty and the caller must collect them next.
-  async confirmOtp(code) {
-    if (!pendingConfirmationResult) throw new Error("પહેલા OTP મોકલો");
-    const result = await pendingConfirmationResult.confirm(code);
-    const uid = result.user.uid;
-    const userDoc = await db.collection("users").doc(uid).get();
-    if (userDoc.exists) {
-      const data = userDoc.data();
-      if (data.blocked) throw new Error("તમારું account block કરવામાં આવ્યું છે. Admin નો સંપર્ક કરો.");
-      return { isNewUser: false, id: uid, name: data.name, mobile: data.mobile, village: data.village };
+    let cred;
+    try {
+      cred = await auth.createUserWithEmailAndPassword(mobileToEmail(mobile), pinToPassword(pin));
+    } catch (e) {
+      if (e.code === "auth/email-already-in-use") throw new Error("આ Mobile Number થી પહેલેથી account છે — Login કરો");
+      throw new Error(e.message || "Account બની ના શક્યું");
     }
-    return { isNewUser: true, id: uid, mobile: result.user.phoneNumber };
-  },
-
-  async completeProfile(uid, { name, village, mobile }) {
-    if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
-    await db.collection("users").doc(uid).set({
+    await db.collection("users").doc(cred.user.uid).set({
       name, village, mobile, createdAt: firebase.firestore.FieldValue.serverTimestamp(),
     });
-    return { id: uid, name, mobile, village };
+    return { id: cred.user.uid, name, mobile, village };
+  },
+
+  async login(mobile, pin) {
+    if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
+    let cred;
+    try {
+      cred = await auth.signInWithEmailAndPassword(mobileToEmail(mobile), pinToPassword(pin));
+    } catch (e) {
+      if (e.code === "auth/user-not-found") throw new Error("આ Mobile Number થી કોઈ account નથી — 'નવું Account બનાવો' પસંદ કરો");
+      if (e.code === "auth/wrong-password" || e.code === "auth/invalid-credential") throw new Error("PIN ખોટો છે");
+      throw new Error(e.message || "Login ના થયું");
+    }
+    const doc = await db.collection("users").doc(cred.user.uid).get();
+    if (!doc.exists) throw new Error("Account ડેટા ના મળ્યો — Admin નો સંપર્ક કરો");
+    const data = doc.data();
+    if (data.blocked) {
+      await auth.signOut();
+      throw new Error("તમારું account block કરવામાં આવ્યું છે. Admin નો સંપર્ક કરો.");
+    }
+    return { id: cred.user.uid, name: data.name, mobile: data.mobile, village: data.village };
   },
 
   async logout() {
@@ -416,9 +432,9 @@ function attachLangToggle(){
 
 function render(){
   if(state.screen==="checking") renderChecking();
-  else if(state.screen==="signup") renderSignup();
-  else if(state.screen==="otp") renderOtp();
-  else if(state.screen==="completeProfile") renderCompleteProfile();
+  else if(state.screen==="mobileEntry") renderMobileEntry();
+  else if(state.screen==="loginPin") renderLoginPin();
+  else if(state.screen==="signupDetails") renderSignupDetails();
   else if(state.screen==="home") renderHome();
   else if(state.screen==="detail") renderDetail();
   else if(state.screen==="myProfiles") renderMyProfiles();
@@ -463,6 +479,10 @@ function renderChecking(){
         </div>`;
       return;
     }
+    // Session restore: relies on Firebase Auth's own persisted session
+    // (same pattern as admin.html) — a real (non-anonymous) signed-in user
+    // survives page refresh automatically. Anonymous sessions never count
+    // as "logged in" here (and Firestore Rules would block them anyway).
     const currentUser = auth.currentUser;
     if(currentUser && !currentUser.isAnonymous){
       try{
@@ -474,73 +494,56 @@ function renderChecking(){
             state.screen="home"; render(); return;
           }
         }
-      }catch(e){ /* fall through to signup if lookup fails */ }
+      }catch(e){ /* fall through to mobileEntry if lookup fails */ }
     }
-    state.screen="signup"; render();
+    state.screen="mobileEntry"; render();
   }, 400);
 }
 
-// ============================================================
-// DEMO LOGIN (temporary, for presentation) — 22 Aug 2026
-// Real Phone OTP has a deeper Firebase reCAPTCHA/SDK issue still being
-// diagnosed. Until fixed, this screen lets anyone in instantly for demo
-// purposes using the silent Anonymous Auth session (which works fine) as
-// the account identity. Swap this back for renderSignup+renderOtp once
-// real OTP is resolved — nothing else in the app needs to change.
-// ============================================================
-function renderSignup(){
+function renderMobileEntry(){
   app.innerHTML = `
     <div class="header">
       <div class="header-title">નમસ્તે 🙏 ચાલો શરૂ કરીએ</div>
-      <div class="header-sub">Demo Mode — તરત જ અંદર જાવ</div>
+      <div class="header-sub">Mobile Number નાખો</div>
     </div>
     <div class="content">
-      <div class="field"><label>પૂરું નામ</label><div class="input-wrap"><input id="dl-name" placeholder="દા.ત. રમેશ સોલંકી" value="Demo સભ્ય"></div></div>
-      <div class="field"><label>ગામ / શહેર</label><div class="input-wrap"><input id="dl-village" placeholder="દા.ત. પોરબંદર" value="પોરબંદર"></div></div>
-      <div class="field"><label>મોબાઈલ નંબર (Optional)</label><div class="input-wrap"><input id="dl-mobile" placeholder="98765 43210" maxlength="10" value="9999999999"></div></div>
-      <div id="dl-err"></div>
-      <button class="btn btn-primary" id="dl-submit">🎬 Demo શરૂ કરો →</button>
-      <div class="center-note" style="margin-top:12px; opacity:0.7;">(Temporary demo login — real OTP verification આગળના update માં ઉમેરાશે)</div>
+      <div class="field"><label>મોબાઈલ નંબર</label><div class="input-wrap"><input id="f-mobile" placeholder="98765 43210" maxlength="10"></div></div>
+      <div id="f-err"></div>
+      <button class="btn btn-primary" id="f-login">Login કરો (પહેલેથી Account છે) →</button>
+      <button class="btn btn-ghost" id="f-signup">નવું Account બનાવો →</button>
+      <div class="center-note" style="margin-top:12px; opacity:0.7;">(Testing phase: Mobile + PIN — Real SMS OTP હાલ કામચલાઉ બંધ છે)</div>
     </div>
   `;
-  document.getElementById("dl-mobile").addEventListener("input", (e)=>{ e.target.value = e.target.value.replace(/\D/g,'').slice(0,10); });
+  document.getElementById("f-mobile").addEventListener("input", (e)=>{ e.target.value = e.target.value.replace(/\D/g,'').slice(0,10); });
 
-  document.getElementById("dl-submit").addEventListener("click", async (e)=>{
-    const name=document.getElementById("dl-name").value.trim() || "Demo સભ્ય";
-    const village=document.getElementById("dl-village").value.trim() || "પોરબંદર";
-    const mobile=document.getElementById("dl-mobile").value.trim() || "9999999999";
-    const errEl=document.getElementById("dl-err"); errEl.innerHTML="";
-    e.target.disabled=true; e.target.textContent="શરૂ થઈ રહ્યું છે...";
-    try{
-      await authReadyPromise; // ensures the silent Anonymous session exists
-      const currentUser = auth.currentUser;
-      if(!currentUser) throw new Error("Session load ના થયું, page ફરી refresh કરો");
-      const user = await dataService.completeProfile(currentUser.uid, { name, village, mobile });
-      state.user = user; state.screen="home"; render();
-    }catch(err){
-      e.target.disabled=false; e.target.textContent="🎬 Demo શરૂ કરો →";
-      errEl.innerHTML = `<div class="err-text">${err.message}</div>`;
-    }
-  });
+  function proceed(target){
+    const mobile=document.getElementById("f-mobile").value.trim();
+    const errEl=document.getElementById("f-err"); errEl.innerHTML="";
+    if(mobile.length!==10){ errEl.innerHTML = `<div class="err-text">10-અંકનો સાચો મોબાઈલ નંબર નાખો</div>`; return; }
+    state.pendingMobile = mobile;
+    state.screen = target; render();
+  }
+  document.getElementById("f-login").addEventListener("click", ()=> proceed("loginPin"));
+  document.getElementById("f-signup").addEventListener("click", ()=> proceed("signupDetails"));
 }
 
-function renderOtp(){
+function renderLoginPin(){
   app.innerHTML = `
     <div class="header">
-      <div class="header-title">📱 OTP Verify કરો</div>
-      <div class="header-sub">+91 ${state.pendingMobile} પર 6-અંકનો code મોકલ્યો છે</div>
+      <div class="header-title">🔐 PIN નાખો</div>
+      <div class="header-sub">+91 ${state.pendingMobile} માટે તમારો 4-અંકનો PIN</div>
     </div>
     <div class="content">
       <div class="otp-boxes">
-        ${[0,1,2,3,4,5].map(i=>`<input class="otp-box" maxlength="1" data-otp="${i}">`).join("")}
+        ${[0,1,2,3].map(i=>`<input class="otp-box" maxlength="1" inputmode="numeric" data-pin="${i}">`).join("")}
       </div>
-      <div id="otp-err"></div>
-      <button class="btn btn-primary" id="otp-submit" disabled>Verify & Continue →</button>
-      <div class="center-note"><b style="color:var(--primary);cursor:pointer;" id="otp-back">← નંબર બદલો</b></div>
+      <div id="pin-err"></div>
+      <button class="btn btn-primary" id="pin-submit" disabled>Login કરો →</button>
+      <div class="center-note"><b style="color:var(--primary);cursor:pointer;" id="pin-back">← નંબર બદલો</b></div>
     </div>
   `;
-  const boxes = Array.from(document.querySelectorAll("[data-otp]"));
-  const submitBtn = document.getElementById("otp-submit");
+  const boxes = Array.from(document.querySelectorAll("[data-pin]"));
+  const submitBtn = document.getElementById("pin-submit");
   function checkFull(){ submitBtn.disabled = boxes.some(b=>!b.value); }
   boxes.forEach((b,i)=>{
     b.addEventListener("input", ()=>{
@@ -549,53 +552,61 @@ function renderOtp(){
       checkFull();
     });
   });
-  document.getElementById("otp-back").addEventListener("click", ()=>{ state.screen="signup"; render(); });
+  document.getElementById("pin-back").addEventListener("click", ()=>{ state.screen="mobileEntry"; render(); });
   submitBtn.addEventListener("click", async (e)=>{
-    const otp = boxes.map(b=>b.value).join("");
-    const errEl=document.getElementById("otp-err"); errEl.innerHTML="";
-    e.target.disabled=true; e.target.textContent="Verify કરી રહ્યા છીએ...";
+    const pin = boxes.map(b=>b.value).join("");
+    const errEl=document.getElementById("pin-err"); errEl.innerHTML="";
+    e.target.disabled=true; e.target.textContent="Login થઈ રહ્યા છીએ...";
     try{
-      const result = await dataService.confirmOtp(otp);
-      if(result.isNewUser){
-        state.newUserUid = result.id; state.newUserMobile = result.mobile;
-        state.screen="completeProfile"; render();
-      } else {
-        state.user = { id: result.id, name: result.name, mobile: result.mobile, village: result.village };
-        state.screen="home"; render();
-      }
+      const result = await dataService.login(state.pendingMobile, pin);
+      state.user = result;
+      state.screen="home"; render();
     }catch(err){
-      e.target.disabled=false; e.target.textContent="Verify & Continue →";
-      errEl.innerHTML = `<div class="err-text">OTP ખોટો છે અથવા expire થયો</div>`;
+      e.target.disabled=false; e.target.textContent="Login કરો →";
+      boxes.forEach(b=>b.value="");
+      if(boxes[0]) boxes[0].focus();
+      errEl.innerHTML = `<div class="err-text">${err.message}</div>`;
     }
   });
 }
 
-function renderCompleteProfile(){
+function renderSignupDetails(){
   app.innerHTML = `
     <div class="header">
-      <div class="header-title">🙏 છેલ્લું Step</div>
-      <div class="header-sub">તમારી થોડી માહિતી આપો</div>
+      <div class="header-title">🙏 નવું ખાતું</div>
+      <div class="header-sub">+91 ${state.pendingMobile} — તમારી થોડી માહિતી અને 4-અંકનો PIN સેટ કરો</div>
     </div>
     <div class="content">
       <div class="field"><label>પૂરું નામ</label><div class="input-wrap"><input id="cp-name" placeholder="દા.ત. રમેશ સોલંકી"></div></div>
       <div class="field"><label>ગામ / શહેર</label><div class="input-wrap"><input id="cp-village" placeholder="દા.ત. પોરબંદર"></div></div>
+      <div class="field"><label>4-અંકનો PIN સેટ કરો (daily login માટે)</label><div class="input-wrap"><input id="cp-pin" type="password" inputmode="numeric" maxlength="4" placeholder="••••"></div></div>
+      <div class="field"><label>PIN ફરીથી નાખો</label><div class="input-wrap"><input id="cp-pin2" type="password" inputmode="numeric" maxlength="4" placeholder="••••"></div></div>
       <div class="declaration">
         <input type="checkbox" id="cp-agree" checked>
         <p>હું પુષ્ટિ કરું છું કે હું <b>પોરબંદર ખારવા સમાજ</b> નો સભ્ય છું અને આપેલી માહિતી સાચી છે.</p>
       </div>
       <div id="cp-err"></div>
       <button class="btn btn-primary" id="cp-submit">ખાતું બનાવો →</button>
+      <div class="center-note"><b style="color:var(--primary);cursor:pointer;" id="cp-back">← નંબર બદલો</b></div>
     </div>
   `;
+  document.getElementById("cp-back").addEventListener("click", ()=>{ state.screen="mobileEntry"; render(); });
+  ["cp-pin","cp-pin2"].forEach(id=>{
+    document.getElementById(id).addEventListener("input", (e)=>{ e.target.value = e.target.value.replace(/\D/g,'').slice(0,4); });
+  });
   document.getElementById("cp-submit").addEventListener("click", async (e)=>{
     const name=document.getElementById("cp-name").value.trim();
     const village=document.getElementById("cp-village").value.trim();
+    const pin=document.getElementById("cp-pin").value.trim();
+    const pin2=document.getElementById("cp-pin2").value.trim();
     const agreed=document.getElementById("cp-agree").checked;
     const errEl=document.getElementById("cp-err"); errEl.innerHTML="";
     if(!name || !village || !agreed){ errEl.innerHTML = `<div class="err-text">બધા fields ભરો</div>`; return; }
+    if(pin.length!==4){ errEl.innerHTML = `<div class="err-text">PIN બરાબર 4 અંકનો હોવો જોઈએ</div>`; return; }
+    if(pin!==pin2){ errEl.innerHTML = `<div class="err-text">બંને PIN સરખા નથી</div>`; return; }
     e.target.disabled=true; e.target.textContent="ખાતું બની રહ્યું છે...";
     try{
-      const user = await dataService.completeProfile(state.newUserUid, { name, village, mobile: state.newUserMobile });
+      const user = await dataService.signup(state.pendingMobile, pin, name, village);
       state.user = user; state.screen="home"; render();
     }catch(err){
       e.target.disabled=false; e.target.textContent="ખાતું બનાવો →";
@@ -871,7 +882,7 @@ function renderMyProfiles(){
     document.getElementById("logout-btn").addEventListener("click", async ()=>{
       if(!confirm("શું તમે ખરેખર Logout કરવા માંગો છો?")) return;
       await dataService.logout();
-      state.user=null; state.screen="signup"; render();
+      state.user=null; state.screen="mobileEntry"; render();
     });
     document.querySelectorAll("[data-edit]").forEach(btn=>{
       btn.addEventListener("click", ()=>{
