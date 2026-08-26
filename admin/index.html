@@ -40,7 +40,9 @@
   .field label{ display:block; font-size:12px; font-weight:600; color:var(--text-dark); margin-bottom:6px; }
   .input-wrap{ border:1.5px solid var(--border); border-radius:12px; background:#fff; padding:0 14px; display:flex; align-items:center; }
   .input-wrap:focus-within{ border-color:var(--primary-light); box-shadow:0 0 0 3px rgba(28,147,201,0.12); }
-  .input-wrap input{ border:none; outline:none; padding:13px 0; font-size:13.5px; width:100%; font-family:inherit; color:var(--text-dark); }
+  .input-wrap input{ border:none; outline:none; padding:13px 0; font-size:13.5px; width:100%; font-family:inherit; color:var(--text-dark); background:transparent; }
+  .input-wrap select{ border:none; outline:none; padding:13px 0; font-size:13.5px; width:100%; font-family:inherit; color:var(--text-dark); background:transparent; cursor:pointer; -webkit-appearance:none; -moz-appearance:none; appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%235A7A8C' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 0 center; background-size:16px; padding-right:24px; }
+  .input-wrap select option{ color:var(--text-dark); background:#fff; font-family:inherit; }
   .btn{ font-size:13.5px; font-weight:700; padding:13px 20px; border-radius:12px; border:none; cursor:pointer; font-family:inherit; }
   .btn-primary{ background:linear-gradient(135deg,var(--navy),var(--primary-light)); color:#fff; width:100%; box-shadow:0 10px 20px -8px rgba(12,42,70,0.5); }
   .btn-primary:disabled{ opacity:0.45; cursor:not-allowed; }
