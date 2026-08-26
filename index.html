@@ -107,6 +107,11 @@
   .select2-nosearch .select2-search--dropdown{ display:none; }
   /* make select2 fit naturally in field */
   .field .select2-container--default .select2-selection--single{ height:46px; }
+  /* placeholder color */
+  .select2-container--default .select2-selection--single .select2-selection__rendered[title=""]{ color:#aabcc6; }
+  /* clear (×) button */
+  .select2-container--default .select2-selection--single .select2-selection__clear{ color:var(--text-mid); font-size:16px; margin-right:6px; font-weight:400; }
+  .select2-container--default .select2-selection--single .select2-selection__clear:hover{ color:var(--danger); }
   .btn{ width:100%; padding:14px; border-radius:12px; border:none; font-size:13.5px; font-weight:700; font-family:inherit; cursor:pointer; }
   .btn-primary{ background:linear-gradient(135deg,var(--navy),var(--primary-light)); color:#fff; box-shadow:0 10px 20px -8px rgba(12,42,70,0.5); }
   .btn-primary:disabled{ opacity:0.45; cursor:not-allowed; box-shadow:none; }
@@ -1012,8 +1017,8 @@ function renderFormStep1(){
     <div class="content">
       <div class="field"><label>ઉમેદવારનું પૂરું નામ</label><div class="input-wrap"><input id="ff-name" value="${d.name||''}" placeholder="દા.ત. પ્રિયા કિરીટભાઈ પટેલ"></div></div>
       <div class="field"><label>જાતિ (Gender)</label>
-        <select id="ff-gender" style="width:100%">
-          <option value="">પસંદ કરો</option>
+        <select id="ff-gender" style="width:100%" data-placeholder="પસંદ કરો">
+          <option value=""></option>
           <option value="male" ${d.gender==='male'?'selected':''}>👦 યુવક (Male)</option>
           <option value="female" ${d.gender==='female'?'selected':''}>👧 યુવતી (Female)</option>
         </select>
@@ -1022,8 +1027,8 @@ function renderFormStep1(){
       <div class="field"><label>પિતાનું પૂરું નામ</label><div class="input-wrap"><input id="ff-father" value="${d.fatherName||''}" placeholder="પિતાનું પૂરું નામ"></div></div>
       <div class="field"><label>માતાનું નામ</label><div class="input-wrap"><input id="ff-mother" value="${d.motherName||''}" placeholder="માતાનું પૂરું નામ"></div></div>
       <div class="field"><label>રાશી</label>
-        <select id="ff-rashi" style="width:100%">
-          <option value="">પસંદ કરો</option>
+        <select id="ff-rashi" style="width:100%" data-placeholder="રાશી પસંદ કરો">
+          <option value=""></option>
           ${["મેષ","વૃષભ","મિથુન","કર્ક","સિંહ","કન્યા","તુલા","વૃશ્ચિક","ધન","મકર","કુંભ","મીન"].map(r=>`<option value="${r}" ${d.rashi===r?'selected':''}>${r}</option>`).join("")}
         </select>
       </div>
@@ -1031,8 +1036,8 @@ function renderFormStep1(){
       <button class="btn btn-primary" id="ff-next">આગળ વધો →</button>
     </div>
   `;
-  initSelect2('ff-gender', { minimumResultsForSearch: Infinity, placeholder: 'પસંદ કરો' });
-  initSelect2('ff-rashi', { placeholder: 'પસંદ કરો' });
+  initSelect2('ff-gender', { minimumResultsForSearch: Infinity, placeholder: 'પસંદ કરો', allowClear: true });
+  initSelect2('ff-rashi', { placeholder: 'રાશી પસંદ કરો', allowClear: true });
   document.getElementById("form-back").addEventListener("click", ()=>{ state.screen="myProfiles"; render(); });
   document.getElementById("ff-next").addEventListener("click", ()=>{
     const name=document.getElementById("ff-name").value.trim();
@@ -1059,7 +1064,8 @@ function renderFormStep2(){
       <div class="field"><label>વ્યવસાય</label><div class="input-wrap"><input id="ff-occ" value="${d.occupation||''}" placeholder="દા.ત. Private Job"></div></div>
       <div class="field"><label>શહેર / ગામ</label><div class="input-wrap"><input id="ff-city" value="${d.city||''}" placeholder="દા.ત. પોરબંદર"></div></div>
       <div class="field"><label>દરજ્જો</label>
-        <select id="ff-status" style="width:100%">
+        <select id="ff-status" style="width:100%" data-placeholder="દરજ્જો પસંદ કરો">
+          <option value=""></option>
           <option value="કુંવારા" ${d.maritalStatus==='કુંવારા'?'selected':''}>💍 કુંવારા</option>
           <option value="છૂટાછેડા" ${d.maritalStatus==='છૂટાછેડા'?'selected':''}>↩️ છૂટાછેડા</option>
         </select>
@@ -1069,7 +1075,7 @@ function renderFormStep2(){
       <button class="btn btn-primary" id="ff2-next">આગળ વધો →</button>
     </div>
   `;
-  initSelect2('ff-status', { minimumResultsForSearch: Infinity, placeholder: 'પસંદ કરો' });
+  initSelect2('ff-status', { minimumResultsForSearch: Infinity, placeholder: 'દરજ્જો પસંદ કરો', allowClear: true });
   document.getElementById("form-back").addEventListener("click", ()=>{ state.screen="formStep1"; render(); });
   document.getElementById("ff2-next").addEventListener("click", ()=>{
     const education=document.getElementById("ff-edu").value.trim();
