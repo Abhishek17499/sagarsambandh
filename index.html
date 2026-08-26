@@ -8,6 +8,11 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Gujarati:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
+<!-- Select2 -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
 <!-- Firebase (compat SDK — works with plain <script> tags, no build step needed) -->
 <script src="https://www.gstatic.com/firebasejs/12.11.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore-compat.js"></script>
@@ -52,8 +57,56 @@
   .input-wrap{ display:flex; align-items:center; border:1.5px solid var(--border); border-radius:12px; background:#fff; padding:0 13px; }
   .input-wrap:focus-within{ border-color:var(--primary-light); box-shadow:0 0 0 3px rgba(28,147,201,0.12); }
   .input-wrap input{ border:none; outline:none; padding:12px 0; font-size:13.5px; width:100%; font-family:inherit; color:var(--text-dark); background:transparent; }
-  .input-wrap select{ border:none; outline:none; padding:12px 0; font-size:13.5px; width:100%; font-family:inherit; color:var(--text-dark); background:transparent; cursor:pointer; -webkit-appearance:none; -moz-appearance:none; appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%235A7A8C' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 0 center; background-size:16px; padding-right:24px; }
-  .input-wrap select option{ color:var(--text-dark); background:#fff; font-family:inherit; }
+
+  /* ── Select2 custom theme ── */
+  .select2-container{ width:100% !important; }
+  .select2-container--default .select2-selection--single{
+    border:1.5px solid var(--border); border-radius:12px; background:#fff;
+    height:46px; display:flex; align-items:center; padding:0 13px;
+    font-family:'Noto Sans Gujarati','Poppins',sans-serif;
+  }
+  .select2-container--default.select2-container--open .select2-selection--single{
+    border-color:var(--primary-light); box-shadow:0 0 0 3px rgba(28,147,201,0.12);
+  }
+  .select2-container--default .select2-selection--single .select2-selection__rendered{
+    color:var(--text-dark); font-size:13.5px; font-family:inherit; padding:0; line-height:46px;
+  }
+  .select2-container--default .select2-selection--single .select2-selection__placeholder{
+    color:#aabcc6;
+  }
+  .select2-container--default .select2-selection--single .select2-selection__arrow{
+    height:46px; right:10px;
+  }
+  .select2-container--default .select2-selection--single .select2-selection__arrow b{
+    border-color:var(--text-mid) transparent transparent transparent;
+  }
+  .select2-container--default.select2-container--open .select2-selection--single .select2-selection__arrow b{
+    border-color:transparent transparent var(--primary) transparent;
+  }
+  .select2-dropdown{
+    border:1.5px solid var(--border); border-radius:12px; box-shadow:0 8px 24px -6px rgba(12,42,70,0.18);
+    font-family:'Noto Sans Gujarati','Poppins',sans-serif; overflow:hidden; margin-top:4px;
+  }
+  .select2-container--default .select2-results__option{
+    font-size:13.5px; color:var(--text-dark); padding:10px 14px;
+  }
+  .select2-container--default .select2-results__option--highlighted[aria-selected]{
+    background:var(--ice); color:var(--primary);
+  }
+  .select2-container--default .select2-results__option[aria-selected=true]{
+    background:var(--navy); color:#fff;
+  }
+  .select2-search--dropdown .select2-search__field{
+    border:1.5px solid var(--border); border-radius:8px; padding:8px 10px;
+    font-size:13px; font-family:inherit; outline:none;
+  }
+  .select2-search--dropdown .select2-search__field:focus{
+    border-color:var(--primary-light); box-shadow:0 0 0 2px rgba(28,147,201,0.12);
+  }
+  /* hide search box for small lists */
+  .select2-nosearch .select2-search--dropdown{ display:none; }
+  /* make select2 fit naturally in field */
+  .field .select2-container--default .select2-selection--single{ height:46px; }
   .btn{ width:100%; padding:14px; border-radius:12px; border:none; font-size:13.5px; font-weight:700; font-family:inherit; cursor:pointer; }
   .btn-primary{ background:linear-gradient(135deg,var(--navy),var(--primary-light)); color:#fff; box-shadow:0 10px 20px -8px rgba(12,42,70,0.5); }
   .btn-primary:disabled{ opacity:0.45; cursor:not-allowed; box-shadow:none; }
@@ -943,36 +996,51 @@ function formHeaderHtml(stepNum, title){
   `;
 }
 
+function initSelect2(id, opts){
+  if(typeof $ === 'undefined') return;
+  $(`#${id}`).select2(Object.assign({
+    dropdownParent: $('#app'),
+    width: '100%',
+    language: { noResults: ()=>"કોઈ વિકલ્પ નથી" }
+  }, opts));
+}
+
 function renderFormStep1(){
   const d = state.formDraft;
   app.innerHTML = `
     ${formHeaderHtml(1, "ઉમેદવાર ફોર્મ")}
     <div class="content">
       <div class="field"><label>ઉમેદવારનું પૂરું નામ</label><div class="input-wrap"><input id="ff-name" value="${d.name||''}" placeholder="દા.ત. પ્રિયા કિરીટભાઈ પટેલ"></div></div>
-      <div class="field"><label>જાતિ (Gender)</label><div class="input-wrap"><select id="ff-gender">
-        <option value="">પસંદ કરો</option>
-        <option value="male" ${d.gender==='male'?'selected':''}>યુવક (Male)</option>
-        <option value="female" ${d.gender==='female'?'selected':''}>યુવતી (Female)</option>
-      </select></div></div>
+      <div class="field"><label>જાતિ (Gender)</label>
+        <select id="ff-gender" style="width:100%">
+          <option value="">પસંદ કરો</option>
+          <option value="male" ${d.gender==='male'?'selected':''}>👦 યુવક (Male)</option>
+          <option value="female" ${d.gender==='female'?'selected':''}>👧 યુવતી (Female)</option>
+        </select>
+      </div>
       <div class="field"><label>ઉંમર</label><div class="input-wrap"><input id="ff-age" type="number" value="${d.age||''}" placeholder="દા.ત. 26"></div></div>
       <div class="field"><label>પિતાનું પૂરું નામ</label><div class="input-wrap"><input id="ff-father" value="${d.fatherName||''}" placeholder="પિતાનું પૂરું નામ"></div></div>
       <div class="field"><label>માતાનું નામ</label><div class="input-wrap"><input id="ff-mother" value="${d.motherName||''}" placeholder="માતાનું પૂરું નામ"></div></div>
-      <div class="field"><label>રાશી</label><div class="input-wrap"><select id="ff-rashi">
-        <option value="">પસંદ કરો</option>
-        ${["મેષ","વૃષભ","મિથુન","કર્ક","સિંહ","કન્યા","તુલા","વૃશ્ચિક","ધન","મકર","કુંભ","મીન"].map(r=>`<option value="${r}" ${d.rashi===r?'selected':''}>${r}</option>`).join("")}
-      </select></div></div>
+      <div class="field"><label>રાશી</label>
+        <select id="ff-rashi" style="width:100%">
+          <option value="">પસંદ કરો</option>
+          ${["મેષ","વૃષભ","મિથુન","કર્ક","સિંહ","કન્યા","તુલા","વૃશ્ચિક","ધન","મકર","કુંભ","મીન"].map(r=>`<option value="${r}" ${d.rashi===r?'selected':''}>${r}</option>`).join("")}
+        </select>
+      </div>
       <div id="ff-err"></div>
       <button class="btn btn-primary" id="ff-next">આગળ વધો →</button>
     </div>
   `;
+  initSelect2('ff-gender', { minimumResultsForSearch: Infinity, placeholder: 'પસંદ કરો' });
+  initSelect2('ff-rashi', { placeholder: 'પસંદ કરો' });
   document.getElementById("form-back").addEventListener("click", ()=>{ state.screen="myProfiles"; render(); });
   document.getElementById("ff-next").addEventListener("click", ()=>{
     const name=document.getElementById("ff-name").value.trim();
-    const gender=document.getElementById("ff-gender").value;
+    const gender=(typeof $!=='undefined') ? $('#ff-gender').val() : document.getElementById("ff-gender").value;
     const age=document.getElementById("ff-age").value;
     const fatherName=document.getElementById("ff-father").value.trim();
     const motherName=document.getElementById("ff-mother").value.trim();
-    const rashi=document.getElementById("ff-rashi").value;
+    const rashi=(typeof $!=='undefined') ? $('#ff-rashi').val() : document.getElementById("ff-rashi").value;
     const errEl=document.getElementById("ff-err");
     if(!name||!gender||!age||!fatherName||!motherName){
       errEl.innerHTML = `<div class="err-text">કૃપા કરીને બધા fields ભરો</div>`; return;
@@ -990,21 +1058,24 @@ function renderFormStep2(){
       <div class="field"><label>શિક્ષણ</label><div class="input-wrap"><input id="ff-edu" value="${d.education||''}" placeholder="દા.ત. B.Com"></div></div>
       <div class="field"><label>વ્યવસાય</label><div class="input-wrap"><input id="ff-occ" value="${d.occupation||''}" placeholder="દા.ત. Private Job"></div></div>
       <div class="field"><label>શહેર / ગામ</label><div class="input-wrap"><input id="ff-city" value="${d.city||''}" placeholder="દા.ત. પોરબંદર"></div></div>
-      <div class="field"><label>દરજ્જો</label><div class="input-wrap"><select id="ff-status">
-        <option value="કુંવારા" ${d.maritalStatus==='કુંવારા'?'selected':''}>કુંવારા</option>
-        <option value="છૂટાછેડા" ${d.maritalStatus==='છૂટાછેડા'?'selected':''}>છૂટાછેડા</option>
-      </select></div></div>
+      <div class="field"><label>દરજ્જો</label>
+        <select id="ff-status" style="width:100%">
+          <option value="કુંવારા" ${d.maritalStatus==='કુંવારા'?'selected':''}>💍 કુંવારા</option>
+          <option value="છૂટાછેડા" ${d.maritalStatus==='છૂટાછેડા'?'selected':''}>↩️ છૂટાછેડા</option>
+        </select>
+      </div>
       <div class="field"><label>ભાઈ-બહેન ની વિગત (Optional)</label><div class="input-wrap"><input id="ff-sib" value="${d.siblings||''}" placeholder="દા.ત. 1 ભાઈ, 0 બહેન"></div></div>
       <div id="ff2-err"></div>
       <button class="btn btn-primary" id="ff2-next">આગળ વધો →</button>
     </div>
   `;
+  initSelect2('ff-status', { minimumResultsForSearch: Infinity, placeholder: 'પસંદ કરો' });
   document.getElementById("form-back").addEventListener("click", ()=>{ state.screen="formStep1"; render(); });
   document.getElementById("ff2-next").addEventListener("click", ()=>{
     const education=document.getElementById("ff-edu").value.trim();
     const occupation=document.getElementById("ff-occ").value.trim();
     const city=document.getElementById("ff-city").value.trim();
-    const maritalStatus=document.getElementById("ff-status").value;
+    const maritalStatus=(typeof $!=='undefined') ? $('#ff-status').val() : document.getElementById("ff-status").value;
     const siblings=document.getElementById("ff-sib").value.trim();
     const errEl=document.getElementById("ff2-err");
     if(!education||!city){ errEl.innerHTML = `<div class="err-text">શિક્ષણ અને શહેર ભરવા જરૂરી છે</div>`; return; }
