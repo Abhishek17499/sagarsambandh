@@ -1068,16 +1068,21 @@ function renderFormStep1(){
     allowClear: true,
     matcher: rashiMatcher,
     templateResult: function(data){
-      if(!data.id) return data.text; // placeholder
+      if(!data.id) return data.text; // placeholder row
       const entry = RASHI_DATA.find(r => r.gu === data.id);
       if(!entry) return data.text;
-      const en = entry.en.split(' ')[0]; // first English keyword
+      const en = entry.en.split(' ')[0]; // first English keyword shown as hint
       const $el = $('<span></span>');
-      $el.append($('<strong></strong>').text(data.text));
-      $el.append($('<span style="color:#5A7A8C;font-size:11px;margin-left:7px;"></span>').text(en));
+      $el.append($('<strong></strong>').text(entry.gu));
+      $el.append($('<span style="color:#5A7A8C;font-size:11px;margin-left:8px;font-weight:400;"></span>').text(en));
       return $el;
     },
-    templateSelection: function(data){ return data.text || data.placeholder; }
+    templateSelection: function(data){
+      // Always show only Gujarati name in the selection box
+      if(!data.id) return $('<span style="color:#aabcc6;">રાશી પસંદ કરો</span>');
+      const entry = RASHI_DATA.find(r => r.gu === data.id);
+      return entry ? entry.gu : data.id;
+    }
   });
   document.getElementById("form-back").addEventListener("click", ()=>{ state.screen="myProfiles"; render(); });
   document.getElementById("ff-next").addEventListener("click", ()=>{
