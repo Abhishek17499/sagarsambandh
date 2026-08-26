@@ -1001,6 +1001,22 @@ function formHeaderHtml(stepNum, title){
   `;
 }
 
+// Rashi bilingual data — Gujarati + English keywords for search
+const RASHI_DATA = [
+  { gu: "મેષ",      en: "Mesh Aries" },
+  { gu: "વૃષભ",     en: "Vrushabh Vrushbh Taurus" },
+  { gu: "મિથુન",    en: "Mithun Gemini" },
+  { gu: "કર્ક",      en: "Kark Cancer" },
+  { gu: "સિંહ",      en: "Sinh Simha Leo" },
+  { gu: "કન્યા",     en: "Kanya Virgo" },
+  { gu: "તુલા",      en: "Tula Libra" },
+  { gu: "વૃશ્ચિક",  en: "Vrushchik Vrischik Scorpio" },
+  { gu: "ધન",       en: "Dhan Dhanu Sagittarius" },
+  { gu: "મકર",      en: "Makar Capricorn" },
+  { gu: "કુંભ",      en: "Kumbh Aquarius" },
+  { gu: "મીન",       en: "Meen Pisces" }
+];
+
 function initSelect2(id, opts){
   if(typeof $ === 'undefined') return;
   $(`#${id}`).select2(Object.assign({
@@ -1029,7 +1045,7 @@ function renderFormStep1(){
       <div class="field"><label>રાશી</label>
         <select id="ff-rashi" style="width:100%" data-placeholder="રાશી પસંદ કરો">
           <option value=""></option>
-          ${["મેષ","વૃષભ","મિથુન","કર્ક","સિંહ","કન્યા","તુલા","વૃશ્ચિક","ધન","મકર","કુંભ","મીન"].map(r=>`<option value="${r}" ${d.rashi===r?'selected':''}>${r}</option>`).join("")}
+          ${RASHI_DATA.map(r=>`<option value="${r.gu}" data-search="${r.en.toLowerCase()} ${r.gu}" ${d.rashi===r.gu?'selected':''}>${r.gu}</option>`).join("")}
         </select>
       </div>
       <div id="ff-err"></div>
@@ -1037,7 +1053,32 @@ function renderFormStep1(){
     </div>
   `;
   initSelect2('ff-gender', { minimumResultsForSearch: Infinity, placeholder: 'પસંદ કરો', allowClear: true });
-  initSelect2('ff-rashi', { placeholder: 'રાશી પસંદ કરો', allowClear: true });
+
+  // Rashi: bilingual search — English or Gujarati both work
+  const rashiMatcher = function(params, data){
+    if(!params.term || params.term.trim() === '') return data;
+    if(!data.element) return null;
+    const q = params.term.trim().toLowerCase();
+    const guText  = (data.text || '').toLowerCase();
+    const enText  = ($(data.element).data('search') || '').toLowerCase();
+    return (guText.includes(q) || enText.includes(q)) ? data : null;
+  };
+  initSelect2('ff-rashi', {
+    placeholder: 'રાશી પસંદ કરો',
+    allowClear: true,
+    matcher: rashiMatcher,
+    templateResult: function(data){
+      if(!data.id) return data.text; // placeholder
+      const entry = RASHI_DATA.find(r => r.gu === data.id);
+      if(!entry) return data.text;
+      const en = entry.en.split(' ')[0]; // first English keyword
+      const $el = $('<span></span>');
+      $el.append($('<strong></strong>').text(data.text));
+      $el.append($('<span style="color:#5A7A8C;font-size:11px;margin-left:7px;"></span>').text(en));
+      return $el;
+    },
+    templateSelection: function(data){ return data.text || data.placeholder; }
+  });
   document.getElementById("form-back").addEventListener("click", ()=>{ state.screen="myProfiles"; render(); });
   document.getElementById("ff-next").addEventListener("click", ()=>{
     const name=document.getElementById("ff-name").value.trim();
