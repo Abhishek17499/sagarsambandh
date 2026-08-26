@@ -467,12 +467,110 @@ const STRINGS = {
     myProfiles: "📁 My Profiles", myProfilesSub: "તમે બનાવેલા candidate profiles (max 4)",
     interestsTitle: "💌 Interests", interestsSub: "તમારા candidates ને મળેલા Interest requests",
     browseSub: "Community profiles browse કરો (Live Firestore data)",
+    // Form Step 1
+    formStep1Title: "ઉમેદવાર ફોર્મ",
+    candidateName: "ઉમેદવારનું પૂરું નામ",
+    candidateNamePh: "દા.ત. પ્રિયા કિરીટભાઈ પટેલ",
+    gender: "જાતિ (Gender)",
+    genderPh: "પસંદ કરો",
+    age: "ઉંમર",
+    agePh: "દા.ત. 26",
+    fatherName: "પિતાનું પૂરું નામ",
+    fatherNamePh: "પિતાનું પૂરું નામ",
+    motherName: "માતાનું નામ",
+    motherNamePh: "માતાનું પૂરું નામ",
+    rashi: "રાશી",
+    rashiPh: "રાશી પસંદ કરો",
+    fillAllFields: "કૃપા કરીને બધા fields ભરો",
+    nextBtn: "આગળ વધો →",
+    // Form Step 2
+    formStep2Title: "શિક્ષણ અને સરનામું",
+    education: "શિક્ષણ",
+    educationPh: "દા.ત. B.Com",
+    occupation: "વ્યવસાય",
+    occupationPh: "દા.ત. Private Job",
+    city: "શહેર / ગામ",
+    cityPh: "દા.ત. પોરબંદર",
+    maritalStatus: "દરજ્જો",
+    maritalStatusPh: "દરજ્જો પસંદ કરો",
+    siblings: "ભાઈ-બહેન ની વિગત (Optional)",
+    siblingsPh: "દા.ત. 1 ભાઈ, 0 બહેન",
+    eduCityRequired: "શિક્ષણ અને શહેર ભરવા જરૂરી છે",
+    // Review
+    reviewTitle: "Review અને Submit",
+    reviewEditTitle: "Review અને Update",
+    reviewCheck: "તમે ભરેલી વિગતો ચકાસો",
+    submitBtn: "Submit કરો ✓",
+    updateBtn: "Update કરો ✓",
+    submitting: "Submit થઈ રહ્યું છે...",
+    updating: "Update થઈ રહ્યું છે...",
+    submitSuccess: "✓ Basic details save થયા! હવે Photo/Documents ઉમેરો",
+    updateSuccess: "✓ Update થયું! Admin ફરી verify કરશે",
+    reviewNote: "Submit કર્યા પછી, Admin આ profile ને verify કરશે. Approve થયા પછી જ profile બીજા members ને દે઺8ાશે.",
+    reviewEditNote: "Update કર્યા પછી, profile ફરીથી Admin approval ની રાહ જોશે (re-verification જરૂરી).",
+    // Docs
+    docsTitle: "Photo અને Documents",
+    photoVisible: "મારો Photo બીજા members ને દે઺8ાડો",
+    photoDefault: "Default: છુપાયેલો — ગમે ત્યારે My Profiles માંથી બદલી શકાય",
+    docsRequired: "જરૂરી Documents",
+    docsNote: "Documents ફક્ત Admin verification માટે વપરાશે. Approve થયા પછી server પરથી delete થઈ જશે — ફક્ત Photo રહશે.",
+    doneBtn: "Done — My Profiles પર જાવ →",
+    photoPh: "Passport size, સ્પષ્ટ, તાજેતરની",
   },
   en: {
     welcome: "Welcome 🙏", home: "Home", search: "Search", interest: "Interest", profile: "Profile",
     myProfiles: "📁 My Profiles", myProfilesSub: "Candidate profiles you created (max 4)",
     interestsTitle: "💌 Interests", interestsSub: "Interest requests received for your candidates",
     browseSub: "Browse community profiles (Live Firestore data)",
+    // Form Step 1
+    formStep1Title: "Candidate Form",
+    candidateName: "Candidate's Full Name",
+    candidateNamePh: "e.g. Priya Kiritbhai Patel",
+    gender: "Gender",
+    genderPh: "Select Gender",
+    age: "Age",
+    agePh: "e.g. 26",
+    fatherName: "Father's Full Name",
+    fatherNamePh: "Father's full name",
+    motherName: "Mother's Name",
+    motherNamePh: "Mother's full name",
+    rashi: "Zodiac Sign (Rashi)",
+    rashiPh: "Select Zodiac Sign",
+    fillAllFields: "Please fill all required fields",
+    nextBtn: "Next →",
+    // Form Step 2
+    formStep2Title: "Education & Address",
+    education: "Education",
+    educationPh: "e.g. B.Com",
+    occupation: "Occupation",
+    occupationPh: "e.g. Private Job",
+    city: "City / Village",
+    cityPh: "e.g. Porbandar",
+    maritalStatus: "Marital Status",
+    maritalStatusPh: "Select Marital Status",
+    siblings: "Siblings Detail (Optional)",
+    siblingsPh: "e.g. 1 Brother, 0 Sister",
+    eduCityRequired: "Education and City are required",
+    // Review
+    reviewTitle: "Review & Submit",
+    reviewEditTitle: "Review & Update",
+    reviewCheck: "Verify your filled details",
+    submitBtn: "Submit ✓",
+    updateBtn: "Update ✓",
+    submitting: "Submitting...",
+    updating: "Updating...",
+    submitSuccess: "✓ Details saved! Now add Photo/Documents",
+    updateSuccess: "✓ Updated! Admin will re-verify",
+    reviewNote: "After submission, Admin will verify this profile. It will be visible to other members only after approval.",
+    reviewEditNote: "After update, the profile will await Admin re-approval (re-verification required).",
+    // Docs
+    docsTitle: "Photo & Documents",
+    photoVisible: "Show my Photo to other members",
+    photoDefault: "Default: Hidden — can be changed anytime from My Profiles",
+    docsRequired: "Required Documents",
+    docsNote: "Documents will only be used for Admin verification. They will be deleted from server after approval — only Photo remains.",
+    doneBtn: "Done — Go to My Profiles →",
+    photoPh: "Passport size, clear, recent photo",
   },
 };
 function t(key){ return (STRINGS[state.lang] && STRINGS[state.lang][key]) || STRINGS.gu[key] || key; }
@@ -1028,31 +1126,33 @@ function initSelect2(id, opts){
 
 function renderFormStep1(){
   const d = state.formDraft;
+  const gPh = t('genderPh');
+  const rPh = t('rashiPh');
   app.innerHTML = `
-    ${formHeaderHtml(1, "ઉમેદવાર ફોર્મ")}
+    ${formHeaderHtml(1, t('formStep1Title'))}
     <div class="content">
-      <div class="field"><label>ઉમેદવારનું પૂરું નામ</label><div class="input-wrap"><input id="ff-name" value="${d.name||''}" placeholder="દા.ત. પ્રિયા કિરીટભાઈ પટેલ"></div></div>
-      <div class="field"><label>જાતિ (Gender)</label>
-        <select id="ff-gender" style="width:100%" data-placeholder="પસંદ કરો">
+      <div class="field"><label>${t('candidateName')}</label><div class="input-wrap"><input id="ff-name" value="${d.name||''}" placeholder="${t('candidateNamePh')}"></div></div>
+      <div class="field"><label>${t('gender')}</label>
+        <select id="ff-gender" style="width:100%" data-placeholder="${gPh}">
           <option value=""></option>
           <option value="male" ${d.gender==='male'?'selected':''}>👦 યુવક (Male)</option>
           <option value="female" ${d.gender==='female'?'selected':''}>👧 યુવતી (Female)</option>
         </select>
       </div>
-      <div class="field"><label>ઉંમર</label><div class="input-wrap"><input id="ff-age" type="number" value="${d.age||''}" placeholder="દા.ત. 26"></div></div>
-      <div class="field"><label>પિતાનું પૂરું નામ</label><div class="input-wrap"><input id="ff-father" value="${d.fatherName||''}" placeholder="પિતાનું પૂરું નામ"></div></div>
-      <div class="field"><label>માતાનું નામ</label><div class="input-wrap"><input id="ff-mother" value="${d.motherName||''}" placeholder="માતાનું પૂરું નામ"></div></div>
-      <div class="field"><label>રાશી</label>
-        <select id="ff-rashi" style="width:100%" data-placeholder="રાશી પસંદ કરો">
+      <div class="field"><label>${t('age')}</label><div class="input-wrap"><input id="ff-age" type="number" value="${d.age||''}" placeholder="${t('agePh')}"></div></div>
+      <div class="field"><label>${t('fatherName')}</label><div class="input-wrap"><input id="ff-father" value="${d.fatherName||''}" placeholder="${t('fatherNamePh')}"></div></div>
+      <div class="field"><label>${t('motherName')}</label><div class="input-wrap"><input id="ff-mother" value="${d.motherName||''}" placeholder="${t('motherNamePh')}"></div></div>
+      <div class="field"><label>${t('rashi')}</label>
+        <select id="ff-rashi" style="width:100%" data-placeholder="${rPh}">
           <option value=""></option>
           ${RASHI_DATA.map(r=>`<option value="${r.gu}" data-search="${r.en.toLowerCase()} ${r.gu}" ${d.rashi===r.gu?'selected':''}>${r.gu}</option>`).join("")}
         </select>
       </div>
       <div id="ff-err"></div>
-      <button class="btn btn-primary" id="ff-next">આગળ વધો →</button>
+      <button class="btn btn-primary" id="ff-next">${t('nextBtn')}</button>
     </div>
   `;
-  initSelect2('ff-gender', { minimumResultsForSearch: Infinity, placeholder: 'પસંદ કરો', allowClear: true });
+  initSelect2('ff-gender', { minimumResultsForSearch: Infinity, placeholder: gPh, allowClear: true });
 
   // Rashi: bilingual search — English or Gujarati both work
   const rashiMatcher = function(params, data){
@@ -1064,7 +1164,7 @@ function renderFormStep1(){
     return (guText.includes(q) || enText.includes(q)) ? data : null;
   };
   initSelect2('ff-rashi', {
-    placeholder: 'રાશી પસંદ કરો',
+    placeholder: rPh,
     allowClear: true,
     matcher: rashiMatcher,
     templateResult: function(data){
@@ -1079,7 +1179,7 @@ function renderFormStep1(){
     },
     templateSelection: function(data){
       // Always show only Gujarati name in the selection box
-      if(!data.id) return $('<span style="color:#aabcc6;">રાશી પસંદ કરો</span>');
+      if(!data.id) return $('<span style="color:#aabcc6;">'+rPh+'</span>');
       const entry = RASHI_DATA.find(r => r.gu === data.id);
       return entry ? entry.gu : data.id;
     }
@@ -1094,7 +1194,7 @@ function renderFormStep1(){
     const rashi=(typeof $!=='undefined') ? $('#ff-rashi').val() : document.getElementById("ff-rashi").value;
     const errEl=document.getElementById("ff-err");
     if(!name||!gender||!age||!fatherName||!motherName){
-      errEl.innerHTML = `<div class="err-text">કૃપા કરીને બધા fields ભરો</div>`; return;
+      errEl.innerHTML = `<div class="err-text">${t('fillAllFields')}</div>`; return;
     }
     Object.assign(state.formDraft, { name, gender, age:Number(age), fatherName, motherName, rashi });
     state.screen="formStep2"; render();
@@ -1103,25 +1203,26 @@ function renderFormStep1(){
 
 function renderFormStep2(){
   const d = state.formDraft;
+  const mPh = t('maritalStatusPh');
   app.innerHTML = `
-    ${formHeaderHtml(2, "શિક્ષણ અને સરનામું")}
+    ${formHeaderHtml(2, t('formStep2Title'))}
     <div class="content">
-      <div class="field"><label>શિક્ષણ</label><div class="input-wrap"><input id="ff-edu" value="${d.education||''}" placeholder="દા.ત. B.Com"></div></div>
-      <div class="field"><label>વ્યવસાય</label><div class="input-wrap"><input id="ff-occ" value="${d.occupation||''}" placeholder="દા.ત. Private Job"></div></div>
-      <div class="field"><label>શહેર / ગામ</label><div class="input-wrap"><input id="ff-city" value="${d.city||''}" placeholder="દા.ત. પોરબંદર"></div></div>
-      <div class="field"><label>દરજ્જો</label>
-        <select id="ff-status" style="width:100%" data-placeholder="દરજ્જો પસંદ કરો">
+      <div class="field"><label>${t('education')}</label><div class="input-wrap"><input id="ff-edu" value="${d.education||''}" placeholder="${t('educationPh')}"></div></div>
+      <div class="field"><label>${t('occupation')}</label><div class="input-wrap"><input id="ff-occ" value="${d.occupation||''}" placeholder="${t('occupationPh')}"></div></div>
+      <div class="field"><label>${t('city')}</label><div class="input-wrap"><input id="ff-city" value="${d.city||''}" placeholder="${t('cityPh')}"></div></div>
+      <div class="field"><label>${t('maritalStatus')}</label>
+        <select id="ff-status" style="width:100%" data-placeholder="${mPh}">
           <option value=""></option>
-          <option value="કુંવારા" ${d.maritalStatus==='કુંવારા'?'selected':''}>💍 કુંવારા</option>
-          <option value="છૂટાછેડા" ${d.maritalStatus==='છૂટાછેડા'?'selected':''}>↩️ છૂટાછેડા</option>
+          <option value="કુંવારા" ${d.maritalStatus==='કુંવારા'?'selected':''}>💍 કુંવારા (Unmarried)</option>
+          <option value="છૂટાછેડા" ${d.maritalStatus==='છૂટાછેડા'?'selected':''}>↩️ છૂટાછેડા (Divorced)</option>
         </select>
       </div>
-      <div class="field"><label>ભાઈ-બહેન ની વિગત (Optional)</label><div class="input-wrap"><input id="ff-sib" value="${d.siblings||''}" placeholder="દા.ત. 1 ભાઈ, 0 બહેન"></div></div>
+      <div class="field"><label>${t('siblings')}</label><div class="input-wrap"><input id="ff-sib" value="${d.siblings||''}" placeholder="${t('siblingsPh')}"></div></div>
       <div id="ff2-err"></div>
-      <button class="btn btn-primary" id="ff2-next">આગળ વધો →</button>
+      <button class="btn btn-primary" id="ff2-next">${t('nextBtn')}</button>
     </div>
   `;
-  initSelect2('ff-status', { minimumResultsForSearch: Infinity, placeholder: 'દરજ્જો પસંદ કરો', allowClear: true });
+  initSelect2('ff-status', { minimumResultsForSearch: Infinity, placeholder: mPh, allowClear: true });
   document.getElementById("form-back").addEventListener("click", ()=>{ state.screen="formStep1"; render(); });
   document.getElementById("ff2-next").addEventListener("click", ()=>{
     const education=document.getElementById("ff-edu").value.trim();
@@ -1130,7 +1231,7 @@ function renderFormStep2(){
     const maritalStatus=(typeof $!=='undefined') ? $('#ff-status').val() : document.getElementById("ff-status").value;
     const siblings=document.getElementById("ff-sib").value.trim();
     const errEl=document.getElementById("ff2-err");
-    if(!education||!city){ errEl.innerHTML = `<div class="err-text">શિક્ષણ અને શહેર ભરવા જરૂરી છે</div>`; return; }
+    if(!education||!city){ errEl.innerHTML = `<div class="err-text">${t('eduCityRequired')}</div>`; return; }
     Object.assign(state.formDraft, { education, occupation, city, maritalStatus, siblings: siblings||null });
     state.screen="formReview"; render();
   });
@@ -1140,34 +1241,34 @@ function renderFormReview(){
   const d = state.formDraft;
   const isEdit = !!state.editCandidateId;
   app.innerHTML = `
-    ${formHeaderHtml(3, isEdit ? "Review અને Update" : "Review અને Submit")}
+    ${formHeaderHtml(3, isEdit ? t('reviewEditTitle') : t('reviewTitle'))}
     <div class="content">
-      <div style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:10px;">તમે ભરેલી વિગતો ચકાસો</div>
-      <div class="detail-row"><span class="k">નામ</span><span class="v">${d.name}</span></div>
-      <div class="detail-row"><span class="k">Gender</span><span class="v">${d.gender}</span></div>
-      <div class="detail-row"><span class="k">ઉંમર</span><span class="v">${d.age}</span></div>
-      <div class="detail-row"><span class="k">પિતાનું નામ</span><span class="v">${d.fatherName}</span></div>
-      <div class="detail-row"><span class="k">માતાનું નામ</span><span class="v">${d.motherName}</span></div>
-      <div class="detail-row"><span class="k">રાશી</span><span class="v">${d.rashi||'-'}</span></div>
-      <div class="detail-row"><span class="k">શિક્ષણ</span><span class="v">${d.education}</span></div>
-      <div class="detail-row"><span class="k">વ્યવસાય</span><span class="v">${d.occupation||'-'}</span></div>
-      <div class="detail-row"><span class="k">શહેર</span><span class="v">${d.city}</span></div>
-      <div class="detail-row"><span class="k">દરજ્જો</span><span class="v">${d.maritalStatus}</span></div>
+      <div style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:10px;">${t('reviewCheck')}</div>
+      <div class="detail-row"><span class="k">${t('candidateName')}</span><span class="v">${d.name}</span></div>
+      <div class="detail-row"><span class="k">${t('gender')}</span><span class="v">${d.gender}</span></div>
+      <div class="detail-row"><span class="k">${t('age')}</span><span class="v">${d.age}</span></div>
+      <div class="detail-row"><span class="k">${t('fatherName')}</span><span class="v">${d.fatherName}</span></div>
+      <div class="detail-row"><span class="k">${t('motherName')}</span><span class="v">${d.motherName}</span></div>
+      <div class="detail-row"><span class="k">${t('rashi')}</span><span class="v">${d.rashi||'-'}</span></div>
+      <div class="detail-row"><span class="k">${t('education')}</span><span class="v">${d.education}</span></div>
+      <div class="detail-row"><span class="k">${t('occupation')}</span><span class="v">${d.occupation||'-'}</span></div>
+      <div class="detail-row"><span class="k">${t('city')}</span><span class="v">${d.city}</span></div>
+      <div class="detail-row"><span class="k">${t('maritalStatus')}</span><span class="v">${d.maritalStatus}</span></div>
       <div class="declaration" style="margin-top:16px;">
         <span style="font-size:16px;">🔒</span>
-        <p>${isEdit ? "Update કર્યા પછી, profile ફરીથી Admin approval ની રાહ જોશે (re-verification જરૂરી)." : "Submit કર્યા પછી, Admin આ profile ને verify કરશે. Approve થયા પછી જ profile બીજા members ને દેખાશે."}</p>
+        <p>${isEdit ? t('reviewEditNote') : t('reviewNote')}</p>
       </div>
       <div id="ff3-err"></div>
-      <button class="btn btn-primary" id="ff3-submit">${isEdit ? "Update કરો ✓" : "Submit કરો ✓"}</button>
+      <button class="btn btn-primary" id="ff3-submit">${isEdit ? t('updateBtn') : t('submitBtn')}</button>
     </div>
   `;
   document.getElementById("form-back").addEventListener("click", ()=>{ state.screen="formStep2"; render(); });
   document.getElementById("ff3-submit").addEventListener("click", async (e)=>{
-    e.target.disabled=true; e.target.textContent = isEdit ? "Update થઈ રહ્યું છે..." : "Submit થઈ રહ્યું છે...";
+    e.target.disabled=true; e.target.textContent = isEdit ? t('updating') : t('submitting');
     try{
       if(isEdit){
         await dataService.updateCandidate(state.editCandidateId, state.formDraft);
-        showToast("✓ Update થયું! Admin ફરી verify કરશે");
+        showToast(t('updateSuccess'));
         state.formDraft={}; state.editCandidateId=null;
         state.screen="myProfiles"; render();
       } else {
@@ -1187,12 +1288,12 @@ function renderFormReview(){
 function renderFormDocs(){
   const candidateId = state.uploadCandidateId;
   app.innerHTML = `
-    ${formHeaderHtml(4, "Photo અને Documents")}
+    ${formHeaderHtml(4, t('docsTitle'))}
     <div class="content">
       <div style="border:2px dashed var(--sky); border-radius:16px; background:var(--ice); padding:20px; text-align:center; margin-bottom:16px;">
         <div style="width:70px;height:70px;border-radius:50%;background:#fff;border:3px solid var(--primary-light);display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 10px;">📷</div>
         <div style="font-size:12.5px;font-weight:700;color:var(--navy);">Latest Color Photo</div>
-        <div style="font-size:10.5px;color:var(--text-mid);margin-top:3px;">Passport size, સ્પષ્ટ, તાજેતરની</div>
+        <div style="font-size:10.5px;color:var(--text-mid);margin-top:3px;">${t('photoPh')}</div>
         <input type="file" accept="image/*" id="photo-input" style="margin-top:10px;font-size:11px;">
         <div id="photo-status" style="font-size:10.5px;color:var(--success);margin-top:6px;font-weight:600;"></div>
         <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:12px;">
