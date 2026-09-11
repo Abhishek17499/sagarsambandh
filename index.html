@@ -2,7 +2,7 @@
 <html class="scroll-smooth light" lang="en">
 <head>
 <meta charset="utf-8">
-<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=5.0" name="viewport">
 <title>SagarSambandh.in - Modern Matrimony Platform</title>
 
 <!-- Tailwind CSS CDN -->
@@ -11,7 +11,7 @@
 <!-- Google Fonts & Material Symbols -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 
 <!-- Tailwind Config combining all Stitch tokens -->
@@ -79,34 +79,36 @@
           "DEFAULT": "0.25rem",
           "lg": "0.5rem",
           "xl": "0.75rem",
+          "2xl": "1rem",
+          "3xl": "1.5rem",
           "full": "9999px"
         },
         "spacing": {
-          "section-gap": "80px",
+          "section-gap": "64px",
           "base": "8px",
-          "margin-mobile": "20px",
+          "margin-mobile": "16px",
           "gutter": "24px",
-          "margin-desktop": "64px"
+          "margin-desktop": "48px"
         },
         "fontFamily": {
-          "display-lg": ["Playfair Display"],
-          "body-md": ["Inter"],
-          "label-sm": ["Inter"],
-          "body-lg": ["Inter"],
-          "headline-lg": ["Playfair Display"],
-          "label-md": ["Inter"],
-          "title-md": ["Playfair Display"],
-          "headline-lg-mobile": ["Playfair Display"]
+          "display-lg": ["Playfair Display", "serif"],
+          "body-md": ["Inter", "sans-serif"],
+          "label-sm": ["Inter", "sans-serif"],
+          "body-lg": ["Inter", "sans-serif"],
+          "headline-lg": ["Playfair Display", "serif"],
+          "label-md": ["Inter", "sans-serif"],
+          "title-md": ["Playfair Display", "serif"],
+          "headline-lg-mobile": ["Playfair Display", "serif"]
         },
         "fontSize": {
-          "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
-          "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+          "display-lg": ["44px", { "lineHeight": "52px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+          "body-md": ["15px", { "lineHeight": "24px", "fontWeight": "400" }],
           "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
-          "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
-          "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+          "body-lg": ["17px", { "lineHeight": "26px", "fontWeight": "400" }],
+          "headline-lg": ["30px", { "lineHeight": "38px", "fontWeight": "600" }],
           "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500" }],
           "title-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
-          "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "600" }]
+          "headline-lg-mobile": ["26px", { "lineHeight": "34px", "fontWeight": "600" }]
         }
       },
     },
@@ -144,6 +146,7 @@
   }
   .no-scrollbar::-webkit-scrollbar { display: none; }
   .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  .pb-safe { padding-bottom: max(1rem, env(safe-area-inset-bottom, 1rem)); }
   .confetti {
     position: absolute;
     width: 10px;
@@ -158,123 +161,187 @@
   }
 </style>
 </head>
-<body class="bg-background text-on-surface antialiased">
+<body class="bg-background text-on-surface antialiased overflow-x-hidden font-body-md">
+
+<!-- Mobile Slide-out Menu Drawer -->
+<div id="mobile-drawer" class="fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm hidden transition-opacity duration-300">
+  <div class="fixed top-0 right-0 h-full w-[280px] sm:w-[320px] bg-surface-container-lowest shadow-2xl p-6 flex flex-col justify-between transform transition-transform duration-300 translate-x-full" id="mobile-drawer-content">
+    <div>
+      <div class="flex items-center justify-between pb-6 border-b border-soft-sky/50">
+        <div class="flex items-center gap-3">
+          <img alt="SagarSambandh.in Logo" class="h-9 w-9 object-contain rounded-md" src="https://lh3.googleusercontent.com/aida/AEtjO1WE5ahoB1pdfSyoyVif2Z7Kbv3eqR1rRPDTA-Fm-EthV_kjfCTjkwh70BTGZU9s-ipVGCFHRxZrkl58MmXVJ1zJSGWybB8EZxNBXffAgFBdCT72GIApS9mYboXMnBJOWpXAsvY4TBiqsF-APUEv6wvASPeEkTDr7aMqYsWSWXjXiVWWYT140r-3IFQtImkbX3AnXzfMjwCCoXeMOdcSH4-Eqr1MEhQaDlHnPTFvT3ZRb3ujLwLKpziqAMPw">
+          <span class="font-title-md text-base text-primary font-bold">SagarSambandh</span>
+        </div>
+        <button onclick="toggleMobileDrawer(false)" class="p-2 text-outline hover:text-primary transition-colors">
+          <span class="material-symbols-outlined text-2xl">close</span>
+        </button>
+      </div>
+      <nav class="flex flex-col gap-2 mt-6">
+        <a href="javascript:void(0)" onclick="showView('home'); toggleMobileDrawer(false);" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-soft-sky/30 text-on-surface font-medium transition-colors">
+          <span class="material-symbols-outlined text-primary">home</span> Home
+        </a>
+        <a href="javascript:void(0)" onclick="showView('discover'); toggleMobileDrawer(false);" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-soft-sky/30 text-on-surface font-medium transition-colors">
+          <span class="material-symbols-outlined text-primary">search</span> Browse Matches
+        </a>
+        <a href="javascript:void(0)" onclick="showView('interests'); toggleMobileDrawer(false);" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-soft-sky/30 text-on-surface font-medium transition-colors">
+          <span class="material-symbols-outlined text-primary">favorite</span> Connections
+        </a>
+        <a href="javascript:void(0)" onclick="showView('profile'); toggleMobileDrawer(false);" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-soft-sky/30 text-on-surface font-medium transition-colors">
+          <span class="material-symbols-outlined text-primary">account_circle</span> My Profile
+        </a>
+        <a href="javascript:void(0)" onclick="showView('login'); toggleMobileDrawer(false);" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-soft-sky/30 text-earth-warmth font-semibold transition-colors">
+          <span class="material-symbols-outlined text-earth-warmth">login</span> Sign In
+        </a>
+      </nav>
+    </div>
+    <div class="pt-6 border-t border-soft-sky/50 flex flex-col gap-3">
+      <button onclick="showView('onboarding'); toggleMobileDrawer(false);" class="w-full bg-earth-warmth text-white font-label-md py-3 rounded-xl hover:bg-secondary transition-colors shadow-sm text-center">
+        Create Free Profile
+      </button>
+      <p class="text-xs text-outline text-center">© 2024 SagarSambandh.in</p>
+    </div>
+  </div>
+</div>
 
 <!-- ========================================================= -->
 <!-- 1. VIEW: HOME / LANDING PAGE (home_light_blue_theme) -->
 <!-- ========================================================= -->
-<div id="view-home" class="app-view">
+<div id="view-home" class="app-view min-h-screen flex flex-col">
   <!-- TopNavBar -->
-  <nav class="w-full h-20 shadow-sm bg-background border-b border-soft-sky/30 sticky top-0 z-50">
-    <div class="flex justify-between items-center px-margin-desktop max-w-[1200px] mx-auto h-full">
-      <a href="javascript:void(0)" onclick="showView('home')" class="flex items-center gap-4">
-        <img alt="SagarSambandh.in Logo" class="h-10 w-10 object-contain rounded-md md:block" src="https://lh3.googleusercontent.com/aida/AEtjO1WE5ahoB1pdfSyoyVif2Z7Kbv3eqR1rRPDTA-Fm-EthV_kjfCTjkwh70BTGZU9s-ipVGCFHRxZrkl58MmXVJ1zJSGWybB8EZxNBXffAgFBdCT72GIApS9mYboXMnBJOWpXAsvY4TBiqsF-APUEv6wvASPeEkTDr7aMqYsWSWXjXiVWWYT140r-3IFQtImkbX3AnXzfMjwCCoXeMOdcSH4-Eqr1MEhQaDlHnPTFvT3ZRb3ujLwLKpziqAMPw">
-        <span class="font-title-md text-title-md text-primary tracking-tight" style="color: rgb(127, 179, 213);">SagarSambandh.in</span>
+  <nav class="w-full h-16 sm:h-20 shadow-sm bg-background border-b border-soft-sky/30 sticky top-0 z-50">
+    <div class="flex justify-between items-center px-4 sm:px-6 md:px-8 max-w-[1200px] mx-auto h-full">
+      <a href="javascript:void(0)" onclick="showView('home')" class="flex items-center gap-3">
+        <img alt="SagarSambandh.in Logo" class="h-9 w-9 sm:h-10 sm:w-10 object-contain rounded-md" src="https://lh3.googleusercontent.com/aida/AEtjO1WE5ahoB1pdfSyoyVif2Z7Kbv3eqR1rRPDTA-Fm-EthV_kjfCTjkwh70BTGZU9s-ipVGCFHRxZrkl58MmXVJ1zJSGWybB8EZxNBXffAgFBdCT72GIApS9mYboXMnBJOWpXAsvY4TBiqsF-APUEv6wvASPeEkTDr7aMqYsWSWXjXiVWWYT140r-3IFQtImkbX3AnXzfMjwCCoXeMOdcSH4-Eqr1MEhQaDlHnPTFvT3ZRb3ujLwLKpziqAMPw">
+        <span class="font-title-md text-lg sm:text-xl text-primary tracking-tight font-bold" style="color: rgb(127, 179, 213);">SagarSambandh.in</span>
       </a>
-      <div class="hidden md:flex items-center gap-8">
-        <a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors duration-200" href="javascript:void(0)" onclick="showView('discover')">Browse</a>
-        <a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors duration-200" href="javascript:void(0)" onclick="showView('interests')">Matches</a>
-        <a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors duration-200" href="javascript:void(0)" onclick="showView('profile')">Profile</a>
-        <a class="font-body-md text-body-md text-earth-warmth font-bold hover:underline transition-colors duration-200" href="javascript:void(0)" onclick="showView('login')">Login</a>
+      <div class="hidden md:flex items-center gap-6 lg:gap-8">
+        <a class="font-body-md text-on-surface-variant hover:text-primary transition-colors duration-200" href="javascript:void(0)" onclick="showView('discover')">Browse</a>
+        <a class="font-body-md text-on-surface-variant hover:text-primary transition-colors duration-200" href="javascript:void(0)" onclick="showView('interests')">Matches</a>
+        <a class="font-body-md text-on-surface-variant hover:text-primary transition-colors duration-200" href="javascript:void(0)" onclick="showView('profile')">Profile</a>
+        <a class="font-body-md text-earth-warmth font-bold hover:underline transition-colors duration-200" href="javascript:void(0)" onclick="showView('login')">Login</a>
       </div>
-      <div class="flex items-center gap-3">
-        <button onclick="showView('discover')" class="hidden md:flex bg-primary text-on-primary font-label-md text-label-md px-6 py-3 rounded-xl hover:bg-primary-container transition-colors duration-200 shadow-sm scale-95 duration-150" style="background-color: rgb(127, 179, 213);">
+      <div class="flex items-center gap-2 sm:gap-3">
+        <button onclick="showView('discover')" class="hidden sm:flex bg-primary text-on-primary font-label-md text-sm px-5 py-2.5 rounded-xl hover:bg-primary-container transition-colors duration-200 shadow-sm" style="background-color: rgb(127, 179, 213);">
           Find My Partner
         </button>
-        <button onclick="showView('login')" class="md:hidden text-primary flex items-center gap-1 font-semibold text-sm bg-soft-sky/40 px-3 py-1.5 rounded-lg">
-          <span class="material-symbols-outlined text-base">login</span>
+        <button onclick="showView('login')" class="sm:hidden text-primary flex items-center gap-1 font-semibold text-xs bg-soft-sky/40 px-2.5 py-1.5 rounded-lg">
+          <span class="material-symbols-outlined text-sm">login</span>
           <span>Login</span>
+        </button>
+        <button onclick="toggleMobileDrawer(true)" class="md:hidden p-2 text-primary hover:bg-soft-sky/30 rounded-lg transition-colors" aria-label="Open Menu">
+          <span class="material-symbols-outlined text-2xl">menu</span>
         </button>
       </div>
     </div>
   </nav>
 
   <!-- Hero Section -->
-  <header class="relative w-full max-w-[1200px] mx-auto px-margin-mobile md:px-margin-desktop py-section-gap flex flex-col md:flex-row items-center gap-gutter">
-    <div class="flex-1 flex flex-col gap-6 z-10">
-      <h1 class="font-headline-lg-mobile text-headline-lg-mobile md:font-display-lg md:text-display-lg text-primary leading-tight" style="color: rgb(127, 179, 213);">
+  <header class="relative w-full max-w-[1200px] mx-auto px-4 sm:px-6 md:px-8 py-8 sm:py-12 md:py-16 flex flex-col lg:flex-row items-center gap-8 lg:gap-12 flex-grow">
+    <div class="w-full lg:flex-1 flex flex-col gap-4 sm:gap-6 z-10 text-center lg:text-left">
+      <h1 class="font-headline-lg-mobile text-3xl sm:text-4xl md:text-5xl lg:font-display-lg text-primary leading-tight" style="color: rgb(127, 179, 213);">
         Find Your Shore of Togetherness
       </h1>
-      <p class="font-body-lg text-body-lg text-on-surface-variant max-w-lg">
+      <p class="font-body-md sm:font-body-lg text-on-surface-variant max-w-xl mx-auto lg:mx-0">
         Discover meaningful connections grounded in trust and compatibility. A refined matrimonial experience for a sophisticated audience.
       </p>
       <!-- Quick Search Bar (Bento style) -->
-      <div class="bg-surface-container-lowest rounded-[24px] p-6 shadow-[0_4px_20px_rgba(12,42,70,0.04)] border border-soft-sky mt-4">
-        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <div class="flex flex-col gap-2">
-            <label class="font-label-sm text-label-sm text-outline uppercase tracking-wider">I am looking for a</label>
-            <select class="w-full bg-transparent border-b border-soft-sky focus:border-primary focus:ring-0 px-0 py-2 font-body-md text-body-md text-on-surface">
+      <div class="bg-surface-container-lowest rounded-2xl sm:rounded-3xl p-5 sm:p-6 shadow-[0_4px_20px_rgba(12,42,70,0.04)] border border-soft-sky mt-2 sm:mt-4 text-left">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="flex flex-col gap-1.5">
+            <label class="font-label-sm text-xs text-outline uppercase tracking-wider">I am looking for a</label>
+            <select class="w-full bg-transparent border-b border-soft-sky focus:border-primary focus:ring-0 px-0 py-2 font-body-md text-on-surface cursor-pointer">
               <option>Woman</option>
               <option>Man</option>
             </select>
           </div>
-          <div class="flex flex-col gap-2">
-            <label class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Age Range</label>
+          <div class="flex flex-col gap-1.5">
+            <label class="font-label-sm text-xs text-outline uppercase tracking-wider">Age Range</label>
             <div class="flex items-center gap-2">
-              <select class="w-full bg-transparent border-b border-soft-sky focus:border-primary focus:ring-0 px-0 py-2 font-body-md text-body-md text-on-surface">
-                <option>25</option>
+              <select class="w-full bg-transparent border-b border-soft-sky focus:border-primary focus:ring-0 px-0 py-2 font-body-md text-on-surface cursor-pointer">
+                <option>21</option>
+                <option selected>25</option>
+                <option>28</option>
               </select>
-              <span class="text-outline">to</span>
-              <select class="w-full bg-transparent border-b border-soft-sky focus:border-primary focus:ring-0 px-0 py-2 font-body-md text-body-md text-on-surface">
-                <option>35</option>
+              <span class="text-outline text-sm">to</span>
+              <select class="w-full bg-transparent border-b border-soft-sky focus:border-primary focus:ring-0 px-0 py-2 font-body-md text-on-surface cursor-pointer">
+                <option>30</option>
+                <option selected>35</option>
+                <option>40</option>
               </select>
             </div>
           </div>
         </div>
-        <button onclick="showView('discover')" class="w-full mt-6 bg-earth-warmth text-white font-label-md text-label-md py-4 rounded-xl hover:bg-earth-warmth/90 transition-colors shadow-sm flex items-center justify-center gap-2">
-          <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">search</span>
+        <button onclick="showView('discover')" class="w-full mt-6 bg-earth-warmth text-white font-label-md py-3.5 sm:py-4 rounded-xl hover:bg-earth-warmth/90 transition-colors shadow-sm flex items-center justify-center gap-2 cursor-pointer">
+          <span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 0;">search</span>
           Begin Search
         </button>
       </div>
     </div>
-    <div class="flex-1 relative w-full h-[500px] md:h-[600px] rounded-[32px] overflow-hidden shadow-[0_10px_30px_rgba(12,42,70,0.08)]">
+    <div class="w-full lg:flex-1 relative h-[280px] sm:h-[380px] md:h-[460px] lg:h-[520px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-[0_10px_30px_rgba(12,42,70,0.08)]">
       <div class="absolute inset-0 bg-cover bg-center w-full h-full" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC7evwbPxzRdF-V_azz5EPA99sekNsijPkRAvqWNayUNc5MwY0bQXWcE-4w1UqevNVErdv8M8ryiAjTRA4tcSwb0Ton-Dpdiu7_eDK4hyS4Vp9yfdXr_-qZFrezgPBAztg1DVbWzQqqTVLLLT9HlW1PvbPlDBsOY1LspVo2BBgaeGY0QSK94FcF6MUN86WyTPdLZ2qLE53U8oIqFyXMqIsTXHgSnCwkPS3hB1mJLLPVKdDKAbITp25N8g')"></div>
-      <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent"></div>
+      <div class="absolute bottom-0 left-0 right-0 h-28 bg-gradient-to-t from-background to-transparent"></div>
     </div>
   </header>
-  <div class="w-full flex justify-center py-8">
+
+  <div class="w-full flex justify-center py-4 sm:py-6">
     <div class="wave-divider max-w-xs"></div>
   </div>
+
   <!-- Value Props Section -->
-  <section class="w-full max-w-[1200px] mx-auto px-margin-mobile md:px-margin-desktop py-section-gap">
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-      <div class="bg-surface-container-lowest rounded-[24px] p-8 shadow-[0_4px_20px_rgba(12,42,70,0.04)] border border-soft-sky flex flex-col items-center text-center gap-4 hover:-translate-y-1 transition-transform duration-300">
-        <div class="w-16 h-16 rounded-full bg-soft-sky flex items-center justify-center text-primary mb-2" style="color: rgb(127, 179, 213);">
-          <span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+  <section class="w-full max-w-[1200px] mx-auto px-4 sm:px-6 md:px-8 py-8 sm:py-12 md:py-16">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+      <div class="bg-surface-container-lowest rounded-2xl p-6 sm:p-8 shadow-[0_4px_20px_rgba(12,42,70,0.04)] border border-soft-sky flex flex-col items-center text-center gap-3 sm:gap-4 hover:-translate-y-1 transition-transform duration-300">
+        <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-soft-sky flex items-center justify-center text-primary mb-1" style="color: rgb(127, 179, 213);">
+          <span class="material-symbols-outlined text-2xl sm:text-3xl" style="font-variation-settings: 'FILL' 1;">verified_user</span>
         </div>
-        <h3 class="font-title-md text-title-md text-primary" style="color: rgb(127, 179, 213);">Verified Profiles</h3>
-        <p class="font-body-md text-body-md text-on-surface-variant">Every member is authenticated to ensure a secure and genuine community of individuals seeking true connection.</p>
+        <h3 class="font-title-md text-lg sm:text-title-md text-primary" style="color: rgb(127, 179, 213);">Verified Profiles</h3>
+        <p class="font-body-md text-sm sm:text-base text-on-surface-variant">Every member is authenticated to ensure a secure and genuine community of individuals seeking true connection.</p>
       </div>
-      <div class="bg-surface-container-lowest rounded-[24px] p-8 shadow-[0_4px_20px_rgba(12,42,70,0.04)] border border-soft-sky flex flex-col items-center text-center gap-4 hover:-translate-y-1 transition-transform duration-300">
-        <div class="w-16 h-16 rounded-full bg-soft-sky flex items-center justify-center text-primary mb-2" style="color: rgb(127, 179, 213);">
-          <span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">favorite</span>
+      <div class="bg-surface-container-lowest rounded-2xl p-6 sm:p-8 shadow-[0_4px_20px_rgba(12,42,70,0.04)] border border-soft-sky flex flex-col items-center text-center gap-3 sm:gap-4 hover:-translate-y-1 transition-transform duration-300">
+        <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-soft-sky flex items-center justify-center text-primary mb-1" style="color: rgb(127, 179, 213);">
+          <span class="material-symbols-outlined text-2xl sm:text-3xl" style="font-variation-settings: 'FILL' 1;">favorite</span>
         </div>
-        <h3 class="font-title-md text-title-md text-primary" style="color: rgb(127, 179, 213);">Deep Compatibility</h3>
-        <p class="font-body-md text-body-md text-on-surface-variant">Our algorithms go beyond the surface, focusing on shared values, lifestyle, and life goals for lasting harmony.</p>
+        <h3 class="font-title-md text-lg sm:text-title-md text-primary" style="color: rgb(127, 179, 213);">Deep Compatibility</h3>
+        <p class="font-body-md text-sm sm:text-base text-on-surface-variant">Our algorithms go beyond the surface, focusing on shared values, lifestyle, and life goals for lasting harmony.</p>
       </div>
-      <div class="bg-surface-container-lowest rounded-[24px] p-8 shadow-[0_4px_20px_rgba(12,42,70,0.04)] border border-soft-sky flex flex-col items-center text-center gap-4 hover:-translate-y-1 transition-transform duration-300">
-        <div class="w-16 h-16 rounded-full bg-soft-sky flex items-center justify-center text-primary mb-2" style="color: rgb(127, 179, 213);">
-          <span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">lock</span>
+      <div class="bg-surface-container-lowest rounded-2xl p-6 sm:p-8 shadow-[0_4px_20px_rgba(12,42,70,0.04)] border border-soft-sky flex flex-col items-center text-center gap-3 sm:gap-4 hover:-translate-y-1 transition-transform duration-300 sm:col-span-2 lg:col-span-1">
+        <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-soft-sky flex items-center justify-center text-primary mb-1" style="color: rgb(127, 179, 213);">
+          <span class="material-symbols-outlined text-2xl sm:text-3xl" style="font-variation-settings: 'FILL' 1;">lock</span>
         </div>
-        <h3 class="font-title-md text-title-md text-primary" style="color: rgb(127, 179, 213);">Secure &amp; Private</h3>
-        <p class="font-body-md text-body-md text-on-surface-variant">Your journey is yours alone. Robust privacy controls allow you to share your information only when you are ready.</p>
+        <h3 class="font-title-md text-lg sm:text-title-md text-primary" style="color: rgb(127, 179, 213);">Secure &amp; Private</h3>
+        <p class="font-body-md text-sm sm:text-base text-on-surface-variant">Your journey is yours alone. Robust privacy controls allow you to share your information only when you are ready.</p>
       </div>
     </div>
   </section>
+
   <!-- Footer -->
-  <footer class="w-full py-section-gap bg-deep-ocean flat no shadows text-on-primary">
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-gutter px-margin-desktop max-w-[1200px] mx-auto">
-      <div class="col-span-1 md:col-span-1 flex flex-col gap-4">
-        <img src="https://lh3.googleusercontent.com/aida/AEtjO1WE5ahoB1pdfSyoyVif2Z7Kbv3eqR1rRPDTA-Fm-EthV_kjfCTjkwh70BTGZU9s-ipVGCFHRxZrkl58MmXVJ1zJSGWybB8EZxNBXffAgFBdCT72GIApS9mYboXMnBJOWpXAsvY4TBiqsF-APUEv6wvASPeEkTDr7aMqYsWSWXjXiVWWYT140r-3IFQtImkbX3AnXzfMjwCCoXeMOdcSH4-Eqr1MEhQaDlHnPTFvT3ZRb3ujLwLKpziqAMPw" alt="SagarSambandh.in Logo" class="h-10 w-10 object-contain rounded-md mb-2">
-        <span class="font-headline-lg text-headline-lg text-cream-base">SagarSambandh.in</span>
-        <p class="font-label-md text-label-md text-cream-base/80">© 2024 SagarSambandh.in. All rights reserved.</p>
+  <footer class="w-full py-10 sm:py-16 bg-deep-ocean text-on-primary mt-auto">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 px-4 sm:px-6 md:px-8 max-w-[1200px] mx-auto">
+      <div class="col-span-1 sm:col-span-2 md:col-span-1 flex flex-col gap-3">
+        <div class="flex items-center gap-3">
+          <img src="https://lh3.googleusercontent.com/aida/AEtjO1WE5ahoB1pdfSyoyVif2Z7Kbv3eqR1rRPDTA-Fm-EthV_kjfCTjkwh70BTGZU9s-ipVGCFHRxZrkl58MmXVJ1zJSGWybB8EZxNBXffAgFBdCT72GIApS9mYboXMnBJOWpXAsvY4TBiqsF-APUEv6wvASPeEkTDr7aMqYsWSWXjXiVWWYT140r-3IFQtImkbX3AnXzfMjwCCoXeMOdcSH4-Eqr1MEhQaDlHnPTFvT3ZRb3ujLwLKpziqAMPw" alt="SagarSambandh.in Logo" class="h-8 w-8 object-contain rounded-md">
+          <span class="font-headline-lg text-xl text-cream-base font-bold">SagarSambandh</span>
+        </div>
+        <p class="text-xs sm:text-sm text-cream-base/80 mt-1">Grounded in trust, steering heartfelt matrimonial journeys.</p>
+        <p class="text-xs text-cream-base/60 mt-2">© 2024 SagarSambandh.in</p>
       </div>
-      <div class="col-span-1 md:col-span-3 flex flex-wrap gap-8 md:justify-end items-center opacity-80 hover:opacity-100">
-        <a class="font-label-md text-label-md text-cream-base/80 hover:text-earth-warmth transition-colors duration-200" href="#">Success Stories</a>
-        <a class="font-label-md text-label-md text-cream-base/80 hover:text-earth-warmth transition-colors duration-200" href="#">Privacy</a>
-        <a class="font-label-md text-label-md text-cream-base/80 hover:text-earth-warmth transition-colors duration-200" href="#">Safety</a>
-        <a class="font-label-md text-label-md text-cream-base/80 hover:text-earth-warmth transition-colors duration-200" href="#">About Us</a>
-        <a class="font-label-md text-label-md text-cream-base/80 hover:text-earth-warmth transition-colors duration-200" href="#">Terms of Service</a>
+      <div class="col-span-1 flex flex-col gap-2">
+        <h4 class="font-semibold text-sm text-cream-base mb-1">Company</h4>
+        <a class="text-xs sm:text-sm text-cream-base/80 hover:text-earth-warmth transition-colors" href="#">About Us</a>
+        <a class="text-xs sm:text-sm text-cream-base/80 hover:text-earth-warmth transition-colors" href="#">Success Stories</a>
+        <a class="text-xs sm:text-sm text-cream-base/80 hover:text-earth-warmth transition-colors" href="#">Careers</a>
+      </div>
+      <div class="col-span-1 flex flex-col gap-2">
+        <h4 class="font-semibold text-sm text-cream-base mb-1">Trust &amp; Security</h4>
+        <a class="text-xs sm:text-sm text-cream-base/80 hover:text-earth-warmth transition-colors" href="#">Privacy Policy</a>
+        <a class="text-xs sm:text-sm text-cream-base/80 hover:text-earth-warmth transition-colors" href="#">Safety Guidelines</a>
+        <a class="text-xs sm:text-sm text-cream-base/80 hover:text-earth-warmth transition-colors" href="#">Verification Steps</a>
+      </div>
+      <div class="col-span-1 flex flex-col gap-2">
+        <h4 class="font-semibold text-sm text-cream-base mb-1">Legal</h4>
+        <a class="text-xs sm:text-sm text-cream-base/80 hover:text-earth-warmth transition-colors" href="#">Terms of Service</a>
+        <a class="text-xs sm:text-sm text-cream-base/80 hover:text-earth-warmth transition-colors" href="#">Cookie Policy</a>
+        <a class="text-xs sm:text-sm text-cream-base/80 hover:text-earth-warmth transition-colors" href="#">Contact Support</a>
       </div>
     </div>
   </footer>
@@ -283,64 +350,64 @@
 <!-- ========================================================= -->
 <!-- 2. VIEW: LOGIN (login_mobile_light_blue_theme) -->
 <!-- ========================================================= -->
-<div id="view-login" class="app-view hidden min-h-screen bg-cream-base text-on-surface flex flex-col justify-center items-center px-margin-mobile md:px-margin-desktop py-12 relative">
+<div id="view-login" class="app-view hidden min-h-screen bg-cream-base text-on-surface flex flex-col justify-center items-center px-4 sm:px-6 py-8 sm:py-12 relative">
   <div class="absolute inset-0 pointer-events-none opacity-5 flex items-center justify-center overflow-hidden">
-    <svg class="w-full min-w-[800px]" fill="none" height="400" viewBox="0 0 1200 400" width="1200" xmlns="http://www.w3.org/2000/svg">
+    <svg class="w-full min-w-[600px]" fill="none" height="400" viewBox="0 0 1200 400" width="1200" xmlns="http://www.w3.org/2000/svg">
       <path class="stroke-primary" d="M0,200 C300,300 600,100 1200,200" fill="none" stroke-linecap="round" stroke-width="2"></path>
       <path class="stroke-primary" d="M0,220 C300,320 600,120 1200,220" fill="none" stroke-linecap="round" stroke-width="1"></path>
     </svg>
   </div>
-  <main class="w-full max-w-md bg-surface-container-lowest rounded-lg shadow-[0px_4px_20px_rgba(12,42,70,0.04)] p-8 relative z-10 flex flex-col gap-6">
-    <header class="flex flex-col items-center gap-4 text-center">
+  <main class="w-full max-w-md bg-surface-container-lowest rounded-2xl sm:rounded-3xl shadow-[0px_4px_20px_rgba(12,42,70,0.06)] p-6 sm:p-8 relative z-10 flex flex-col gap-5 sm:gap-6 border border-soft-sky/40">
+    <header class="flex flex-col items-center gap-3 text-center">
       <a href="javascript:void(0)" onclick="showView('home')">
-        <img alt="SagarSambandh.in Logo" class="w-24 h-24 object-contain mx-auto rounded-md" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCY7NNXePguPXlsrMZBQ3mJSFqt0mFH6c0isYY7ld7jW5CAq70t_w46IK4x3r2bETkBNdKwKsLqtJjeV1Fr7OxWU3YIWxCSC_Vu9zUdEY2EFM8AbnsVK4aO77x68XAOXCgX-byLXjOMgGyW191Smyue85blCqh22uGDMBtxTCTCkIydXNOt9lGAPadnvUptxAJvbNmrB6a__3QPVNq4eH3LUm_Q-M0xZVC0tTKhWcZdMTTp16IgQD4FdA">
+        <img alt="SagarSambandh.in Logo" class="w-16 h-16 sm:w-20 sm:h-20 object-contain mx-auto rounded-xl shadow-sm" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCY7NNXePguPXlsrMZBQ3mJSFqt0mFH6c0isYY7ld7jW5CAq70t_w46IK4x3r2bETkBNdKwKsLqtJjeV1Fr7OxWU3YIWxCSC_Vu9zUdEY2EFM8AbnsVK4aO77x68XAOXCgX-byLXjOMgGyW191Smyue85blCqh22uGDMBtxTCTCkIydXNOt9lGAPadnvUptxAJvbNmrB6a__3QPVNq4eH3LUm_Q-M0xZVC0tTKhWcZdMTTp16IgQD4FdA">
       </a>
       <div>
-        <h1 class="font-headline-lg-mobile text-headline-lg-mobile text-deep-ocean md:font-headline-lg md:text-headline-lg">Welcome Back</h1>
-        <p class="font-body-md text-body-md text-on-surface-variant mt-2">Sign in to continue your journey.</p>
+        <h1 class="font-headline-lg-mobile text-2xl sm:text-headline-lg text-deep-ocean font-bold">Welcome Back</h1>
+        <p class="font-body-md text-xs sm:text-sm text-on-surface-variant mt-1">Sign in to continue your journey</p>
       </div>
     </header>
-    <form onsubmit="event.preventDefault(); showView('discover');" class="flex flex-col gap-5 w-full">
+    <form onsubmit="event.preventDefault(); showView('discover');" class="flex flex-col gap-4 w-full">
       <div class="flex flex-col gap-1.5">
-        <label class="font-label-md text-label-md text-on-surface" for="email">Email or Mobile Number</label>
+        <label class="font-label-md text-xs sm:text-sm text-on-surface font-medium" for="email">Email or Mobile Number</label>
         <div class="relative">
-          <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline-variant text-[20px]">person</span>
-          <input class="w-full pl-10 pr-4 py-3 rounded-DEFAULT border border-soft-sky bg-surface-container-lowest font-body-md text-body-md text-on-surface placeholder:text-outline-variant input-glow transition-all duration-200" id="email" placeholder="Enter your email or mobile" value="priya.sharma@example.com" required="" type="text">
+          <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">person</span>
+          <input class="w-full pl-10 pr-4 py-2.5 sm:py-3 rounded-xl border border-soft-sky bg-surface-container-lowest font-body-md text-sm text-on-surface placeholder:text-outline input-glow transition-all duration-200" id="email" placeholder="Enter your email or mobile" value="priya.sharma@example.com" required="" type="text">
         </div>
       </div>
       <div class="flex flex-col gap-1.5">
-        <label class="font-label-md text-label-md text-on-surface" for="password">Password</label>
+        <label class="font-label-md text-xs sm:text-sm text-on-surface font-medium" for="password">Password</label>
         <div class="relative">
-          <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline-variant text-[20px]">lock</span>
-          <input class="w-full pl-10 pr-10 py-3 rounded-DEFAULT border border-soft-sky bg-surface-container-lowest font-body-md text-body-md text-on-surface placeholder:text-outline-variant input-glow transition-all duration-200" id="password" placeholder="Enter your password" value="password123" required="" type="password">
-          <button aria-label="Toggle password visibility" class="absolute right-3 top-1/2 -translate-y-1/2 text-outline-variant hover:text-primary transition-colors focus:outline-none" type="button">
-            <span class="material-symbols-outlined text-[20px]">visibility_off</span>
+          <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">lock</span>
+          <input class="w-full pl-10 pr-10 py-2.5 sm:py-3 rounded-xl border border-soft-sky bg-surface-container-lowest font-body-md text-sm text-on-surface placeholder:text-outline input-glow transition-all duration-200" id="password" placeholder="Enter your password" value="password123" required="" type="password">
+          <button aria-label="Toggle password visibility" class="absolute right-3 top-1/2 -translate-y-1/2 text-outline hover:text-primary transition-colors focus:outline-none" type="button">
+            <span class="material-symbols-outlined text-[18px]">visibility_off</span>
           </button>
         </div>
-        <div class="flex justify-end mt-1">
-          <a class="font-label-sm text-label-sm text-primary hover:text-deep-ocean transition-colors" href="#">Forgot Password?</a>
+        <div class="flex justify-end mt-0.5">
+          <a class="font-label-sm text-xs text-primary hover:text-deep-ocean transition-colors" href="#">Forgot Password?</a>
         </div>
       </div>
-      <button class="w-full bg-earth-warmth text-on-primary py-3.5 rounded-lg font-label-md text-label-md font-semibold hover:bg-secondary transition-colors duration-200 shadow-sm mt-2 flex items-center justify-center gap-2 cursor-pointer" type="submit">
-        Login
-        <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+      <button class="w-full bg-earth-warmth text-on-primary py-3 sm:py-3.5 rounded-xl font-label-md text-sm font-semibold hover:bg-secondary transition-colors duration-200 shadow-sm mt-1 flex items-center justify-center gap-2 cursor-pointer" type="submit">
+        Sign In
+        <span class="material-symbols-outlined text-base">arrow_forward</span>
       </button>
     </form>
-    <div class="flex items-center gap-4 py-2">
+    <div class="flex items-center gap-4 py-1">
       <div class="flex-1 h-px bg-soft-sky"></div>
-      <span class="font-label-sm text-label-sm text-outline-variant uppercase">Or</span>
+      <span class="font-label-sm text-xs text-outline uppercase tracking-wider">Or</span>
       <div class="flex-1 h-px bg-soft-sky"></div>
     </div>
-    <div class="flex flex-col gap-3">
-      <button onclick="showView('discover')" class="w-full bg-surface-container-lowest border border-soft-sky text-deep-ocean py-3 rounded-lg font-label-md text-label-md hover:border-primary hover:text-primary transition-colors duration-200 flex items-center justify-center gap-2 cursor-pointer" type="button">
-        <span class="material-symbols-outlined text-[18px]">dialpad</span>
+    <div class="flex flex-col gap-2.5">
+      <button onclick="showView('discover')" class="w-full bg-surface-container-lowest border border-soft-sky text-deep-ocean py-2.5 sm:py-3 rounded-xl font-label-md text-xs sm:text-sm hover:border-primary hover:text-primary transition-colors duration-200 flex items-center justify-center gap-2 cursor-pointer" type="button">
+        <span class="material-symbols-outlined text-base">dialpad</span>
         Login with OTP
       </button>
     </div>
-    <div class="text-center mt-4">
-      <p class="font-body-md text-body-md text-on-surface-variant">
+    <div class="text-center mt-2">
+      <p class="font-body-md text-xs sm:text-sm text-on-surface-variant">
         New to SagarSambandh? 
-        <a class="text-primary font-semibold hover:underline decoration-1 underline-offset-4 cursor-pointer" href="javascript:void(0)" onclick="showView('onboarding')">Sign Up</a>
+        <a class="text-primary font-semibold hover:underline cursor-pointer" href="javascript:void(0)" onclick="showView('onboarding')">Create Account</a>
       </p>
     </div>
   </main>
@@ -349,181 +416,252 @@
 <!-- ========================================================= -->
 <!-- 3. VIEW: DISCOVER MATCHES (discover_matches_mobile_light_blue_theme) -->
 <!-- ========================================================= -->
-<div id="view-discover" class="app-view hidden bg-cream-base text-on-surface font-body-md antialiased pb-24 md:pb-0 min-h-screen">
+<div id="view-discover" class="app-view hidden bg-cream-base text-on-surface font-body-md antialiased pb-24 md:pb-12 min-h-screen">
   <!-- TopNavBar (Mobile) -->
-  <header class="w-full h-20 shadow-sm bg-background border-b border-soft-sky/30 flex justify-between items-center px-margin-mobile mx-auto sticky top-0 z-50 md:hidden">
-    <a href="javascript:void(0)" onclick="showView('home')">
-      <img alt="SagarSambandh.in Logo" class="h-10 w-auto" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMbyMd_ytIxGrTN47415mTU-m8OW-DXRTEW339qDJTQl0KpsfaYagywGvXnCrH-PXN8XB9AS7EJ-cOVXWZYR89HOl4_iMeX9CbnkHGP56bQH-0RwKblPcXhryyiDFK5jpnCIwbGsnKgULS32ENremyOa_HZcXyB4AwF8vtNy6nxjekl1G85VdL2UOOMLJme1gSII_ej4BKnkMToIV7MWLDS49iDnTulHDl_hxJKAN5hBgXpSx5vbt7OA">
+  <header class="w-full h-16 shadow-sm bg-background border-b border-soft-sky/30 flex justify-between items-center px-4 mx-auto sticky top-0 z-40 md:hidden">
+    <a href="javascript:void(0)" onclick="showView('home')" class="flex items-center gap-2">
+      <img alt="SagarSambandh.in Logo" class="h-8 w-auto" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMbyMd_ytIxGrTN47415mTU-m8OW-DXRTEW339qDJTQl0KpsfaYagywGvXnCrH-PXN8XB9AS7EJ-cOVXWZYR89HOl4_iMeX9CbnkHGP56bQH-0RwKblPcXhryyiDFK5jpnCIwbGsnKgULS32ENremyOa_HZcXyB4AwF8vtNy6nxjekl1G85VdL2UOOMLJme1gSII_ej4BKnkMToIV7MWLDS49iDnTulHDl_hxJKAN5hBgXpSx5vbt7OA">
     </a>
-    <div class="flex items-center gap-2">
-      <a href="javascript:void(0)" onclick="showView('interests')" class="text-primary p-2"><span class="material-symbols-outlined">favorite</span></a>
-      <a href="javascript:void(0)" onclick="showView('profile')" class="text-primary p-2"><span class="material-symbols-outlined">account_circle</span></a>
+    <div class="flex items-center gap-1">
+      <a href="javascript:void(0)" onclick="showView('interests')" class="text-primary p-2 hover:bg-soft-sky/30 rounded-lg"><span class="material-symbols-outlined text-xl">favorite</span></a>
+      <a href="javascript:void(0)" onclick="showView('profile')" class="text-primary p-2 hover:bg-soft-sky/30 rounded-lg"><span class="material-symbols-outlined text-xl">account_circle</span></a>
+      <button onclick="toggleMobileDrawer(true)" class="p-2 text-primary hover:bg-soft-sky/30 rounded-lg"><span class="material-symbols-outlined text-2xl">menu</span></button>
     </div>
   </header>
+
   <!-- TopNavBar (Desktop) -->
-  <header class="hidden md:flex w-full h-20 shadow-sm bg-background border-b border-soft-sky/30 justify-between items-center px-margin-desktop max-w-[1200px] mx-auto sticky top-0 z-50">
+  <header class="hidden md:flex w-full h-20 shadow-sm bg-background border-b border-soft-sky/30 justify-between items-center px-4 sm:px-6 md:px-8 max-w-[1200px] mx-auto sticky top-0 z-40">
     <a href="javascript:void(0)" onclick="showView('home')">
-      <img alt="SagarSambandh.in Logo" class="h-12 w-auto" src="https://lh3.googleusercontent.com/aida/AEtjO1WE5ahoB1pdfSyoyVif2Z7Kbv3eqR1rRPDTA-Fm-EthV_kjfCTjkwh70BTGZU9s-ipVGCFHRxZrkl58MmXVJ1zJSGWybB8EZxNBXffAgFBdCT72GIApS9mYboXMnBJOWpXAsvY4TBiqsF-APUEv6wvASPeEkTDr7aMqYsWSWXjXiVWWYT140r-3IFQtImkbX3AnXzfMjwCCoXeMOdcSH4-Eqr1MEhQaDlHnPTFvT3ZRb3ujLwLKpziqAMPw">
+      <img alt="SagarSambandh.in Logo" class="h-10 lg:h-12 w-auto" src="https://lh3.googleusercontent.com/aida/AEtjO1WE5ahoB1pdfSyoyVif2Z7Kbv3eqR1rRPDTA-Fm-EthV_kjfCTjkwh70BTGZU9s-ipVGCFHRxZrkl58MmXVJ1zJSGWybB8EZxNBXffAgFBdCT72GIApS9mYboXMnBJOWpXAsvY4TBiqsF-APUEv6wvASPeEkTDr7aMqYsWSWXjXiVWWYT140r-3IFQtImkbX3AnXzfMjwCCoXeMOdcSH4-Eqr1MEhQaDlHnPTFvT3ZRb3ujLwLKpziqAMPw">
     </a>
-    <nav class="flex gap-6">
-      <a class="text-on-surface-variant font-label-md text-label-md hover:text-primary transition-colors duration-200" href="javascript:void(0)" onclick="showView('home')">Home</a>
-      <a class="text-primary font-bold border-b-2 border-earth-warmth pb-1 font-label-md text-label-md" href="javascript:void(0)" onclick="showView('discover')" style="border-color: rgb(127, 179, 213); color: rgb(127, 179, 213);">Matches</a>
-      <a class="text-on-surface-variant font-label-md text-label-md hover:text-primary transition-colors duration-200" href="javascript:void(0)" onclick="showView('interests')">Connections</a>
-      <a class="text-on-surface-variant font-label-md text-label-md hover:text-primary transition-colors duration-200" href="javascript:void(0)" onclick="showView('profile')">Profile</a>
+    <nav class="flex gap-6 lg:gap-8">
+      <a class="text-on-surface-variant font-label-md text-sm hover:text-primary transition-colors duration-200" href="javascript:void(0)" onclick="showView('home')">Home</a>
+      <a class="text-primary font-bold border-b-2 border-earth-warmth pb-1 font-label-md text-sm" href="javascript:void(0)" onclick="showView('discover')" style="border-color: rgb(127, 179, 213); color: rgb(127, 179, 213);">Browse</a>
+      <a class="text-on-surface-variant font-label-md text-sm hover:text-primary transition-colors duration-200" href="javascript:void(0)" onclick="showView('interests')">Connections</a>
+      <a class="text-on-surface-variant font-label-md text-sm hover:text-primary transition-colors duration-200" href="javascript:void(0)" onclick="showView('profile')">Profile</a>
     </nav>
-    <button onclick="showView('onboarding')" class="bg-primary text-on-primary px-6 py-2 rounded-xl font-label-md text-label-md scale-95 hover:scale-100 transition-transform duration-150">Create Profile</button>
+    <button onclick="showView('onboarding')" class="bg-primary text-on-primary px-5 py-2.5 rounded-xl font-label-md text-sm hover:opacity-90 transition-opacity">Create Profile</button>
   </header>
-  <main class="px-margin-mobile md:px-margin-desktop max-w-[1200px] mx-auto mt-8">
-    <div class="flex flex-col gap-4 mb-8">
+
+  <!-- Main Content -->
+  <main class="px-4 sm:px-6 md:px-8 max-w-[1200px] mx-auto mt-6 sm:mt-8">
+    <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6 sm:mb-8">
       <div>
-        <h1 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg text-primary">Discover Matches</h1>
-        <p class="text-on-surface-variant font-body-md text-body-md mt-1">Found 124 potential connections</p>
+        <h1 class="font-headline-lg-mobile text-2xl sm:text-3xl md:text-headline-lg text-primary font-bold">Discover Matches</h1>
+        <p class="text-on-surface-variant font-body-md text-xs sm:text-sm mt-1">Showing 142 profiles based on your preferences</p>
       </div>
-      <button class="flex items-center justify-center gap-2 w-full py-3 border border-soft-sky rounded-lg bg-surface text-primary font-label-md text-label-md shadow-sm md:w-auto md:px-6" style="border-color: rgb(127, 179, 213);">
-        <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">tune</span>
-        Filters &amp; Sorting
+      <button class="flex items-center justify-center gap-2 py-2.5 px-4 border border-soft-sky rounded-xl bg-surface-container-lowest text-primary font-label-md text-xs sm:text-sm shadow-sm hover:bg-soft-sky/20 transition-colors w-full sm:w-auto" style="border-color: rgb(127, 179, 213);">
+        <span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' 0;">tune</span>
+        Filters &amp; Preferences
       </button>
     </div>
-    <!-- Matches List -->
-    <div class="flex flex-col gap-6">
+
+    <!-- Responsive Matches Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      
       <!-- Profile Card 1 -->
-      <article class="bg-surface-container-lowest rounded-[16px] overflow-hidden shadow-[0_4px_20px_rgba(12,42,70,0.04)] border border-soft-sky relative cursor-pointer" onclick="showView('profile')">
-        <div class="w-full relative h-[450px]">
-          <img class="w-full h-full object-cover" data-alt="Portrait of Aarti Sharma" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDinaNMlQtkALsSDVC7E8S6JUKKPIJ1UY8Jed0IAhkYWhvMKF2HfQD8q5VmkNlI56KMNoQWxdhR4qcEctqogQ3d4OJ4RUpSMDJkzOJrJXkoqvnDPjq_IJfKSgj3iXBPHuZjruGaDRYpEZsx2dDI3zPeRw670se4WOpm0Cwn78rBqZl-wHhWKA7AjOIMm-31c0zc3PpZ0KcK4u3nKJtbB-hTEdsD6J9PYv0PVnQqeLGQ7AOl-aA8irDuvA">
-          <div class="absolute top-4 left-4 bg-surface-container-lowest/90 backdrop-blur-sm px-3 py-1 rounded-full flex items-center gap-1 border border-soft-sky shadow-sm">
-            <span class="material-symbols-outlined text-earth-warmth text-sm" style="font-variation-settings: 'FILL' 1;">verified</span>
-            <span class="font-label-sm text-label-sm text-primary">Verified</span>
+      <article class="bg-surface-container-lowest rounded-2xl overflow-hidden shadow-[0_4px_20px_rgba(12,42,70,0.05)] border border-soft-sky/40 relative cursor-pointer group hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between" onclick="showView('profile')">
+        <div>
+          <div class="w-full relative h-[340px] sm:h-[380px] md:h-[340px] lg:h-[360px] overflow-hidden">
+            <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Portrait of Aarti Sharma" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDinaNMlQtkALsSDVC7E8S6JUKKPIJ1UY8Jed0IAhkYWhvMKF2HfQD8q5VmkNlI56KMNoQWxdhR4qcEctqogQ3d4OJ4RUpSMDJkzOJrJXkoqvnDPjq_IJfKSgj3iXBPHuZjruGaDRYpEZsx2dDI3zPeRw670se4WOpm0Cwn78rBqZl-wHhWKA7AjOIMm-31c0zc3PpZ0KcK4u3nKJtbB-hTEdsD6J9PYv0PVnQqeLGQ7AOl-aA8irDuvA">
+            <div class="absolute top-3 left-3 bg-surface-container-lowest/90 backdrop-blur-sm px-2.5 py-1 rounded-full flex items-center gap-1 border border-soft-sky shadow-sm">
+              <span class="material-symbols-outlined text-earth-warmth text-sm" style="font-variation-settings: 'FILL' 1;">verified</span>
+              <span class="font-label-sm text-xs text-primary font-semibold">Verified</span>
+            </div>
+            <div class="absolute bottom-0 w-full">
+              <svg class="w-full h-auto text-surface-container-lowest fill-current" preserveAspectRatio="none" viewBox="0 0 1440 120">
+                <path d="M0,64L80,69.3C160,75,320,85,480,80C640,75,800,53,960,48C1120,43,1280,53,1360,58.7L1440,64L1440,120L1360,120C1280,120,1120,120,960,120C800,120,640,120,480,120C320,120,160,120,80,120L0,120Z"></path>
+              </svg>
+            </div>
           </div>
-          <div class="absolute bottom-0 w-full">
-            <svg class="w-full h-auto text-surface-container-lowest fill-current" preserveAspectRatio="none" viewBox="0 0 1440 120">
-              <path d="M0,64L80,69.3C160,75,320,85,480,80C640,75,800,53,960,48C1120,43,1280,53,1360,58.7L1440,64L1440,120L1360,120C1280,120,1120,120,960,120C800,120,640,120,480,120C320,120,160,120,80,120L0,120Z"></path>
-            </svg>
+          <div class="p-5 pt-2">
+            <div class="flex justify-between items-start mb-3">
+              <div>
+                <h2 class="font-title-md text-lg sm:text-xl text-primary font-bold">Aarti Sharma, 28</h2>
+                <p class="font-body-md text-xs sm:text-sm text-on-surface-variant flex items-center gap-1 mt-1">
+                  <span class="material-symbols-outlined text-earth-warmth text-sm" style="font-variation-settings: 'FILL' 0;">work</span>
+                  Software Architect
+                </p>
+                <p class="font-body-md text-xs sm:text-sm text-on-surface-variant flex items-center gap-1">
+                  <span class="material-symbols-outlined text-earth-warmth text-sm" style="font-variation-settings: 'FILL' 0;">location_on</span>
+                  Bangalore, Karnataka
+                </p>
+              </div>
+              <div class="bg-soft-sky/40 px-2.5 py-1 rounded-full border border-soft-sky flex items-center gap-1">
+                <span class="material-symbols-outlined text-primary text-xs" style="font-variation-settings: 'FILL' 1;">favorite</span>
+                <span class="font-label-sm text-xs text-primary font-bold">95%</span>
+              </div>
+            </div>
+            <div class="flex gap-1.5 flex-wrap mb-5">
+              <span class="bg-surface-container px-2.5 py-0.5 rounded-full font-label-sm text-[11px] text-on-surface-variant border border-soft-sky/60">Brahmin</span>
+              <span class="bg-surface-container px-2.5 py-0.5 rounded-full font-label-sm text-[11px] text-on-surface-variant border border-soft-sky/60">Vegetarian</span>
+              <span class="bg-surface-container px-2.5 py-0.5 rounded-full font-label-sm text-[11px] text-on-surface-variant border border-soft-sky/60">Never Married</span>
+            </div>
           </div>
         </div>
-        <div class="p-6 pt-2">
-          <div class="flex justify-between items-start mb-4">
-            <div>
-              <h2 class="font-title-md text-title-md text-primary">Aarti Sharma, 28</h2>
-              <p class="font-body-md text-body-md text-on-surface-variant flex items-center gap-1 mt-1">
-                <span class="material-symbols-outlined text-earth-warmth text-sm" style="font-variation-settings: 'FILL' 0;">work</span>
-                Software Architect
-              </p>
-              <p class="font-body-md text-body-md text-on-surface-variant flex items-center gap-1">
-                <span class="material-symbols-outlined text-earth-warmth text-sm" style="font-variation-settings: 'FILL' 0;">location_on</span>
-                Bangalore, Karnataka
-              </p>
-            </div>
-            <div class="bg-soft-sky/30 px-3 py-1 rounded-full border border-soft-sky flex items-center gap-1" style="border-color: rgb(127, 179, 213);">
-              <span class="material-symbols-outlined text-primary text-sm" style="font-variation-settings: 'FILL' 1;">favorite</span>
-              <span class="font-label-sm text-label-sm text-primary">95% Match</span>
-            </div>
-          </div>
-          <div class="flex gap-2 flex-wrap mb-6">
-            <span class="bg-surface-container px-3 py-1 rounded-full font-label-sm text-label-sm text-on-surface-variant border border-soft-sky">Hindu - Brahmin</span>
-            <span class="bg-surface-container px-3 py-1 rounded-full font-label-sm text-label-sm text-on-surface-variant border border-soft-sky">Vegetarian</span>
-            <span class="bg-surface-container px-3 py-1 rounded-full font-label-sm text-label-sm text-on-surface-variant border border-soft-sky">Never Married</span>
-          </div>
-          <div class="flex gap-4">
-            <button onclick="event.stopPropagation(); showView('profile');" class="flex-1 bg-primary text-on-primary py-3 rounded-[12px] font-label-md text-label-md flex items-center justify-center gap-2 hover:bg-primary-container transition-colors duration-200" style="background-color: rgb(127, 179, 213);">
-              <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">handshake</span>
-              Connect
-            </button>
-            <button onclick="event.stopPropagation(); alert('Interest Sent to Aarti Sharma! 💌');" class="w-12 h-12 border border-primary text-primary rounded-[12px] flex items-center justify-center hover:bg-soft-sky/30 transition-colors duration-200">
-              <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">chat_bubble_outline</span>
-            </button>
-          </div>
+        <div class="px-5 pb-5 flex gap-3">
+          <button onclick="event.stopPropagation(); showView('profile');" class="flex-1 bg-primary text-on-primary py-2.5 rounded-xl font-label-md text-xs sm:text-sm flex items-center justify-center gap-1.5 hover:bg-primary-container transition-colors duration-200 shadow-sm" style="background-color: rgb(127, 179, 213);">
+            <span class="material-symbols-outlined text-base">handshake</span>
+            Connect
+          </button>
+          <button onclick="event.stopPropagation(); alert('Interest Sent to Aarti Sharma! 💌');" class="w-10 h-10 border border-primary text-primary rounded-xl flex items-center justify-center hover:bg-soft-sky/30 transition-colors duration-200">
+            <span class="material-symbols-outlined text-base">chat_bubble_outline</span>
+          </button>
         </div>
       </article>
 
       <!-- Profile Card 2 -->
-      <article class="bg-surface-container-lowest rounded-[16px] overflow-hidden shadow-[0_4px_20px_rgba(12,42,70,0.04)] border border-soft-sky relative cursor-pointer" onclick="showView('profile')">
-        <div class="w-full relative h-[450px]">
-          <img class="w-full h-full object-cover" data-alt="Portrait of Priya Sharma" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfE___Jai2oasy3ADmKn9vbt3WPDTLO_DRKMnOGGr1uIcuBz-4bfM4oFsCzHLUvrQO8G2MM5XlRpYT4tRZ5Kb4FyJBBjxjMKpLDhM_WOKvVgiHqQqCaaAD7VM1pU1rUspOq4FWyY8ObSAT4PjfihEqTr8R3sXWKJigeIl51ZNruaRwE4VzecDVMMA3DkPGvZO_4LUNJ3KeGWFVhObB1J_RArIPd9aSb-k076uibSOPPuj02-3JBxD8xw">
-          <div class="absolute top-4 left-4 bg-surface-container-lowest/90 backdrop-blur-sm px-3 py-1 rounded-full flex items-center gap-1 border border-soft-sky shadow-sm">
-            <span class="material-symbols-outlined text-earth-warmth text-sm" style="font-variation-settings: 'FILL' 1;">verified</span>
-            <span class="font-label-sm text-label-sm text-primary">Verified</span>
+      <article class="bg-surface-container-lowest rounded-2xl overflow-hidden shadow-[0_4px_20px_rgba(12,42,70,0.05)] border border-soft-sky/40 relative cursor-pointer group hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between" onclick="showView('profile')">
+        <div>
+          <div class="w-full relative h-[340px] sm:h-[380px] md:h-[340px] lg:h-[360px] overflow-hidden">
+            <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Portrait of Priya Sharma" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfE___Jai2oasy3ADmKn9vbt3WPDTLO_DRKMnOGGr1uIcuBz-4bfM4oFsCzHLUvrQO8G2MM5XlRpYT4tRZ5Kb4FyJBBjxjMKpLDhM_WOKvVgiHqQqCaaAD7VM1pU1rUspOq4FWyY8ObSAT4PjfihEqTr8R3sXWKJigeIl51ZNruaRwE4VzecDVMMA3DkPGvZO_4LUNJ3KeGWFVhObB1J_RArIPd9aSb-k076uibSOPPuj02-3JBxD8xw">
+            <div class="absolute top-3 left-3 bg-surface-container-lowest/90 backdrop-blur-sm px-2.5 py-1 rounded-full flex items-center gap-1 border border-soft-sky shadow-sm">
+              <span class="material-symbols-outlined text-earth-warmth text-sm" style="font-variation-settings: 'FILL' 1;">verified</span>
+              <span class="font-label-sm text-xs text-primary font-semibold">Verified</span>
+            </div>
+            <div class="absolute bottom-0 w-full">
+              <svg class="w-full h-auto text-surface-container-lowest fill-current" preserveAspectRatio="none" viewBox="0 0 1440 120">
+                <path d="M0,64L80,69.3C160,75,320,85,480,80C640,75,800,53,960,48C1120,43,1280,53,1360,58.7L1440,64L1440,120L1360,120C1280,120,1120,120,960,120C800,120,640,120,480,120C320,120,160,120,80,120L0,120Z"></path>
+              </svg>
+            </div>
           </div>
-          <div class="absolute bottom-0 w-full">
-            <svg class="w-full h-auto text-surface-container-lowest fill-current" preserveAspectRatio="none" viewBox="0 0 1440 120">
-              <path d="M0,64L80,69.3C160,75,320,85,480,80C640,75,800,53,960,48C1120,43,1280,53,1360,58.7L1440,64L1440,120L1360,120C1280,120,1120,120,960,120C800,120,640,120,480,120C320,120,160,120,80,120L0,120Z"></path>
-            </svg>
+          <div class="p-5 pt-2">
+            <div class="flex justify-between items-start mb-3">
+              <div>
+                <h2 class="font-title-md text-lg sm:text-xl text-primary font-bold">Priya Sharma, 28</h2>
+                <p class="font-body-md text-xs sm:text-sm text-on-surface-variant flex items-center gap-1 mt-1">
+                  <span class="material-symbols-outlined text-earth-warmth text-sm" style="font-variation-settings: 'FILL' 0;">work</span>
+                  Senior Marketing Manager
+                </p>
+                <p class="font-body-md text-xs sm:text-sm text-on-surface-variant flex items-center gap-1">
+                  <span class="material-symbols-outlined text-earth-warmth text-sm" style="font-variation-settings: 'FILL' 0;">location_on</span>
+                  Mumbai, Maharashtra
+                </p>
+              </div>
+              <div class="bg-soft-sky/40 px-2.5 py-1 rounded-full border border-soft-sky flex items-center gap-1">
+                <span class="material-symbols-outlined text-primary text-xs" style="font-variation-settings: 'FILL' 1;">favorite</span>
+                <span class="font-label-sm text-xs text-primary font-bold">90%</span>
+              </div>
+            </div>
+            <div class="flex gap-1.5 flex-wrap mb-5">
+              <span class="bg-surface-container px-2.5 py-0.5 rounded-full font-label-sm text-[11px] text-on-surface-variant border border-soft-sky/60">Kharwa</span>
+              <span class="bg-surface-container px-2.5 py-0.5 rounded-full font-label-sm text-[11px] text-on-surface-variant border border-soft-sky/60">Vegetarian</span>
+              <span class="bg-surface-container px-2.5 py-0.5 rounded-full font-label-sm text-[11px] text-on-surface-variant border border-soft-sky/60">Never Married</span>
+            </div>
           </div>
         </div>
-        <div class="p-6 pt-2">
-          <div class="flex justify-between items-start mb-4">
-            <div>
-              <h2 class="font-title-md text-title-md text-primary">Priya Sharma, 28</h2>
-              <p class="font-body-md text-body-md text-on-surface-variant flex items-center gap-1 mt-1">
-                <span class="material-symbols-outlined text-earth-warmth text-sm" style="font-variation-settings: 'FILL' 0;">work</span>
-                Marketing Director
-              </p>
-              <p class="font-body-md text-body-md text-on-surface-variant flex items-center gap-1">
-                <span class="material-symbols-outlined text-earth-warmth text-sm" style="font-variation-settings: 'FILL' 0;">location_on</span>
-                Mumbai, Maharashtra
-              </p>
-            </div>
-            <div class="bg-soft-sky/30 px-3 py-1 rounded-full border border-soft-sky flex items-center gap-1" style="border-color: rgb(127, 179, 213);">
-              <span class="material-symbols-outlined text-primary text-sm" style="font-variation-settings: 'FILL' 1;">favorite</span>
-              <span class="font-label-sm text-label-sm text-primary">91% Match</span>
-            </div>
-          </div>
-          <div class="flex gap-2 flex-wrap mb-6">
-            <span class="bg-surface-container px-3 py-1 rounded-full font-label-sm text-label-sm text-on-surface-variant border border-soft-sky">Hindu - Vaishnav</span>
-            <span class="bg-surface-container px-3 py-1 rounded-full font-label-sm text-label-sm text-on-surface-variant border border-soft-sky">Vegetarian</span>
-            <span class="bg-surface-container px-3 py-1 rounded-full font-label-sm text-label-sm text-on-surface-variant border border-soft-sky">Never Married</span>
-          </div>
-          <div class="flex gap-4">
-            <button onclick="event.stopPropagation(); showView('profile');" class="flex-1 bg-primary text-on-primary py-3 rounded-[12px] font-label-md text-label-md flex items-center justify-center gap-2 hover:bg-primary-container transition-colors duration-200" style="background-color: rgb(127, 179, 213);">
-              <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">handshake</span>
-              Connect
-            </button>
-            <button onclick="event.stopPropagation(); alert('Interest Sent to Priya Sharma! 💌');" class="w-12 h-12 border border-primary text-primary rounded-[12px] flex items-center justify-center hover:bg-soft-sky/30 transition-colors duration-200">
-              <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">chat_bubble_outline</span>
-            </button>
-          </div>
+        <div class="px-5 pb-5 flex gap-3">
+          <button onclick="event.stopPropagation(); showView('profile');" class="flex-1 bg-primary text-on-primary py-2.5 rounded-xl font-label-md text-xs sm:text-sm flex items-center justify-center gap-1.5 hover:bg-primary-container transition-colors duration-200 shadow-sm" style="background-color: rgb(127, 179, 213);">
+            <span class="material-symbols-outlined text-base">handshake</span>
+            Connect
+          </button>
+          <button onclick="event.stopPropagation(); alert('Interest Sent to Priya Sharma! 💌');" class="w-10 h-10 border border-primary text-primary rounded-xl flex items-center justify-center hover:bg-soft-sky/30 transition-colors duration-200">
+            <span class="material-symbols-outlined text-base">chat_bubble_outline</span>
+          </button>
         </div>
       </article>
+
+      <!-- Profile Card 3 -->
+      <article class="bg-surface-container-lowest rounded-2xl overflow-hidden shadow-[0_4px_20px_rgba(12,42,70,0.05)] border border-soft-sky/40 relative cursor-pointer group hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between sm:col-span-2 lg:col-span-1" onclick="showView('profile')">
+        <div>
+          <div class="w-full relative h-[340px] sm:h-[380px] md:h-[340px] lg:h-[360px] overflow-hidden">
+            <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Portrait of Ananya Patel" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBjUaXjbTMxm5drPxI5QIeJKYrh2l7JzWqRkPDQRkzDStT7skl7Kc8tsnrGGq1kVLez2glLwdK9qkheKu79g31um4CqgpxmiT9JzOB16Q9Xe1KKnCCtU7Gp6kp6yIfiOJYuzX42lnjkuOILSlw6wkMc6tLIlTlwiYrTfZgBP7mc1rn9MrxJft_yJSr8qUxmkLErcwsrnuw6tFRi78Et52xI3YZFQC01zpPak7Ntuu9omAxbx7N7_RDBQA">
+            <div class="absolute top-3 left-3 bg-surface-container-lowest/90 backdrop-blur-sm px-2.5 py-1 rounded-full flex items-center gap-1 border border-soft-sky shadow-sm">
+              <span class="material-symbols-outlined text-earth-warmth text-sm" style="font-variation-settings: 'FILL' 1;">verified</span>
+              <span class="font-label-sm text-xs text-primary font-semibold">Verified</span>
+            </div>
+            <div class="absolute bottom-0 w-full">
+              <svg class="w-full h-auto text-surface-container-lowest fill-current" preserveAspectRatio="none" viewBox="0 0 1440 120">
+                <path d="M0,64L80,69.3C160,75,320,85,480,80C640,75,800,53,960,48C1120,43,1280,53,1360,58.7L1440,64L1440,120L1360,120C1280,120,1120,120,960,120C800,120,640,120,480,120C320,120,160,120,80,120L0,120Z"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="p-5 pt-2">
+            <div class="flex justify-between items-start mb-3">
+              <div>
+                <h2 class="font-title-md text-lg sm:text-xl text-primary font-bold">Ananya Patel, 26</h2>
+                <p class="font-body-md text-xs sm:text-sm text-on-surface-variant flex items-center gap-1 mt-1">
+                  <span class="material-symbols-outlined text-earth-warmth text-sm" style="font-variation-settings: 'FILL' 0;">work</span>
+                  Product Designer
+                </p>
+                <p class="font-body-md text-xs sm:text-sm text-on-surface-variant flex items-center gap-1">
+                  <span class="material-symbols-outlined text-earth-warmth text-sm" style="font-variation-settings: 'FILL' 0;">location_on</span>
+                  Ahmedabad, Gujarat
+                </p>
+              </div>
+              <div class="bg-soft-sky/40 px-2.5 py-1 rounded-full border border-soft-sky flex items-center gap-1">
+                <span class="material-symbols-outlined text-primary text-xs" style="font-variation-settings: 'FILL' 1;">favorite</span>
+                <span class="font-label-sm text-xs text-primary font-bold">92%</span>
+              </div>
+            </div>
+            <div class="flex gap-1.5 flex-wrap mb-5">
+              <span class="bg-surface-container px-2.5 py-0.5 rounded-full font-label-sm text-[11px] text-on-surface-variant border border-soft-sky/60">Patel</span>
+              <span class="bg-surface-container px-2.5 py-0.5 rounded-full font-label-sm text-[11px] text-on-surface-variant border border-soft-sky/60">Vegetarian</span>
+              <span class="bg-surface-container px-2.5 py-0.5 rounded-full font-label-sm text-[11px] text-on-surface-variant border border-soft-sky/60">Never Married</span>
+            </div>
+          </div>
+        </div>
+        <div class="px-5 pb-5 flex gap-3">
+          <button onclick="event.stopPropagation(); showView('profile');" class="flex-1 bg-primary text-on-primary py-2.5 rounded-xl font-label-md text-xs sm:text-sm flex items-center justify-center gap-1.5 hover:bg-primary-container transition-colors duration-200 shadow-sm" style="background-color: rgb(127, 179, 213);">
+            <span class="material-symbols-outlined text-base">handshake</span>
+            Connect
+          </button>
+          <button onclick="event.stopPropagation(); alert('Interest Sent to Ananya Patel! 💌');" class="w-10 h-10 border border-primary text-primary rounded-xl flex items-center justify-center hover:bg-soft-sky/30 transition-colors duration-200">
+            <span class="material-symbols-outlined text-base">chat_bubble_outline</span>
+          </button>
+        </div>
+      </article>
+
     </div>
-    <div class="mt-8 mb-12 flex justify-center">
-      <button class="px-8 py-3 border border-primary text-primary rounded-[12px] font-label-md text-label-md hover:bg-soft-sky/30 transition-colors duration-200" style="border-color: rgb(127, 179, 213); color: rgb(127, 179, 213);">
+
+    <!-- Load More -->
+    <div class="mt-10 mb-12 flex justify-center">
+      <button class="px-8 py-3 border border-primary text-primary rounded-xl font-label-md text-xs sm:text-sm hover:bg-soft-sky/30 transition-colors duration-200" style="border-color: rgb(127, 179, 213); color: rgb(127, 179, 213);">
         Load More Matches
       </button>
     </div>
   </main>
-  <!-- BottomNavBar (Mobile) -->
-  <nav class="w-full bg-surface-container-lowest border-t border-soft-sky/30 shadow-[0_-4px_20px_rgba(12,42,70,0.04)] fixed bottom-0 z-50 md:hidden flex justify-around items-center h-16 px-4">
-    <a class="flex flex-col items-center gap-1 text-primary" href="javascript:void(0)" onclick="showView('discover')">
-      <span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">search</span>
-      <span class="font-label-sm text-[10px] font-bold">Browse</span>
+
+  <!-- Unified Mobile Bottom Navigation -->
+  <nav class="w-full bg-surface-container-lowest/95 backdrop-blur-md border-t border-soft-sky/40 shadow-[0_-4px_20px_rgba(12,42,70,0.05)] fixed bottom-0 z-40 md:hidden flex justify-around items-center h-16 px-2 pb-safe">
+    <a class="flex flex-col items-center gap-0.5 text-on-surface-variant hover:text-primary transition-colors py-1 px-3" href="javascript:void(0)" onclick="showView('home')">
+      <span class="material-symbols-outlined text-xl">home</span>
+      <span class="font-label-sm text-[10px]">Home</span>
     </a>
-    <a class="flex flex-col items-center gap-1 text-on-surface-variant" href="javascript:void(0)" onclick="showView('interests')">
-      <span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 0;">favorite</span>
+    <a class="flex flex-col items-center gap-0.5 text-primary font-bold py-1 px-3" href="javascript:void(0)" onclick="showView('discover')">
+      <span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">search</span>
+      <span class="font-label-sm text-[10px]">Browse</span>
+    </a>
+    <a class="flex flex-col items-center gap-0.5 text-on-surface-variant hover:text-primary transition-colors py-1 px-3" href="javascript:void(0)" onclick="showView('interests')">
+      <span class="material-symbols-outlined text-xl">favorite</span>
       <span class="font-label-sm text-[10px]">Matches</span>
     </a>
-    <a class="flex flex-col items-center gap-1 text-on-surface-variant" href="javascript:void(0)" onclick="showView('profile')">
-      <span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 0;">person</span>
+    <a class="flex flex-col items-center gap-0.5 text-on-surface-variant hover:text-primary transition-colors py-1 px-3" href="javascript:void(0)" onclick="showView('profile')">
+      <span class="material-symbols-outlined text-xl">account_circle</span>
       <span class="font-label-sm text-[10px]">Profile</span>
     </a>
   </nav>
-  <!-- Footer (Desktop Only) -->
-  <footer class="hidden md:block w-full py-section-gap bg-deep-ocean text-on-primary">
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-gutter px-margin-desktop max-w-[1200px] mx-auto">
-      <div class="col-span-1 md:col-span-4 mb-8">
-        <a href="javascript:void(0)" onclick="showView('home')">
-          <img alt="SagarSambandh.in Logo" class="h-12 w-auto" src="https://lh3.googleusercontent.com/aida/AEtjO1WE5ahoB1pdfSyoyVif2Z7Kbv3eqR1rRPDTA-Fm-EthV_kjfCTjkwh70BTGZU9s-ipVGCFHRxZrkl58MmXVJ1zJSGWybB8EZxNBXffAgFBdCT72GIApS9mYboXMnBJOWpXAsvY4TBiqsF-APUEv6wvASPeEkTDr7aMqYsWSWXjXiVWWYT140r-3IFQtImkbX3AnXzfMjwCCoXeMOdcSH4-Eqr1MEhQaDlHnPTFvT3ZRb3ujLwLKpziqAMPw">
+
+  <!-- Desktop Footer -->
+  <footer class="hidden md:block w-full py-12 bg-deep-ocean text-on-primary mt-16">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-8 px-4 sm:px-6 md:px-8 max-w-[1200px] mx-auto">
+      <div>
+        <a href="javascript:void(0)" onclick="showView('home')" class="inline-block mb-3">
+          <img alt="SagarSambandh.in Logo" class="h-10 w-auto" src="https://lh3.googleusercontent.com/aida/AEtjO1WE5ahoB1pdfSyoyVif2Z7Kbv3eqR1rRPDTA-Fm-EthV_kjfCTjkwh70BTGZU9s-ipVGCFHRxZrkl58MmXVJ1zJSGWybB8EZxNBXffAgFBdCT72GIApS9mYboXMnBJOWpXAsvY4TBiqsF-APUEv6wvASPeEkTDr7aMqYsWSWXjXiVWWYT140r-3IFQtImkbX3AnXzfMjwCCoXeMOdcSH4-Eqr1MEhQaDlHnPTFvT3ZRb3ujLwLKpziqAMPw">
         </a>
+        <p class="text-xs text-cream-base/80">© 2024 SagarSambandh.in. All rights reserved.</p>
       </div>
-      <div class="text-cream-base/80 font-label-md text-label-md">© 2024 SagarSambandh.in. All rights reserved.</div>
-      <div class="flex flex-col gap-2">
-        <a class="text-cream-base/80 hover:text-earth-warmth transition-colors duration-200 font-label-md text-label-md" href="#">Success Stories</a>
-        <a class="text-cream-base/80 hover:text-earth-warmth transition-colors duration-200 font-label-md text-label-md" href="#">Privacy</a>
+      <div class="flex flex-col gap-2 text-sm text-cream-base/80">
+        <a class="hover:text-earth-warmth transition-colors" href="#">Success Stories</a>
+        <a class="hover:text-earth-warmth transition-colors" href="#">Privacy Policy</a>
       </div>
-      <div class="flex flex-col gap-2">
-        <a class="text-cream-base/80 hover:text-earth-warmth transition-colors duration-200 font-label-md text-label-md" href="#">Safety</a>
-        <a class="text-cream-base/80 hover:text-earth-warmth transition-colors duration-200 font-label-md text-label-md" href="#">About Us</a>
+      <div class="flex flex-col gap-2 text-sm text-cream-base/80">
+        <a class="hover:text-earth-warmth transition-colors" href="#">Safety Guidelines</a>
+        <a class="hover:text-earth-warmth transition-colors" href="#">About Us</a>
       </div>
-      <div class="flex flex-col gap-2">
-        <a class="text-cream-base/80 hover:text-earth-warmth transition-colors duration-200 font-label-md text-label-md" href="#">Terms of Service</a>
+      <div class="flex flex-col gap-2 text-sm text-cream-base/80">
+        <a class="hover:text-earth-warmth transition-colors" href="#">Terms of Service</a>
+        <a class="hover:text-earth-warmth transition-colors" href="#">Help Center</a>
       </div>
     </div>
   </footer>
@@ -532,135 +670,185 @@
 <!-- ========================================================= -->
 <!-- 4. VIEW: PROFILE DETAIL (profile_detail_mobile_light_blue_theme) -->
 <!-- ========================================================= -->
-<div id="view-profile" class="app-view hidden bg-background text-on-surface antialiased pb-24 min-h-screen">
-  <!-- Mobile Top App Bar -->
-  <header class="fixed top-0 w-full z-50 bg-surface/90 backdrop-blur-md">
-    <div class="flex items-center justify-between px-margin-mobile h-16 max-w-[1200px] mx-auto">
-      <button aria-label="Go back" onclick="showView('discover')" class="text-primary hover:text-primary-container transition-colors p-2 -ml-2 cursor-pointer">
+<div id="view-profile" class="app-view hidden bg-background text-on-surface antialiased pb-28 md:pb-16 min-h-screen">
+  
+  <!-- Mobile Header -->
+  <header class="fixed top-0 w-full z-40 bg-surface/90 backdrop-blur-md border-b border-soft-sky/30 md:hidden">
+    <div class="flex items-center justify-between px-4 h-14 max-w-[1200px] mx-auto">
+      <button aria-label="Go back" onclick="showView('discover')" class="text-primary p-2 -ml-2 cursor-pointer">
         <span class="material-symbols-outlined text-2xl">arrow_back</span>
       </button>
-      <div class="font-title-md text-title-md text-primary tracking-tight">Profile</div>
-      <button aria-label="More options" class="text-primary hover:text-primary-container transition-colors p-2 -mr-2">
+      <div class="font-title-md text-base text-primary font-bold">Profile Details</div>
+      <button onclick="toggleMobileDrawer(true)" class="text-primary p-2 -mr-2">
         <span class="material-symbols-outlined text-2xl">more_vert</span>
       </button>
     </div>
   </header>
-  <!-- Main Content Canvas -->
-  <main class="pt-16 pb-margin-mobile">
-    <section class="relative w-full aspect-[4/5] md:max-w-2xl md:mx-auto md:mt-6 bg-surface-container-highest overflow-hidden rounded-b-[32px] md:rounded-[32px] ambient-shadow">
-      <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDfE___Jai2oasy3ADmKn9vbt3WPDTLO_DRKMnOGGr1uIcuBz-4bfM4oFsCzHLUvrQO8G2MM5XlRpYT4tRZ5Kb4FyJBBjxjMKpLDhM_WOKvVgiHqQqCaaAD7VM1pU1rUspOq4FWyY8ObSAT4PjfihEqTr8R3sXWKJigeIl51ZNruaRwE4VzecDVMMA3DkPGvZO_4LUNJ3KeGWFVhObB1J_RArIPd9aSb-k076uibSOPPuj02-3JBxD8xw')"></div>
-      <div class="absolute inset-0 bg-gradient-to-t from-deep-ocean/80 via-deep-ocean/20 to-transparent"></div>
-      <div class="absolute bottom-0 w-full p-margin-mobile text-on-primary">
-        <div class="flex items-end justify-between mb-2">
-          <div>
-            <h1 class="font-headline-lg-mobile text-headline-lg-mobile text-cream-base mb-1">Priya Sharma, 28</h1>
-            <p class="font-body-md text-body-md text-cream-base/90 flex items-center gap-1">
-              <span class="material-symbols-outlined text-[18px]">location_on</span> Mumbai, Maharashtra
-            </p>
+
+  <!-- Desktop Header -->
+  <nav class="hidden md:flex w-full h-20 shadow-sm bg-background border-b border-soft-sky/30 justify-between items-center px-4 sm:px-6 md:px-8 max-w-[1200px] mx-auto sticky top-0 z-40">
+    <a href="javascript:void(0)" onclick="showView('home')">
+      <img alt="SagarSambandh.in Logo" class="h-10 lg:h-12 w-auto" src="https://lh3.googleusercontent.com/aida/AEtjO1WE5ahoB1pdfSyoyVif2Z7Kbv3eqR1rRPDTA-Fm-EthV_kjfCTjkwh70BTGZU9s-ipVGCFHRxZrkl58MmXVJ1zJSGWybB8EZxNBXffAgFBdCT72GIApS9mYboXMnBJOWpXAsvY4TBiqsF-APUEv6wvASPeEkTDr7aMqYsWSWXjXiVWWYT140r-3IFQtImkbX3AnXzfMjwCCoXeMOdcSH4-Eqr1MEhQaDlHnPTFvT3ZRb3ujLwLKpziqAMPw">
+    </a>
+    <div class="flex gap-8 items-center">
+      <a class="text-on-surface-variant font-label-md text-sm hover:text-primary transition-colors" href="javascript:void(0)" onclick="showView('home')">Home</a>
+      <a class="text-on-surface-variant font-label-md text-sm hover:text-primary transition-colors" href="javascript:void(0)" onclick="showView('discover')">Browse</a>
+      <a class="text-on-surface-variant font-label-md text-sm hover:text-primary transition-colors" href="javascript:void(0)" onclick="showView('interests')">Connections</a>
+      <a class="text-primary font-bold border-b-2 border-earth-warmth pb-1 font-label-md text-sm" href="javascript:void(0)" onclick="showView('profile')" style="border-color: rgb(127, 179, 213); color: rgb(127, 179, 213);">Profile</a>
+    </div>
+    <button onclick="showView('discover')" class="bg-primary text-on-primary px-5 py-2.5 rounded-xl font-label-md text-sm hover:opacity-90 transition-opacity" style="background-color: rgb(127, 179, 213);">
+      Back to Matches
+    </button>
+  </nav>
+
+  <!-- Main Profile Layout: Responsive 2-column on desktop -->
+  <main class="pt-16 sm:pt-20 md:pt-8 px-4 sm:px-6 md:px-8 max-w-[1200px] mx-auto">
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-8">
+      
+      <!-- Left Column: Portrait & Desktop Actions -->
+      <div class="md:col-span-5 lg:col-span-5 flex flex-col gap-4">
+        <section class="relative w-full aspect-[4/5] sm:h-[480px] md:h-[540px] bg-surface-container-highest overflow-hidden rounded-2xl sm:rounded-3xl ambient-shadow border border-soft-sky/40">
+          <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDfE___Jai2oasy3ADmKn9vbt3WPDTLO_DRKMnOGGr1uIcuBz-4bfM4oFsCzHLUvrQO8G2MM5XlRpYT4tRZ5Kb4FyJBBjxjMKpLDhM_WOKvVgiHqQqCaaAD7VM1pU1rUspOq4FWyY8ObSAT4PjfihEqTr8R3sXWKJigeIl51ZNruaRwE4VzecDVMMA3DkPGvZO_4LUNJ3KeGWFVhObB1J_RArIPd9aSb-k076uibSOPPuj02-3JBxD8xw')"></div>
+          <div class="absolute inset-0 bg-gradient-to-t from-deep-ocean/85 via-deep-ocean/30 to-transparent"></div>
+          <div class="absolute bottom-0 w-full p-4 sm:p-6 text-on-primary">
+            <div class="flex items-end justify-between mb-2">
+              <div>
+                <h1 class="font-headline-lg-mobile text-2xl sm:text-3xl text-cream-base font-bold mb-1">Priya Sharma, 28</h1>
+                <p class="font-body-md text-xs sm:text-sm text-cream-base/90 flex items-center gap-1">
+                  <span class="material-symbols-outlined text-base">location_on</span> Mumbai, Maharashtra
+                </p>
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-1.5 mt-2">
+              <span class="inline-flex items-center gap-1 px-2.5 py-0.5 bg-surface/20 backdrop-blur-sm rounded-full font-label-sm text-[11px] border border-soft-sky/30">
+                <span class="material-symbols-outlined text-xs text-primary-fixed" data-weight="fill">verified</span> Verified
+              </span>
+              <span class="inline-flex items-center gap-1 px-2.5 py-0.5 bg-tertiary-container/80 backdrop-blur-sm rounded-full font-label-sm text-[11px] text-on-tertiary border border-tertiary-fixed/30">
+                <span class="material-symbols-outlined text-xs">diamond</span> Premium
+              </span>
+              <span class="inline-flex items-center gap-1 px-2.5 py-0.5 bg-surface/20 backdrop-blur-sm rounded-full font-label-sm text-[11px] border border-soft-sky/30">
+                <span class="material-symbols-outlined text-xs">eco</span> Vegetarian
+              </span>
+            </div>
           </div>
-        </div>
-        <div class="flex flex-wrap gap-2 mt-3">
-          <span class="inline-flex items-center gap-1 px-3 py-1 bg-surface/20 backdrop-blur-sm rounded-full font-label-sm text-label-sm border border-soft-sky/30">
-            <span class="material-symbols-outlined text-[14px] text-primary-fixed" data-weight="fill">verified</span> Verified
-          </span>
-          <span class="inline-flex items-center gap-1 px-3 py-1 bg-tertiary-container/80 backdrop-blur-sm rounded-full font-label-sm text-label-sm text-on-tertiary border border-tertiary-fixed/30">
-            <span class="material-symbols-outlined text-[14px]">diamond</span> Premium
-          </span>
-          <span class="inline-flex items-center gap-1 px-3 py-1 bg-surface/20 backdrop-blur-sm rounded-full font-label-sm text-label-sm border border-soft-sky/30">
-            <span class="material-symbols-outlined text-[14px]">eco</span> Vegetarian
-          </span>
+        </section>
+
+        <!-- Desktop Action Buttons (Visible only on md screens and up) -->
+        <div class="hidden md:flex gap-3 mt-2">
+          <button onclick="alert('Profile Shortlisted! ⭐');" class="flex-1 bg-surface-container-lowest border border-primary text-primary font-label-md text-sm py-3.5 rounded-xl flex justify-center items-center gap-2 hover:bg-soft-sky/30 transition-colors cursor-pointer shadow-sm">
+            <span class="material-symbols-outlined text-lg">bookmark_border</span>
+            Shortlist
+          </button>
+          <button onclick="alert('Interest Request Sent Successfully! 💌'); showView('interests');" class="flex-1 bg-earth-warmth text-white font-label-md text-sm py-3.5 rounded-xl flex justify-center items-center gap-2 hover:bg-secondary transition-colors shadow-sm cursor-pointer">
+            <span class="material-symbols-outlined text-lg">handshake</span>
+            Connect
+          </button>
         </div>
       </div>
-    </section>
-    <div class="max-w-2xl mx-auto px-margin-mobile mt-6 space-y-6">
-      <section class="bg-surface-container-low rounded-xl p-5 ambient-shadow border border-soft-sky/50 relative overflow-hidden">
-        <div class="absolute -right-4 -top-4 text-soft-sky/20">
-          <span class="material-symbols-outlined text-8xl" data-weight="fill">favorite</span>
-        </div>
-        <h2 class="font-title-md text-title-md text-deep-ocean mb-4 relative z-10">Compatibility Score</h2>
-        <div class="flex items-center gap-4 relative z-10">
-          <div class="relative w-16 h-16 flex items-center justify-center">
-            <svg class="w-full h-full transform -rotate-90" viewbox="0 0 36 36">
-              <path class="text-soft-sky" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3"></path>
-              <path class="text-earth-warmth" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="85, 100" stroke-width="3"></path>
-            </svg>
-            <span class="absolute font-title-md text-body-lg font-bold text-earth-warmth">85%</span>
+
+      <!-- Right Column: Details, Compatibility, Gallery -->
+      <div class="md:col-span-7 lg:col-span-7 space-y-5 sm:space-y-6">
+        
+        <!-- Compatibility Score -->
+        <section class="bg-surface-container-low rounded-2xl p-5 sm:p-6 ambient-shadow border border-soft-sky/50 relative overflow-hidden">
+          <div class="absolute -right-4 -top-4 text-soft-sky/20">
+            <span class="material-symbols-outlined text-8xl" data-weight="fill">favorite</span>
           </div>
-          <div class="flex-1">
-            <p class="font-body-md text-body-md text-on-surface-variant">Strong match based on your preferences for Education, Lifestyle, and Family Values.</p>
-          </div>
-        </div>
-      </section>
-      <section class="bg-surface rounded-xl p-5 ambient-shadow border border-soft-sky/30">
-        <h2 class="font-title-md text-title-md text-primary mb-3">About Me</h2>
-        <p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
-          I am an easy-going, sincere, and caring person with a strong work ethic. I believe in modern values while staying deeply rooted in our cultural traditions. I enjoy traveling, exploring new cuisines, and spending quality time with family and close friends. Looking for a partner who is understanding, ambitious, and values mutual respect.
-        </p>
-        <div class="grid grid-cols-2 gap-4 mt-5 pt-5 border-t border-soft-sky/50">
-          <div>
-            <span class="block font-label-sm text-label-sm text-outline mb-1 uppercase tracking-wider">Height</span>
-            <span class="font-body-md text-body-md text-on-surface">5' 5" (165cm)</span>
-          </div>
-          <div>
-            <span class="block font-label-sm text-label-sm text-outline mb-1 uppercase tracking-wider">Religion / Samaj</span>
-            <span class="font-body-md text-body-md text-on-surface">Porbandar Kharwa</span>
-          </div>
-          <div>
-            <span class="block font-label-sm text-label-sm text-outline mb-1 uppercase tracking-wider">Mother Tongue</span>
-            <span class="font-body-md text-body-md text-on-surface">Gujarati</span>
-          </div>
-          <div>
-            <span class="block font-label-sm text-label-sm text-outline mb-1 uppercase tracking-wider">Marital Status</span>
-            <span class="font-body-md text-body-md text-on-surface">Never Married</span>
-          </div>
-        </div>
-      </section>
-      <section class="bg-surface rounded-xl p-5 ambient-shadow border border-soft-sky/30">
-        <h2 class="font-title-md text-title-md text-primary mb-4 flex items-center gap-2">
-          <span class="material-symbols-outlined text-earth-warmth">school</span> Education &amp; Career
-        </h2>
-        <div class="space-y-4">
-          <div class="flex gap-4">
-            <div class="mt-1"><span class="material-symbols-outlined text-primary-fixed-dim">work</span></div>
-            <div>
-              <h3 class="font-label-md text-label-md text-on-surface mb-1">Senior Marketing Manager</h3>
-              <p class="font-body-md text-body-md text-on-surface-variant">Top Tier FMCG Company, Mumbai</p>
+          <h2 class="font-title-md text-lg sm:text-xl text-deep-ocean mb-3 font-bold relative z-10">Compatibility Score</h2>
+          <div class="flex items-center gap-4 sm:gap-6 relative z-10">
+            <div class="relative w-16 h-16 sm:w-20 sm:h-20 flex-shrink-0 flex items-center justify-center">
+              <svg class="w-full h-full transform -rotate-90" viewbox="0 0 36 36">
+                <path class="text-soft-sky" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3"></path>
+                <path class="text-earth-warmth" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="85, 100" stroke-width="3"></path>
+              </svg>
+              <span class="absolute font-title-md text-base sm:text-lg font-bold text-earth-warmth">85%</span>
+            </div>
+            <div class="flex-1">
+              <p class="font-body-md text-xs sm:text-sm text-on-surface-variant leading-relaxed">
+                Strong match based on your preferences for Education, Samaj Traditions, Lifestyle, and Family Values.
+              </p>
             </div>
           </div>
-          <div class="flex gap-4">
-            <div class="mt-1"><span class="material-symbols-outlined text-primary-fixed-dim">menu_book</span></div>
+        </section>
+
+        <!-- About Me -->
+        <section class="bg-surface-container-lowest rounded-2xl p-5 sm:p-6 ambient-shadow border border-soft-sky/40">
+          <h2 class="font-title-md text-lg sm:text-xl text-primary mb-2.5 font-bold">About Me</h2>
+          <p class="font-body-md text-xs sm:text-sm text-on-surface-variant leading-relaxed">
+            I am an easy-going, sincere, and caring person with a strong work ethic. I believe in modern values while staying deeply rooted in our cultural traditions. I enjoy traveling, exploring new cuisines, and spending quality time with family and close friends. Looking for a partner who is understanding, ambitious, and values mutual respect.
+          </p>
+          <div class="grid grid-cols-2 gap-3 sm:gap-4 mt-5 pt-4 border-t border-soft-sky/40 text-xs sm:text-sm">
             <div>
-              <h3 class="font-label-md text-label-md text-on-surface mb-1">MBA in Marketing</h3>
-              <p class="font-body-md text-body-md text-on-surface-variant">Indian Institute of Management (IIM)</p>
+              <span class="block font-label-sm text-[11px] text-outline mb-0.5 uppercase tracking-wider">Height</span>
+              <span class="font-semibold text-on-surface">5' 5" (165cm)</span>
+            </div>
+            <div>
+              <span class="block font-label-sm text-[11px] text-outline mb-0.5 uppercase tracking-wider">Religion / Samaj</span>
+              <span class="font-semibold text-on-surface">Porbandar Kharwa</span>
+            </div>
+            <div>
+              <span class="block font-label-sm text-[11px] text-outline mb-0.5 uppercase tracking-wider">Mother Tongue</span>
+              <span class="font-semibold text-on-surface">Gujarati</span>
+            </div>
+            <div>
+              <span class="block font-label-sm text-[11px] text-outline mb-0.5 uppercase tracking-wider">Marital Status</span>
+              <span class="font-semibold text-on-surface">Never Married</span>
             </div>
           </div>
-        </div>
-      </section>
-      <section class="py-4">
-        <h2 class="font-title-md text-title-md text-primary mb-3 px-1">Photo Gallery</h2>
-        <div class="flex overflow-x-auto gap-4 pb-4 no-scrollbar -mx-margin-mobile px-margin-mobile">
-          <div class="shrink-0 w-48 h-64 rounded-xl overflow-hidden ambient-shadow border border-soft-sky/30">
-            <div class="w-full h-full bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDPe4teFEoimzgzoTFmQNemO_MvoHYIENP2e-oA8vDvPNB8C1BBAQMV-vCho-mkhqAJ1PWc1lKwrbkD4eEZpUpxfj0a-gGRkjx7AdJOlOLxkg9Mu1_zyn8iN8ij5vBIo8QV-U6qAkNaE9dJOvstyjlZtkvmCMPt4Ub451DEj2oiSKPWaxqdssLL_atq1D_6FfR0u-6JHmVjYAVVCKyVCXe2x2VOuGbYdln9HcJ1VjLusMSOFLHQWNw8nw')"></div>
+        </section>
+
+        <!-- Education & Career -->
+        <section class="bg-surface-container-lowest rounded-2xl p-5 sm:p-6 ambient-shadow border border-soft-sky/40">
+          <h2 class="font-title-md text-lg sm:text-xl text-primary mb-3 font-bold flex items-center gap-2">
+            <span class="material-symbols-outlined text-earth-warmth">school</span> Education &amp; Career
+          </h2>
+          <div class="space-y-3">
+            <div class="flex gap-3">
+              <div class="mt-0.5 text-primary"><span class="material-symbols-outlined text-xl">work</span></div>
+              <div>
+                <h3 class="font-label-md text-xs sm:text-sm font-semibold text-on-surface">Senior Marketing Manager</h3>
+                <p class="font-body-md text-xs sm:text-sm text-on-surface-variant">Top Tier FMCG Company, Mumbai</p>
+              </div>
+            </div>
+            <div class="flex gap-3">
+              <div class="mt-0.5 text-primary"><span class="material-symbols-outlined text-xl">menu_book</span></div>
+              <div>
+                <h3 class="font-label-md text-xs sm:text-sm font-semibold text-on-surface">MBA in Marketing</h3>
+                <p class="font-body-md text-xs sm:text-sm text-on-surface-variant">Indian Institute of Management (IIM)</p>
+              </div>
+            </div>
           </div>
-          <div class="shrink-0 w-48 h-64 rounded-xl overflow-hidden ambient-shadow border border-soft-sky/30">
-            <div class="w-full h-full bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCgMqONm_TGnDry5ZPs2HGxpt8FhmdT0h1f0Cq-Wd9IKrV_AFAQnVbpWMlUhUyY_lgWHdw0V_3drmt0MJRbSV9cATbI0-9-UIiI62D2ejapKwrnLOVrGkrKvq6niBZA7bdtBu-tlcVAaBfonPwbtFGo0IBgrsWuKn-7UDFxNEvm2ZQcugVsWeB8hv3NzycBiJ4ituNBpzI8QmrR1BM1svQ-vzYpf4HGDTxGH5JytENjX9M25ZUC7J9pfQ')"></div>
+        </section>
+
+        <!-- Photo Gallery -->
+        <section class="bg-surface-container-lowest rounded-2xl p-5 sm:p-6 ambient-shadow border border-soft-sky/40">
+          <h2 class="font-title-md text-lg sm:text-xl text-primary mb-3 font-bold">Photo Gallery</h2>
+          <div class="grid grid-cols-3 gap-3">
+            <div class="aspect-[3/4] rounded-xl overflow-hidden ambient-shadow border border-soft-sky/30">
+              <div class="w-full h-full bg-cover bg-center hover:scale-105 transition-transform duration-300" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDPe4teFEoimzgzoTFmQNemO_MvoHYIENP2e-oA8vDvPNB8C1BBAQMV-vCho-mkhqAJ1PWc1lKwrbkD4eEZpUpxfj0a-gGRkjx7AdJOlOLxkg9Mu1_zyn8iN8ij5vBIo8QV-U6qAkNaE9dJOvstyjlZtkvmCMPt4Ub451DEj2oiSKPWaxqdssLL_atq1D_6FfR0u-6JHmVjYAVVCKyVCXe2x2VOuGbYdln9HcJ1VjLusMSOFLHQWNw8nw')"></div>
+            </div>
+            <div class="aspect-[3/4] rounded-xl overflow-hidden ambient-shadow border border-soft-sky/30">
+              <div class="w-full h-full bg-cover bg-center hover:scale-105 transition-transform duration-300" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCgMqONm_TGnDry5ZPs2HGxpt8FhmdT0h1f0Cq-Wd9IKrV_AFAQnVbpWMlUhUyY_lgWHdw0V_3drmt0MJRbSV9cATbI0-9-UIiI62D2ejapKwrnLOVrGkrKvq6niBZA7bdtBu-tlcVAaBfonPwbtFGo0IBgrsWuKn-7UDFxNEvm2ZQcugVsWeB8hv3NzycBiJ4ituNBpzI8QmrR1BM1svQ-vzYpf4HGDTxGH5JytENjX9M25ZUC7J9pfQ')"></div>
+            </div>
+            <div class="aspect-[3/4] rounded-xl overflow-hidden ambient-shadow border border-soft-sky/30">
+              <div class="w-full h-full bg-cover bg-center hover:scale-105 transition-transform duration-300" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAqT0R4rKk59gQ-3cpyvoXKNvidp0cuNEbB2GPYx7FF3gfB_kRaWPeeEsyVjQ-_ktgyxTGpvT18DPLkSXAicUo3goy46th6traQvfuiOguM8OhKEa-dmK1JXa9hdSqXRg8bx-LgEF2_8xsSBL7YCPk_UDTuR-wrGTLH8YoM1F767HBgYk6qJ_6er2JL_D16zoV3X1kN4OPxkArS5-_sKYX8DOJpyzt4TNXU5Q0iK94FNDFc56EMFSXcDQ')"></div>
+            </div>
           </div>
-          <div class="shrink-0 w-48 h-64 rounded-xl overflow-hidden ambient-shadow border border-soft-sky/30">
-            <div class="w-full h-full bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAqT0R4rKk59gQ-3cpyvoXKNvidp0cuNEbB2GPYx7FF3gfB_kRaWPeeEsyVjQ-_ktgyxTGpvT18DPLkSXAicUo3goy46th6traQvfuiOguM8OhKEa-dmK1JXa9hdSqXRg8bx-LgEF2_8xsSBL7YCPk_UDTuR-wrGTLH8YoM1F767HBgYk6qJ_6er2JL_D16zoV3X1kN4OPxkArS5-_sKYX8DOJpyzt4TNXU5Q0iK94FNDFc56EMFSXcDQ')"></div>
-          </div>
-        </div>
-      </section>
+        </section>
+
+      </div>
     </div>
   </main>
-  <!-- Sticky Bottom Actions -->
-  <div class="fixed bottom-0 w-full z-40 bg-surface/95 backdrop-blur-md border-t border-soft-sky/30 px-margin-mobile py-4 pb-safe ambient-shadow-strong">
-    <div class="max-w-2xl mx-auto flex gap-3">
-      <button onclick="alert('Profile Shortlisted! ⭐');" class="flex-1 bg-surface border border-primary text-primary font-label-md text-label-md py-3 rounded-xl flex justify-center items-center gap-2 hover:bg-primary-fixed/10 transition-colors cursor-pointer">
-        <span class="material-symbols-outlined text-[20px]">bookmark_border</span>
+
+  <!-- Sticky Bottom Actions (Mobile Only) -->
+  <div class="fixed bottom-0 w-full z-40 bg-surface/95 backdrop-blur-md border-t border-soft-sky/40 px-4 py-3 pb-safe ambient-shadow-strong md:hidden">
+    <div class="max-w-md mx-auto flex gap-3">
+      <button onclick="alert('Profile Shortlisted! ⭐');" class="flex-1 bg-surface-container-lowest border border-primary text-primary font-label-md text-xs sm:text-sm py-2.5 rounded-xl flex justify-center items-center gap-1.5 hover:bg-soft-sky/30 transition-colors cursor-pointer shadow-sm">
+        <span class="material-symbols-outlined text-lg">bookmark_border</span>
         Shortlist
       </button>
-      <button onclick="alert('Interest Request Sent Successfully! 💌'); showView('interests');" class="flex-1 bg-earth-warmth text-white font-label-md text-label-md py-3 rounded-xl flex justify-center items-center gap-2 hover:bg-secondary transition-colors shadow-sm cursor-pointer">
-        <span class="material-symbols-outlined text-[20px]">handshake</span>
+      <button onclick="alert('Interest Request Sent Successfully! 💌'); showView('interests');" class="flex-1 bg-earth-warmth text-white font-label-md text-xs sm:text-sm py-2.5 rounded-xl flex justify-center items-center gap-1.5 hover:bg-secondary transition-colors shadow-sm cursor-pointer">
+        <span class="material-symbols-outlined text-lg">handshake</span>
         Connect
       </button>
     </div>
@@ -670,125 +858,162 @@
 <!-- ========================================================= -->
 <!-- 5. VIEW: CONNECTIONS & INTERESTS (interests_matches_unified) -->
 <!-- ========================================================= -->
-<div id="view-interests" class="app-view hidden bg-cream-base font-body-md text-body-md text-on-surface antialiased min-h-screen flex flex-col">
-  <header class="w-full h-20 shadow-sm dark:shadow-none bg-background border-b border-soft-sky/30 sticky top-0 z-50">
-    <div class="flex justify-between items-center px-margin-desktop max-w-[1200px] mx-auto h-full">
-      <a href="javascript:void(0)" onclick="showView('home')">
-        <img alt="SagarSambandh.in" class="h-12 w-auto cursor-pointer" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCY7NNXePguPXlsrMZBQ3mJSFqt0mFH6c0isYY7ld7jW5CAq70t_w46IK4x3r2bETkBNdKwKsLqtJjeV1Fr7OxWU3YIWxCSC_Vu9zUdEY2EFM8AbnsVK4aO77x68XAOXCgX-byLXjOMgGyW191Smyue85blCqh22uGDMBtxTCTCkIydXNOt9lGAPadnvUptxAJvbNmrB6a__3QPVNq4eH3LUm_Q-M0xZVC0tTKhWcZdMTTp16IgQD4FdA">
-      </a>
-      <nav class="hidden md:flex gap-8 items-center h-full">
-        <a class="text-on-surface-variant hover:text-primary transition-colors duration-200 h-full flex items-center" href="javascript:void(0)" onclick="showView('discover')">Browse</a>
-        <a class="text-primary font-bold border-b-2 border-primary h-full flex items-center" href="javascript:void(0)" onclick="showView('interests')">Matches</a>
-        <a class="text-on-surface-variant hover:text-primary transition-colors duration-200 h-full flex items-center" href="javascript:void(0)" onclick="showView('profile')">Profile</a>
-      </nav>
-      <button onclick="showView('discover')" class="bg-primary text-on-primary px-6 py-2 rounded-lg font-label-md text-label-md hover:opacity-90 transition-opacity scale-95 duration-150 hidden md:block">
-        Find My Partner
-      </button>
-      <div class="md:hidden flex items-center gap-2">
-        <a href="javascript:void(0)" onclick="showView('discover')" class="text-primary p-2"><span class="material-symbols-outlined">search</span></a>
-        <a href="javascript:void(0)" onclick="showView('profile')" class="text-primary p-2"><span class="material-symbols-outlined">account_circle</span></a>
-      </div>
+<div id="view-interests" class="app-view hidden bg-cream-base font-body-md text-on-surface antialiased min-h-screen flex flex-col pb-24 md:pb-0">
+  
+  <!-- Mobile Header -->
+  <header class="w-full h-16 shadow-sm bg-background border-b border-soft-sky/30 flex justify-between items-center px-4 mx-auto sticky top-0 z-40 md:hidden">
+    <a href="javascript:void(0)" onclick="showView('home')">
+      <img alt="SagarSambandh.in" class="h-8 w-auto" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCY7NNXePguPXlsrMZBQ3mJSFqt0mFH6c0isYY7ld7jW5CAq70t_w46IK4x3r2bETkBNdKwKsLqtJjeV1Fr7OxWU3YIWxCSC_Vu9zUdEY2EFM8AbnsVK4aO77x68XAOXCgX-byLXjOMgGyW191Smyue85blCqh22uGDMBtxTCTCkIydXNOt9lGAPadnvUptxAJvbNmrB6a__3QPVNq4eH3LUm_Q-M0xZVC0tTKhWcZdMTTp16IgQD4FdA">
+    </a>
+    <div class="flex items-center gap-1">
+      <a href="javascript:void(0)" onclick="showView('discover')" class="text-primary p-2 hover:bg-soft-sky/30 rounded-lg"><span class="material-symbols-outlined text-xl">search</span></a>
+      <a href="javascript:void(0)" onclick="showView('profile')" class="text-primary p-2 hover:bg-soft-sky/30 rounded-lg"><span class="material-symbols-outlined text-xl">account_circle</span></a>
+      <button onclick="toggleMobileDrawer(true)" class="p-2 text-primary hover:bg-soft-sky/30 rounded-lg"><span class="material-symbols-outlined text-2xl">menu</span></button>
     </div>
   </header>
-  <main class="flex-grow w-full max-w-[1200px] mx-auto px-margin-mobile md:px-margin-desktop py-12">
-    <div class="mb-12">
-      <h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-primary mb-6">Connections</h1>
-      <div class="flex border-b border-soft-sky/50 w-full mb-8">
-        <button id="btn-tab-interests" class="tab-active px-6 py-3 font-label-md text-label-md transition-colors cursor-pointer" onclick="switchTab('interests')">
+
+  <!-- Desktop Header -->
+  <header class="hidden md:flex w-full h-20 shadow-sm bg-background border-b border-soft-sky/30 sticky top-0 z-40">
+    <div class="flex justify-between items-center px-4 sm:px-6 md:px-8 max-w-[1200px] mx-auto h-full w-full">
+      <a href="javascript:void(0)" onclick="showView('home')">
+        <img alt="SagarSambandh.in" class="h-10 lg:h-12 w-auto cursor-pointer" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCY7NNXePguPXlsrMZBQ3mJSFqt0mFH6c0isYY7ld7jW5CAq70t_w46IK4x3r2bETkBNdKwKsLqtJjeV1Fr7OxWU3YIWxCSC_Vu9zUdEY2EFM8AbnsVK4aO77x68XAOXCgX-byLXjOMgGyW191Smyue85blCqh22uGDMBtxTCTCkIydXNOt9lGAPadnvUptxAJvbNmrB6a__3QPVNq4eH3LUm_Q-M0xZVC0tTKhWcZdMTTp16IgQD4FdA">
+      </a>
+      <nav class="flex gap-8 items-center h-full">
+        <a class="text-on-surface-variant hover:text-primary transition-colors duration-200 h-full flex items-center font-label-md text-sm" href="javascript:void(0)" onclick="showView('discover')">Browse</a>
+        <a class="text-primary font-bold border-b-2 border-primary h-full flex items-center font-label-md text-sm" href="javascript:void(0)" onclick="showView('interests')">Matches</a>
+        <a class="text-on-surface-variant hover:text-primary transition-colors duration-200 h-full flex items-center font-label-md text-sm" href="javascript:void(0)" onclick="showView('profile')">Profile</a>
+      </nav>
+      <button onclick="showView('discover')" class="bg-primary text-on-primary px-5 py-2.5 rounded-xl font-label-md text-sm hover:opacity-90 transition-opacity">
+        Find My Partner
+      </button>
+    </div>
+  </header>
+
+  <main class="flex-grow w-full max-w-[1200px] mx-auto px-4 sm:px-6 md:px-8 py-6 sm:py-10">
+    <div class="mb-6 sm:mb-8">
+      <h1 class="font-headline-lg-mobile md:font-headline-lg text-2xl sm:text-3xl text-primary font-bold mb-4">Connections</h1>
+      <div class="flex border-b border-soft-sky/50 w-full overflow-x-auto no-scrollbar">
+        <button id="btn-tab-interests" class="tab-active px-4 sm:px-6 py-3 font-label-md text-xs sm:text-sm transition-colors cursor-pointer whitespace-nowrap" onclick="switchTab('interests')">
           Interests Received (2)
         </button>
-        <button id="btn-tab-mutual" class="tab-inactive px-6 py-3 font-label-md text-label-md hover:text-primary transition-colors cursor-pointer" onclick="switchTab('mutual')">
-          Mutual Matches
+        <button id="btn-tab-mutual" class="tab-inactive px-4 sm:px-6 py-3 font-label-md text-xs sm:text-sm hover:text-primary transition-colors cursor-pointer whitespace-nowrap" onclick="switchTab('mutual')">
+          Mutual Matches (0)
         </button>
       </div>
     </div>
+
     <!-- Tab Content: Interests -->
-    <div class="space-y-6" id="tab-content-interests">
-      <div class="grid grid-cols-1 gap-6">
-        <!-- Card 1 -->
-        <div class="bg-surface-container-lowest rounded-xl custom-shadow border border-soft-sky/30 overflow-hidden flex flex-col md:flex-row items-center p-6 gap-6 hover:shadow-md transition-shadow">
-          <div class="w-32 h-32 rounded-full overflow-hidden flex-shrink-0 relative cursor-pointer" onclick="showView('profile')">
-            <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC2ytqS0CS52omjDUhnRtJwwKreVBWibwsO248cT65XcR07msStaACvOR2nLWhFAzld2SXnryTfghA1rzHI-oEHVAj9EnqmkU71_bGWpErtFpeA4Ze9AaEBqLWcp99HzYAX5phatcJD1exG2ClIgQdKwxtFCOJUSPIU_sVA6ZC180WI8oFaCeS99CI9pcIU6sPJGJy8er6r6k_R8bblkVZuF35PA6kjAHy8rKPMlpGhsLHJEv8IFF8Atw">
-            <div class="absolute bottom-0 inset-x-0 h-1/3 bg-gradient-to-t from-primary/50 to-transparent"></div>
+    <div class="space-y-4 sm:space-y-6" id="tab-content-interests">
+      
+      <!-- Card 1 -->
+      <div class="bg-surface-container-lowest rounded-2xl custom-shadow border border-soft-sky/40 overflow-hidden flex flex-col sm:flex-row items-center sm:items-start p-5 sm:p-6 gap-4 sm:gap-6 hover:shadow-md transition-shadow">
+        <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden flex-shrink-0 relative cursor-pointer border-2 border-primary/20" onclick="showView('profile')">
+          <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC2ytqS0CS52omjDUhnRtJwwKreVBWibwsO248cT65XcR07msStaACvOR2nLWhFAzld2SXnryTfghA1rzHI-oEHVAj9EnqmkU71_bGWpErtFpeA4Ze9AaEBqLWcp99HzYAX5phatcJD1exG2ClIgQdKwxtFCOJUSPIU_sVA6ZC180WI8oFaCeS99CI9pcIU6sPJGJy8er6r6k_R8bblkVZuF35PA6kjAHy8rKPMlpGhsLHJEv8IFF8Atw">
+          <div class="absolute bottom-0 inset-x-0 h-1/3 bg-gradient-to-t from-primary/50 to-transparent"></div>
+        </div>
+        <div class="flex-grow text-center sm:text-left cursor-pointer" onclick="showView('profile')">
+          <div class="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-2 mb-1.5">
+            <h2 class="font-title-md text-lg sm:text-xl text-on-surface font-bold">Priya Sharma</h2>
+            <span class="font-label-sm text-xs sm:text-sm text-on-surface-variant">28 • Software Engineer • Mumbai</span>
           </div>
-          <div class="flex-grow text-center md:text-left cursor-pointer" onclick="showView('profile')">
-            <div class="flex flex-col md:flex-row md:items-baseline gap-2 mb-2">
-              <h2 class="font-title-md text-title-md text-on-surface">Priya Sharma</h2>
-              <span class="font-label-sm text-label-sm text-on-surface-variant">28 • Software Engineer • Mumbai</span>
-            </div>
-            <p class="font-body-md text-body-md text-on-surface-variant mb-4 line-clamp-2">"Passionate about tech, love weekend hikes, and looking for someone to share quiet evenings and big adventures with."</p>
-            <div class="flex flex-wrap justify-center md:justify-start gap-2">
-              <span class="px-3 py-1 bg-surface-container rounded-full font-label-sm text-label-sm text-on-surface-variant">Vegetarian</span>
-              <span class="px-3 py-1 bg-surface-container rounded-full font-label-sm text-label-sm text-on-surface-variant">Never Married</span>
-            </div>
-          </div>
-          <div class="flex flex-col gap-3 w-full md:w-auto min-w-[140px]" id="int-actions-1">
-            <button onclick="document.getElementById('int-actions-1').innerHTML='<span class=\'text-success font-bold text-center py-2\'>✓ Accepted</span>';" class="w-full bg-primary text-on-primary font-label-md text-label-md py-2 px-4 rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center gap-2 cursor-pointer">
-              <span class="material-symbols-outlined text-sm">check</span> Accept
-            </button>
-            <button onclick="document.getElementById('int-actions-1').innerHTML='<span class=\'text-danger font-bold text-center py-2\'>✕ Declined</span>';" class="w-full border border-soft-sky text-primary font-label-md text-label-md py-2 px-4 rounded-lg hover:bg-soft-sky/20 transition-colors flex items-center justify-center gap-2 cursor-pointer">
-              <span class="material-symbols-outlined text-sm">close</span> Decline
-            </button>
+          <p class="font-body-md text-xs sm:text-sm text-on-surface-variant mb-3 line-clamp-2">"Passionate about tech, love weekend hikes, and looking for someone to share quiet evenings and big adventures with."</p>
+          <div class="flex flex-wrap justify-center sm:justify-start gap-1.5">
+            <span class="px-2.5 py-0.5 bg-surface-container rounded-full font-label-sm text-[11px] text-on-surface-variant border border-soft-sky/40">Vegetarian</span>
+            <span class="px-2.5 py-0.5 bg-surface-container rounded-full font-label-sm text-[11px] text-on-surface-variant border border-soft-sky/40">Never Married</span>
           </div>
         </div>
-        <!-- Card 2 -->
-        <div class="bg-surface-container-lowest rounded-xl custom-shadow border border-soft-sky/30 overflow-hidden flex flex-col md:flex-row items-center p-6 gap-6 hover:shadow-md transition-shadow">
-          <div class="w-32 h-32 rounded-full overflow-hidden flex-shrink-0 relative">
-            <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDwGhDrMblvWazSkk-oh6GP5GGKtKYX-Fy4j-3ud-cPjXEABjXHE4bItQN9KFjXpwSrsPkl4ltDsBeG-c_X3mDAxsRyvJ7Chsha_UUtNGRSZW2_sGg2Gh3ThcF9egvcHYAwdXxGgM9xrW-pAGJvSlq_T_dncywHQDM7U3sDEsOj0kP1KpRDO3a2vqonwHt3sL6zQBUvqFYODYrX3GlmfTC0Xg0mDJUlui2-Ot6l0jJMdzUthqAe29zPgQ">
-          </div>
-          <div class="flex-grow text-center md:text-left">
-            <div class="flex flex-col md:flex-row md:items-baseline gap-2 mb-2">
-              <h2 class="font-title-md text-title-md text-on-surface">Rahul Verma</h2>
-              <span class="font-label-sm text-label-sm text-on-surface-variant">31 • Architect • Delhi</span>
-            </div>
-            <p class="font-body-md text-body-md text-on-surface-variant mb-4 line-clamp-2">"I design spaces for a living but seeking a partner to build a life with. Enjoy classical music, reading, and a good cup of chai."</p>
-            <div class="flex flex-wrap justify-center md:justify-start gap-2">
-              <span class="px-3 py-1 bg-surface-container rounded-full font-label-sm text-label-sm text-on-surface-variant">Non-Vegetarian</span>
-              <span class="px-3 py-1 bg-surface-container rounded-full font-label-sm text-label-sm text-on-surface-variant">Hindi/English</span>
-            </div>
-          </div>
-          <div class="flex flex-col gap-3 w-full md:w-auto min-w-[140px]" id="int-actions-2">
-            <button onclick="document.getElementById('int-actions-2').innerHTML='<span class=\'text-success font-bold text-center py-2\'>✓ Accepted</span>';" class="w-full bg-primary text-on-primary font-label-md text-label-md py-2 px-4 rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center gap-2 cursor-pointer">
-              <span class="material-symbols-outlined text-sm">check</span> Accept
-            </button>
-            <button onclick="document.getElementById('int-actions-2').innerHTML='<span class=\'text-danger font-bold text-center py-2\'>✕ Declined</span>';" class="w-full border border-soft-sky text-primary font-label-md text-label-md py-2 px-4 rounded-lg hover:bg-soft-sky/20 transition-colors flex items-center justify-center gap-2 cursor-pointer">
-              <span class="material-symbols-outlined text-sm">close</span> Decline
-            </button>
-          </div>
+        <div class="flex flex-row sm:flex-col gap-2.5 w-full sm:w-auto min-w-[130px]" id="int-actions-1">
+          <button onclick="document.getElementById('int-actions-1').innerHTML='<span class=\'text-primary font-bold text-center py-2 text-sm\'>✓ Accepted</span>';" class="flex-1 sm:flex-none w-full bg-primary text-on-primary font-label-md text-xs sm:text-sm py-2.5 px-4 rounded-xl hover:opacity-90 transition-opacity flex items-center justify-center gap-1.5 cursor-pointer shadow-sm">
+            <span class="material-symbols-outlined text-base">check</span> Accept
+          </button>
+          <button onclick="document.getElementById('int-actions-1').innerHTML='<span class=\'text-outline font-bold text-center py-2 text-sm\'>✕ Declined</span>';" class="flex-1 sm:flex-none w-full border border-soft-sky text-primary font-label-md text-xs sm:text-sm py-2.5 px-4 rounded-xl hover:bg-soft-sky/20 transition-colors flex items-center justify-center gap-1.5 cursor-pointer">
+            <span class="material-symbols-outlined text-base">close</span> Decline
+          </button>
         </div>
       </div>
+
+      <!-- Card 2 -->
+      <div class="bg-surface-container-lowest rounded-2xl custom-shadow border border-soft-sky/40 overflow-hidden flex flex-col sm:flex-row items-center sm:items-start p-5 sm:p-6 gap-4 sm:gap-6 hover:shadow-md transition-shadow">
+        <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden flex-shrink-0 relative border-2 border-primary/20">
+          <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDwGhDrMblvWazSkk-oh6GP5GGKtKYX-Fy4j-3ud-cPjXEABjXHE4bItQN9KFjXpwSrsPkl4ltDsBeG-c_X3mDAxsRyvJ7Chsha_UUtNGRSZW2_sGg2Gh3ThcF9egvcHYAwdXxGgM9xrW-pAGJvSlq_T_dncywHQDM7U3sDEsOj0kP1KpRDO3a2vqonwHt3sL6zQBUvqFYODYrX3GlmfTC0Xg0mDJUlui2-Ot6l0jJMdzUthqAe29zPgQ">
+        </div>
+        <div class="flex-grow text-center sm:text-left">
+          <div class="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-2 mb-1.5">
+            <h2 class="font-title-md text-lg sm:text-xl text-on-surface font-bold">Rahul Verma</h2>
+            <span class="font-label-sm text-xs sm:text-sm text-on-surface-variant">31 • Architect • Delhi</span>
+          </div>
+          <p class="font-body-md text-xs sm:text-sm text-on-surface-variant mb-3 line-clamp-2">"I design spaces for a living but seeking a partner to build a life with. Enjoy classical music, reading, and a good cup of chai."</p>
+          <div class="flex flex-wrap justify-center sm:justify-start gap-1.5">
+            <span class="px-2.5 py-0.5 bg-surface-container rounded-full font-label-sm text-[11px] text-on-surface-variant border border-soft-sky/40">Non-Vegetarian</span>
+            <span class="px-2.5 py-0.5 bg-surface-container rounded-full font-label-sm text-[11px] text-on-surface-variant border border-soft-sky/40">Hindi / English</span>
+          </div>
+        </div>
+        <div class="flex flex-row sm:flex-col gap-2.5 w-full sm:w-auto min-w-[130px]" id="int-actions-2">
+          <button onclick="document.getElementById('int-actions-2').innerHTML='<span class=\'text-primary font-bold text-center py-2 text-sm\'>✓ Accepted</span>';" class="flex-1 sm:flex-none w-full bg-primary text-on-primary font-label-md text-xs sm:text-sm py-2.5 px-4 rounded-xl hover:opacity-90 transition-opacity flex items-center justify-center gap-1.5 cursor-pointer shadow-sm">
+            <span class="material-symbols-outlined text-base">check</span> Accept
+          </button>
+          <button onclick="document.getElementById('int-actions-2').innerHTML='<span class=\'text-outline font-bold text-center py-2 text-sm\'>✕ Declined</span>';" class="flex-1 sm:flex-none w-full border border-soft-sky text-primary font-label-md text-xs sm:text-sm py-2.5 px-4 rounded-xl hover:bg-soft-sky/20 transition-colors flex items-center justify-center gap-1.5 cursor-pointer">
+            <span class="material-symbols-outlined text-base">close</span> Decline
+          </button>
+        </div>
+      </div>
+
     </div>
+
     <!-- Tab Content: Mutual -->
-    <div class="hidden flex-col items-center justify-center py-20 px-4 text-center" id="tab-content-mutual">
-      <div class="w-24 h-24 mb-6 rounded-full bg-soft-sky/30 flex items-center justify-center text-primary">
-        <span class="material-symbols-outlined text-5xl">favorite_border</span>
+    <div class="hidden flex-col items-center justify-center py-16 px-4 text-center" id="tab-content-mutual">
+      <div class="w-20 h-20 mb-4 rounded-full bg-soft-sky/40 flex items-center justify-center text-primary">
+        <span class="material-symbols-outlined text-4xl">favorite_border</span>
       </div>
-      <h3 class="font-title-md text-title-md text-primary mb-3">Your journey is just beginning.</h3>
-      <p class="font-body-md text-body-md text-on-surface-variant max-w-md mb-8">
-        You don't have any mutual matches yet. Browse more profiles and send interests to find someone special!
+      <h3 class="font-title-md text-lg sm:text-xl text-primary font-bold mb-2">Your journey is just beginning</h3>
+      <p class="font-body-md text-xs sm:text-sm text-on-surface-variant max-w-sm mb-6">
+        You don't have any mutual matches yet. Browse profiles and send interests to find someone special!
       </p>
-      <button onclick="showView('discover')" class="bg-primary text-on-primary px-8 py-3 rounded-lg font-label-md text-label-md hover:opacity-90 transition-opacity shadow-sm cursor-pointer">
+      <button onclick="showView('discover')" class="bg-primary text-on-primary px-6 py-2.5 rounded-xl font-label-md text-xs sm:text-sm hover:opacity-90 transition-opacity shadow-sm cursor-pointer">
         Browse Profiles
       </button>
     </div>
   </main>
-  <!-- Footer -->
-  <footer class="w-full py-section-gap mt-auto text-on-primary" style="background-color: rgb(12, 41, 69);">
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-gutter px-margin-desktop max-w-[1200px] mx-auto">
-      <div class="col-span-1 md:col-span-1 flex flex-col gap-4">
-        <a href="javascript:void(0)" onclick="showView('home')">
-          <img alt="SagarSambandh.in" class="h-12 w-auto object-contain brightness-0 invert" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCY7NNXePguPXlsrMZBQ3mJSFqt0mFH6c0isYY7ld7jW5CAq70t_w46IK4x3r2bETkBNdKwKsLqtJjeV1Fr7OxWU3YIWxCSC_Vu9zUdEY2EFM8AbnsVK4aO77x68XAOXCgX-byLXjOMgGyW191Smyue85blCqh22uGDMBtxTCTCkIydXNOt9lGAPadnvUptxAJvbNmrB6a__3QPVNq4eH3LUm_Q-M0xZVC0tTKhWcZdMTTp16IgQD4FdA">
+
+  <!-- Mobile Bottom Nav on Interests view -->
+  <nav class="w-full bg-surface-container-lowest/95 backdrop-blur-md border-t border-soft-sky/40 shadow-[0_-4px_20px_rgba(12,42,70,0.05)] fixed bottom-0 z-40 md:hidden flex justify-around items-center h-16 px-2 pb-safe">
+    <a class="flex flex-col items-center gap-0.5 text-on-surface-variant hover:text-primary transition-colors py-1 px-3" href="javascript:void(0)" onclick="showView('home')">
+      <span class="material-symbols-outlined text-xl">home</span>
+      <span class="font-label-sm text-[10px]">Home</span>
+    </a>
+    <a class="flex flex-col items-center gap-0.5 text-on-surface-variant hover:text-primary transition-colors py-1 px-3" href="javascript:void(0)" onclick="showView('discover')">
+      <span class="material-symbols-outlined text-xl">search</span>
+      <span class="font-label-sm text-[10px]">Browse</span>
+    </a>
+    <a class="flex flex-col items-center gap-0.5 text-primary font-bold py-1 px-3" href="javascript:void(0)" onclick="showView('interests')">
+      <span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">favorite</span>
+      <span class="font-label-sm text-[10px]">Matches</span>
+    </a>
+    <a class="flex flex-col items-center gap-0.5 text-on-surface-variant hover:text-primary transition-colors py-1 px-3" href="javascript:void(0)" onclick="showView('profile')">
+      <span class="material-symbols-outlined text-xl">account_circle</span>
+      <span class="font-label-sm text-[10px]">Profile</span>
+    </a>
+  </nav>
+
+  <!-- Desktop Footer -->
+  <footer class="hidden md:block w-full py-12 mt-auto text-on-primary bg-deep-ocean">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-8 px-4 sm:px-6 md:px-8 max-w-[1200px] mx-auto">
+      <div>
+        <a href="javascript:void(0)" onclick="showView('home')" class="inline-block mb-2">
+          <img alt="SagarSambandh.in" class="h-10 w-auto object-contain brightness-0 invert" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCY7NNXePguPXlsrMZBQ3mJSFqt0mFH6c0isYY7ld7jW5CAq70t_w46IK4x3r2bETkBNdKwKsLqtJjeV1Fr7OxWU3YIWxCSC_Vu9zUdEY2EFM8AbnsVK4aO77x68XAOXCgX-byLXjOMgGyW191Smyue85blCqh22uGDMBtxTCTCkIydXNOt9lGAPadnvUptxAJvbNmrB6a__3QPVNq4eH3LUm_Q-M0xZVC0tTKhWcZdMTTp16IgQD4FdA">
         </a>
-        <p class="font-label-md text-label-md text-cream-base/80 mt-2">Steadfast connections for a lifetime.</p>
+        <p class="text-xs text-cream-base/80">Steadfast connections for a lifetime.</p>
       </div>
-      <div class="col-span-1 md:col-span-3 flex flex-wrap gap-8 justify-start md:justify-end items-center">
-        <a class="font-label-md text-label-md text-cream-base/80 hover:text-earth-warmth transition-colors duration-200" href="#">Success Stories</a>
-        <a class="font-label-md text-label-md text-cream-base/80 hover:text-earth-warmth transition-colors duration-200" href="#">Privacy</a>
-        <a class="font-label-md text-label-md text-cream-base/80 hover:text-earth-warmth transition-colors duration-200" href="#">Safety</a>
-        <a class="font-label-md text-label-md text-cream-base/80 hover:text-earth-warmth transition-colors duration-200" href="#">About Us</a>
+      <div class="flex flex-col gap-2 text-sm text-cream-base/80">
+        <a class="hover:text-earth-warmth transition-colors" href="#">Success Stories</a>
+        <a class="hover:text-earth-warmth transition-colors" href="#">Privacy Policy</a>
       </div>
-      <div class="col-span-1 md:col-span-4 mt-8 pt-8 border-t border-cream-base/20 text-center font-label-sm text-label-sm text-cream-base/60">
-        © 2024 SagarSambandh.in. All rights reserved.
+      <div class="flex flex-col gap-2 text-sm text-cream-base/80">
+        <a class="hover:text-earth-warmth transition-colors" href="#">Safety Guidelines</a>
+        <a class="hover:text-earth-warmth transition-colors" href="#">About Us</a>
+      </div>
+      <div class="flex flex-col gap-2 text-sm text-cream-base/80">
+        <p class="text-xs text-cream-base/60">© 2024 SagarSambandh.in. All rights reserved.</p>
       </div>
     </div>
   </footer>
@@ -798,59 +1023,60 @@
 <!-- 6. VIEW: ONBOARDING (onboarding_personal_career) -->
 <!-- ========================================================= -->
 <div id="view-onboarding" class="app-view hidden bg-cream-base flex flex-col min-h-screen antialiased text-on-surface font-body-md">
-  <header class="w-full py-6 px-margin-mobile md:px-margin-desktop flex justify-center items-center bg-cream-base">
+  <header class="w-full py-4 sm:py-6 px-4 sm:px-6 md:px-8 flex justify-between items-center bg-cream-base max-w-[1200px] mx-auto">
     <a href="javascript:void(0)" onclick="showView('home')">
-      <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCY7NNXePguPXlsrMZBQ3mJSFqt0mFH6c0isYY7ld7jW5CAq70t_w46IK4x3r2bETkBNdKwKsLqtJjeV1Fr7OxWU3YIWxCSC_Vu9zUdEY2EFM8AbnsVK4aO77x68XAOXCgX-byLXjOMgGyW191Smyue85blCqh22uGDMBtxTCTCkIydXNOt9lGAPadnvUptxAJvbNmrB6a__3QPVNq4eH3LUm_Q-M0xZVC0tTKhWcZdMTTp16IgQD4FdA" alt="SagarSambandh.in Logo" class="h-10 md:h-12 w-auto object-contain">
+      <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCY7NNXePguPXlsrMZBQ3mJSFqt0mFH6c0isYY7ld7jW5CAq70t_w46IK4x3r2bETkBNdKwKsLqtJjeV1Fr7OxWU3YIWxCSC_Vu9zUdEY2EFM8AbnsVK4aO77x68XAOXCgX-byLXjOMgGyW191Smyue85blCqh22uGDMBtxTCTCkIydXNOt9lGAPadnvUptxAJvbNmrB6a__3QPVNq4eH3LUm_Q-M0xZVC0tTKhWcZdMTTp16IgQD4FdA" alt="SagarSambandh.in Logo" class="h-9 sm:h-11 w-auto object-contain">
+    </a>
+    <a href="javascript:void(0)" onclick="showView('login')" class="text-xs sm:text-sm font-semibold text-primary hover:underline">
+      Existing Member? Login
     </a>
   </header>
-  <main class="flex-grow flex flex-col items-center justify-center py-section-gap px-margin-mobile md:px-margin-desktop w-full max-w-[1200px] mx-auto">
-    <div class="bg-surface-container-lowest rounded-[24px] w-full max-w-2xl overflow-hidden" style="box-shadow: 0px 10px 30px rgba(127, 179, 213, 0.1);">
+  <main class="flex-grow flex flex-col items-center justify-center py-6 sm:py-10 px-4 sm:px-6 md:px-8 w-full max-w-[1200px] mx-auto">
+    <div class="bg-surface-container-lowest rounded-2xl sm:rounded-3xl w-full max-w-2xl overflow-hidden border border-soft-sky/50 shadow-[0px_10px_30px_rgba(127,179,213,0.1)]">
       <div class="w-full bg-soft-sky h-2">
         <div class="bg-primary-container h-full transition-all duration-500 ease-in-out" style="width: 40%;"></div>
       </div>
-      <div class="p-8 md:p-12 flex flex-col gap-8">
+      <div class="p-6 sm:p-10 md:p-12 flex flex-col gap-6 sm:gap-8">
         <div class="text-center">
-          <span class="font-label-sm text-label-sm text-horizon-blue uppercase tracking-wider mb-2 block">Step 2 of 5</span>
-          <h2 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-2">Tell us more about yourself</h2>
-          <p class="font-body-md text-body-md text-outline">Help us find the best matches by sharing your personal and career details.</p>
+          <span class="font-label-sm text-xs text-horizon-blue uppercase tracking-wider mb-1.5 block font-semibold">Step 2 of 5</span>
+          <h2 class="font-headline-lg-mobile md:font-headline-lg text-2xl sm:text-3xl text-on-surface font-bold mb-1.5">Tell us more about yourself</h2>
+          <p class="font-body-md text-xs sm:text-sm text-outline">Help us find the best matches by sharing your personal and career details.</p>
         </div>
-        <form class="flex flex-col gap-6" onsubmit="event.preventDefault(); showView('success');">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="flex flex-col gap-2 md:col-span-2">
-              <label class="font-label-md text-label-md text-on-surface-variant" for="mother_tongue">Mother Tongue</label>
+        <form class="flex flex-col gap-4 sm:gap-6" onsubmit="event.preventDefault(); showView('success');">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+            <div class="flex flex-col gap-1.5 sm:col-span-2">
+              <label class="font-label-md text-xs sm:text-sm text-on-surface-variant font-medium" for="mother_tongue">Mother Tongue</label>
               <div class="relative">
-                <select class="w-full appearance-none bg-surface-container-lowest border border-soft-sky rounded-lg py-3 pl-4 pr-10 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all cursor-pointer" id="mother_tongue">
+                <select class="w-full appearance-none bg-surface-container-lowest border border-soft-sky rounded-xl py-2.5 sm:py-3 pl-4 pr-10 font-body-md text-xs sm:text-sm text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all cursor-pointer" id="mother_tongue">
                   <option value="gujarati" selected="">Gujarati</option>
                   <option value="hindi">Hindi</option>
                   <option value="marathi">Marathi</option>
                   <option value="other">Other</option>
                 </select>
                 <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-outline">
-                  <span class="material-symbols-outlined">expand_more</span>
+                  <span class="material-symbols-outlined text-base">expand_more</span>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="flex flex-col gap-2">
-            <label class="font-label-md text-label-md text-on-surface-variant" for="education">Highest Education</label>
-            <div class="relative">
-              <select class="w-full appearance-none bg-surface-container-lowest border border-soft-sky rounded-lg py-3 pl-4 pr-10 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all cursor-pointer" id="education">
-                <option value="bachelors" selected="">Bachelors Degree</option>
-                <option value="masters">Masters Degree</option>
-                <option value="doctorate">Doctorate</option>
-                <option value="diploma">Diploma</option>
-                <option value="other">Other</option>
-              </select>
-              <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-outline">
-                <span class="material-symbols-outlined">expand_more</span>
+            <div class="flex flex-col gap-1.5 sm:col-span-2">
+              <label class="font-label-md text-xs sm:text-sm text-on-surface-variant font-medium" for="education">Highest Education</label>
+              <div class="relative">
+                <select class="w-full appearance-none bg-surface-container-lowest border border-soft-sky rounded-xl py-2.5 sm:py-3 pl-4 pr-10 font-body-md text-xs sm:text-sm text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all cursor-pointer" id="education">
+                  <option value="bachelors" selected="">Bachelors Degree (B.Tech / B.E / B.Com)</option>
+                  <option value="masters">Masters Degree (MBA / MS / M.Tech)</option>
+                  <option value="doctorate">Doctorate / Ph.D</option>
+                  <option value="diploma">Diploma</option>
+                  <option value="other">Other</option>
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-outline">
+                  <span class="material-symbols-outlined text-base">expand_more</span>
+                </div>
               </div>
             </div>
-          </div>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="flex flex-col gap-2">
-              <label class="font-label-md text-label-md text-on-surface-variant" for="profession">Profession</label>
+            <div class="flex flex-col gap-1.5">
+              <label class="font-label-md text-xs sm:text-sm text-on-surface-variant font-medium" for="profession">Profession</label>
               <div class="relative">
-                <select class="w-full appearance-none bg-surface-container-lowest border border-soft-sky rounded-lg py-3 pl-4 pr-10 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all cursor-pointer" id="profession">
+                <select class="w-full appearance-none bg-surface-container-lowest border border-soft-sky rounded-xl py-2.5 sm:py-3 pl-4 pr-10 font-body-md text-xs sm:text-sm text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all cursor-pointer" id="profession">
                   <option value="it_software" selected="">IT / Software Engineer</option>
                   <option value="business">Business / Entrepreneur</option>
                   <option value="finance">Finance / Accounting</option>
@@ -859,32 +1085,32 @@
                   <option value="other">Other</option>
                 </select>
                 <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-outline">
-                  <span class="material-symbols-outlined">expand_more</span>
+                  <span class="material-symbols-outlined text-base">expand_more</span>
                 </div>
               </div>
             </div>
-            <div class="flex flex-col gap-2">
-              <label class="font-label-md text-label-md text-on-surface-variant" for="income">Annual Income</label>
+            <div class="flex flex-col gap-1.5">
+              <label class="font-label-md text-xs sm:text-sm text-on-surface-variant font-medium" for="income">Annual Income</label>
               <div class="relative">
-                <select class="w-full appearance-none bg-surface-container-lowest border border-soft-sky rounded-lg py-3 pl-4 pr-10 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all cursor-pointer" id="income">
+                <select class="w-full appearance-none bg-surface-container-lowest border border-soft-sky rounded-xl py-2.5 sm:py-3 pl-4 pr-10 font-body-md text-xs sm:text-sm text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all cursor-pointer" id="income">
                   <option value="5_10lakh" selected="">5 - 10 Lakhs</option>
                   <option value="10_20lakh">10 - 20 Lakhs</option>
                   <option value="20_30lakh">20 - 30 Lakhs</option>
                   <option value="50_plus">50 Lakhs+</option>
                 </select>
                 <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-outline">
-                  <span class="material-symbols-outlined">expand_more</span>
+                  <span class="material-symbols-outlined text-base">expand_more</span>
                 </div>
               </div>
             </div>
           </div>
-          <div class="mt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-            <button onclick="showView('login')" class="w-full md:w-auto font-label-md text-label-md text-on-surface-variant hover:text-horizon-blue py-3 px-6 rounded-lg transition-colors bg-surface-container-lowest border border-soft-sky cursor-pointer" type="button">
+          <div class="mt-6 sm:mt-8 flex flex-col-reverse sm:flex-row items-center justify-between gap-3 sm:gap-4">
+            <button onclick="showView('login')" class="w-full sm:w-auto font-label-md text-xs sm:text-sm text-on-surface-variant hover:text-horizon-blue py-3 px-6 rounded-xl transition-colors bg-surface-container-lowest border border-soft-sky cursor-pointer text-center" type="button">
               Back
             </button>
-            <button class="w-full md:w-auto font-label-md text-label-md text-on-primary bg-earth-warmth hover:bg-secondary py-3 px-10 rounded-lg transition-colors shadow-sm flex items-center justify-center gap-2 group cursor-pointer" type="submit">
+            <button class="w-full sm:w-auto font-label-md text-xs sm:text-sm text-on-primary bg-earth-warmth hover:bg-secondary py-3 px-10 rounded-xl transition-colors shadow-sm flex items-center justify-center gap-2 group cursor-pointer" type="submit">
               Continue
-              <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+              <span class="material-symbols-outlined text-base group-hover:translate-x-1 transition-transform">arrow_forward</span>
             </button>
           </div>
         </form>
@@ -898,44 +1124,49 @@
 <!-- ========================================================= -->
 <div id="view-success" class="app-view hidden bg-cream-base text-on-surface min-h-screen flex flex-col font-body-md overflow-x-hidden relative">
   <div class="absolute inset-0 pointer-events-none overflow-hidden z-0" id="confetti-container"></div>
-  <main class="flex-grow flex flex-col items-center justify-center px-margin-mobile md:px-margin-desktop py-section-gap relative z-10 w-full max-w-[1200px] mx-auto">
-    <div class="bg-surface-container-lowest rounded-xl p-8 md:p-12 text-center max-w-2xl w-full shadow-[0px_10px_30px_rgba(127,179,213,0.1)] border border-soft-sky flex flex-col items-center relative overflow-hidden">
+  <main class="flex-grow flex flex-col items-center justify-center px-4 sm:px-6 md:px-8 py-8 sm:py-12 relative z-10 w-full max-w-[1200px] mx-auto">
+    <div class="bg-surface-container-lowest rounded-2xl sm:rounded-3xl p-6 sm:p-10 md:p-12 text-center max-w-xl w-full shadow-[0px_10px_30px_rgba(127,179,213,0.1)] border border-soft-sky flex flex-col items-center relative overflow-hidden">
       <div class="absolute -top-24 -right-24 w-48 h-48 bg-primary-fixed rounded-full blur-3xl opacity-30"></div>
       <div class="absolute -bottom-24 -left-24 w-48 h-48 bg-soft-sky rounded-full blur-3xl opacity-40"></div>
-      <div class="w-32 h-32 mb-8 relative flex items-center justify-center">
+      
+      <div class="w-24 h-24 sm:w-28 sm:h-28 mb-6 relative flex items-center justify-center">
         <div class="absolute inset-0 bg-primary-container rounded-full opacity-20 animate-pulse"></div>
-        <div class="absolute inset-4 bg-soft-sky rounded-full opacity-50"></div>
-        <span class="material-symbols-outlined text-[64px] text-primary relative z-10" style="font-variation-settings: 'FILL' 1;">
+        <div class="absolute inset-3 bg-soft-sky rounded-full opacity-50"></div>
+        <span class="material-symbols-outlined text-5xl sm:text-6xl text-primary relative z-10" style="font-variation-settings: 'FILL' 1;">
           favorite
         </span>
       </div>
-      <h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-primary mb-4 relative z-10">
+      
+      <h1 class="font-headline-lg-mobile md:font-headline-lg text-2xl sm:text-3xl text-primary font-bold mb-3 relative z-10">
         All Set! Your Profile is Ready
       </h1>
-      <p class="font-body-lg text-body-lg text-on-surface-variant mb-12 max-w-md mx-auto relative z-10">
-        We've found <strong class="text-horizon-blue">24 potential matches</strong> for you based on your preferences.
+      <p class="font-body-md sm:font-body-lg text-xs sm:text-sm text-on-surface-variant mb-8 max-w-sm mx-auto relative z-10">
+        We've found <strong class="text-horizon-blue font-bold">24 potential matches</strong> for you based on your preferences.
       </p>
-      <div class="grid grid-cols-3 gap-4 mb-12 w-full max-w-md relative z-10">
-        <div class="aspect-square rounded-lg bg-surface-container overflow-hidden shadow-sm border border-soft-sky/50 relative">
-          <img class="w-full h-full object-cover opacity-80" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA_gWAU45h1BfCwqpWn74J26GKWcRnHfWSQD3FKqgzR5XxAVMmwpgTvapwVXUC8RQqHGDKrBCa_XrVw4b0RQB1ZdSTXvi-myGecLqMXyH85UB9LRUMKKcBqBqTVK_C_Q8NoIGgOal66o_DUElNj6erUYDqTmuaJooyBg0eUqvA_G0R5JzbmzaTGwSy98tQHSiaF9vSSj3FAd_OUC9Icr_NikLNiYcRFdKxdRz7uJW_mdJgSRC_NG4S4lQ">
+      
+      <div class="grid grid-cols-3 gap-3 sm:gap-4 mb-8 w-full max-w-xs sm:max-w-sm relative z-10">
+        <div class="aspect-square rounded-xl bg-surface-container overflow-hidden shadow-sm border border-soft-sky/50 relative">
+          <img class="w-full h-full object-cover opacity-85" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA_gWAU45h1BfCwqpWn74J26GKWcRnHfWSQD3FKqgzR5XxAVMmwpgTvapwVXUC8RQqHGDKrBCa_XrVw4b0RQB1ZdSTXvi-myGecLqMXyH85UB9LRUMKKcBqBqTVK_C_Q8NoIGgOal66o_DUElNj6erUYDqTmuaJooyBg0eUqvA_G0R5JzbmzaTGwSy98tQHSiaF9vSSj3FAd_OUC9Icr_NikLNiYcRFdKxdRz7uJW_mdJgSRC_NG4S4lQ">
         </div>
-        <div class="aspect-square rounded-lg bg-surface-container overflow-hidden shadow-sm border border-soft-sky/50 relative -translate-y-2">
-          <img class="w-full h-full object-cover opacity-90" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDe6NayfM0R3erb5hh6Rk3DP8Eiso964-oU5M7OJPkEnBNK1NEpOknMXDqOHhFy-8P3N6NT8wIw00i_isbt5i49XkectIbNs860y5Tb61FVi8PI5bDO7ALj4Qhz983DINBOe0MFW8H8e4zaqKWDmH2iHjR58QIgnbZAQCrHN-IvzIbd6ipAoKmnTmJxX_GwEdB3qm2DD8Lr-B0Nl87vbX9u34XoCS4yzhtY3EZOraGBFlmDu_OcY-O6rQ">
-          <div class="absolute inset-0 border-2 border-primary-container rounded-lg"></div>
+        <div class="aspect-square rounded-xl bg-surface-container overflow-hidden shadow-sm border border-soft-sky/50 relative -translate-y-2">
+          <img class="w-full h-full object-cover opacity-95" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDe6NayfM0R3erb5hh6Rk3DP8Eiso964-oU5M7OJPkEnBNK1NEpOknMXDqOHhFy-8P3N6NT8wIw00i_isbt5i49XkectIbNs860y5Tb61FVi8PI5bDO7ALj4Qhz983DINBOe0MFW8H8e4zaqKWDmH2iHjR58QIgnbZAQCrHN-IvzIbd6ipAoKmnTmJxX_GwEdB3qm2DD8Lr-B0Nl87vbX9u34XoCS4yzhtY3EZOraGBFlmDu_OcY-O6rQ">
+          <div class="absolute inset-0 border-2 border-primary rounded-xl"></div>
         </div>
-        <div class="aspect-square rounded-lg bg-surface-container overflow-hidden shadow-sm border border-soft-sky/50 relative">
-          <img class="w-full h-full object-cover opacity-80" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBJuvc8QPaHoAtpQY7Tp3zxfIctzaJz_RCU70OrfWix38A9J6eIjBOiOls63dXrMgmMrz4csKyJ1HTjOhTWORVRC2ArbExbyp1p421JCxZbaGbry72Jb7vFd2CUMezdSnuWBE2IzfbyTo5YZSHUG_1fpkYRY_XTwOeapi0Dq2huNlhmuk1yTIeg1lO11ej6_08tgNkEKoO-pxhkBGideebhNFWoHWys8OlOJsxgIumfpjCKznythHSLQ">
+        <div class="aspect-square rounded-xl bg-surface-container overflow-hidden shadow-sm border border-soft-sky/50 relative">
+          <img class="w-full h-full object-cover opacity-85" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBJuvc8QPaHoAtpQY7Tp3zxfIctzaJz_RCU70OrfWix38A9J6eIjBOiOls63dXrMgmMrz4csKyJ1HTjOhTWORVRC2ArbExbyp1p421JCxZbaGbry72Jb7vFd2CUMezdSnuWBE2IzfbyTo5YZSHUG_1fpkYRY_XTwOeapi0Dq2huNlhmuk1yTIeg1lO11ej6_08tgNkEKoO-pxhkBGideebhNFWoHWys8OlOJsxgIumfpjCKznythHSLQ">
         </div>
       </div>
-      <button onclick="showView('discover')" class="bg-earth-warmth hover:bg-secondary text-white font-label-md text-label-md py-4 px-12 rounded-full transition-all duration-300 shadow-[0_4px_14px_0_rgba(204,102,51,0.39)] hover:shadow-[0_6px_20px_rgba(204,102,51,0.23)] hover:-translate-y-1 relative z-10 cursor-pointer">
+      
+      <button onclick="showView('discover')" class="w-full sm:w-auto bg-earth-warmth hover:bg-secondary text-white font-label-md text-sm sm:text-base py-3.5 px-10 rounded-xl transition-all duration-300 shadow-[0_4px_14px_0_rgba(204,102,51,0.39)] hover:-translate-y-0.5 relative z-10 cursor-pointer">
         View Matches
       </button>
-      <div class="w-full max-w-xs mt-12 relative z-10">
-        <div class="flex justify-between font-label-sm text-label-sm text-outline mb-2">
+      
+      <div class="w-full max-w-xs mt-8 relative z-10">
+        <div class="flex justify-between font-label-sm text-xs text-outline mb-1.5">
           <span>Setup Complete</span>
           <span class="text-primary font-semibold">100%</span>
         </div>
-        <div class="h-1 w-full bg-surface-variant rounded-full overflow-hidden">
+        <div class="h-1.5 w-full bg-surface-variant rounded-full overflow-hidden">
           <div class="h-full bg-primary w-full rounded-full"></div>
         </div>
       </div>
@@ -945,6 +1176,23 @@
 
 <!-- Single Page Application Client Router & Helpers -->
 <script>
+  function toggleMobileDrawer(open) {
+    const drawer = document.getElementById('mobile-drawer');
+    const content = document.getElementById('mobile-drawer-content');
+    if (!drawer || !content) return;
+    if (open) {
+      drawer.classList.remove('hidden');
+      setTimeout(() => {
+        content.classList.remove('translate-x-full');
+      }, 10);
+    } else {
+      content.classList.add('translate-x-full');
+      setTimeout(() => {
+        drawer.classList.add('hidden');
+      }, 300);
+    }
+  }
+
   function showView(viewId) {
     document.querySelectorAll('.app-view').forEach(el => el.classList.add('hidden'));
     const target = document.getElementById('view-' + viewId);
@@ -956,6 +1204,7 @@
     try {
       history.replaceState(null, '', '#' + viewId);
     } catch(e){}
+    toggleMobileDrawer(false);
   }
 
   function switchTab(tabId) {
@@ -965,14 +1214,14 @@
     const contentMutual = document.getElementById('tab-content-mutual');
 
     if (tabId === 'interests') {
-      btnInterests.className = 'tab-active px-6 py-3 font-label-md text-label-md transition-colors cursor-pointer';
-      btnMutual.className = 'tab-inactive px-6 py-3 font-label-md text-label-md hover:text-primary transition-colors cursor-pointer';
+      btnInterests.className = 'tab-active px-4 sm:px-6 py-3 font-label-md text-xs sm:text-sm transition-colors cursor-pointer whitespace-nowrap';
+      btnMutual.className = 'tab-inactive px-4 sm:px-6 py-3 font-label-md text-xs sm:text-sm hover:text-primary transition-colors cursor-pointer whitespace-nowrap';
       contentInterests.classList.remove('hidden');
       contentMutual.classList.add('hidden');
       contentMutual.classList.remove('flex');
     } else {
-      btnMutual.className = 'tab-active px-6 py-3 font-label-md text-label-md transition-colors cursor-pointer';
-      btnInterests.className = 'tab-inactive px-6 py-3 font-label-md text-label-md hover:text-primary transition-colors cursor-pointer';
+      btnMutual.className = 'tab-active px-4 sm:px-6 py-3 font-label-md text-xs sm:text-sm transition-colors cursor-pointer whitespace-nowrap';
+      btnInterests.className = 'tab-inactive px-4 sm:px-6 py-3 font-label-md text-xs sm:text-sm hover:text-primary transition-colors cursor-pointer whitespace-nowrap';
       contentInterests.classList.add('hidden');
       contentMutual.classList.remove('hidden');
       contentMutual.classList.add('flex');
