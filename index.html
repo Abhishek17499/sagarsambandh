@@ -1177,65 +1177,154 @@
 </div>
 
 <!-- ========================================================= -->
-<!-- Single Page Application Client Router & Helpers -->
+<!-- SagarSambandh DOM Router (HTML5 History API - Zero Hash) -->
 <!-- ========================================================= -->
 <script>
-  // Route Configuration with Proper Names, Page Titles, and Backward-Compatible Aliases
-  const ROUTES = {
-    'home': {
-      viewId: 'home',
-      title: 'SagarSambandh.in - Modern Matrimony Platform',
-      navKey: 'home'
+  const Router = {
+    routes: {
+      'home': {
+        viewId: 'home',
+        path: '/',
+        title: 'SagarSambandh.in - Modern Matrimony Platform',
+        navKey: 'home',
+        aliases: ['', 'index.html', 'home']
+      },
+      'browse': {
+        viewId: 'browse',
+        path: '/browse',
+        title: 'Browse Matches - SagarSambandh.in',
+        navKey: 'browse',
+        aliases: ['discover', 'search']
+      },
+      'matches': {
+        viewId: 'matches',
+        path: '/matches',
+        title: 'Connections & Matches - SagarSambandh.in',
+        navKey: 'matches',
+        aliases: ['interests', 'connections']
+      },
+      'profile': {
+        viewId: 'profile',
+        path: '/profile',
+        title: 'Priya Sharma - Profile Details | SagarSambandh.in',
+        navKey: 'profile',
+        aliases: ['profile-detail']
+      },
+      'login': {
+        viewId: 'login',
+        path: '/login',
+        title: 'Sign In - SagarSambandh.in',
+        navKey: 'login',
+        aliases: ['signin']
+      },
+      'register': {
+        viewId: 'register',
+        path: '/register',
+        title: 'Create Profile - SagarSambandh.in',
+        navKey: 'register',
+        aliases: ['onboarding', 'signup']
+      },
+      'success': {
+        viewId: 'success',
+        path: '/success',
+        title: 'Registration Successful - SagarSambandh.in',
+        navKey: 'success',
+        aliases: ['welcome', 'onboarding-success']
+      }
     },
-    'browse': {
-      viewId: 'browse',
-      title: 'Browse Matches - SagarSambandh.in',
-      navKey: 'browse',
-      aliases: ['discover', 'search']
+
+    resolve(input) {
+      if (!input) return 'home';
+      let clean = input.toString().toLowerCase().trim();
+      clean = clean.replace(/^[/#]+/, '');
+      if (!clean || clean === 'index.html') return 'home';
+      
+      if (this.routes[clean]) return clean;
+      for (const [key, cfg] of Object.entries(this.routes)) {
+        if (cfg.aliases && cfg.aliases.includes(clean)) {
+          return key;
+        }
+      }
+      return 'home';
     },
-    'matches': {
-      viewId: 'matches',
-      title: 'Connections & Matches - SagarSambandh.in',
-      navKey: 'matches',
-      aliases: ['interests', 'connections']
+
+    getCurrentPathRoute() {
+      // 1. Check if hash was passed and extract it
+      if (window.location.hash) {
+        const hashVal = window.location.hash.replace(/^[#/]+/, '');
+        if (hashVal) return this.resolve(hashVal);
+      }
+      // 2. Otherwise extract route from pathname
+      const pathname = window.location.pathname;
+      const segments = pathname.split('/').filter(Boolean);
+      const last = segments.length > 0 ? segments[segments.length - 1] : '';
+      return this.resolve(last);
     },
-    'profile': {
-      viewId: 'profile',
-      title: 'Priya Sharma - Profile Details | SagarSambandh.in',
-      navKey: 'profile',
-      aliases: ['profile-detail']
+
+    render(routeKey, updateHistory = true) {
+      const key = this.resolve(routeKey);
+      const cfg = this.routes[key] || this.routes['home'];
+
+      // Hide all DOM views
+      document.querySelectorAll('.app-view').forEach(el => el.classList.add('hidden'));
+
+      // Show target DOM view
+      const targetView = document.getElementById('view-' + cfg.viewId);
+      if (targetView) {
+        targetView.classList.remove('hidden');
+        window.scrollTo(0, 0);
+        if (cfg.viewId === 'success') triggerConfetti();
+      }
+
+      // Update page title
+      document.title = cfg.title;
+
+      // Update active navigation indicators
+      updateNavHighlight(cfg.navKey);
+
+      // Clean HTML5 History update (No hash #)
+      if (updateHistory) {
+        const targetUrl = cfg.path;
+        if (window.location.pathname !== targetUrl || window.location.hash) {
+          try {
+            window.history.pushState({ route: key }, cfg.title, targetUrl);
+          } catch(e) {
+            try {
+              window.history.replaceState({ route: key }, cfg.title, targetUrl);
+            } catch(e2){}
+          }
+        }
+      }
+
+      toggleMobileDrawer(false);
     },
-    'login': {
-      viewId: 'login',
-      title: 'Sign In - SagarSambandh.in',
-      navKey: 'login',
-      aliases: ['signin']
+
+    navigate(routeKey) {
+      this.render(routeKey, true);
     },
-    'register': {
-      viewId: 'register',
-      title: 'Create Profile - SagarSambandh.in',
-      navKey: 'register',
-      aliases: ['onboarding', 'signup']
-    },
-    'success': {
-      viewId: 'success',
-      title: 'Registration Successful - SagarSambandh.in',
-      navKey: 'success',
-      aliases: ['welcome', 'onboarding-success']
+
+    init() {
+      const initialRoute = this.getCurrentPathRoute();
+      const cfg = this.routes[initialRoute];
+      
+      // Clean up any initial URL hash immediately
+      try {
+        window.history.replaceState({ route: initialRoute }, cfg.title, cfg.path);
+      } catch(e){}
+
+      this.render(initialRoute, false);
+
+      // Listen for browser Back/Forward buttons
+      window.addEventListener('popstate', (e) => {
+        const route = e.state && e.state.route ? e.state.route : this.getCurrentPathRoute();
+        this.render(route, false);
+      });
     }
   };
 
-  // Resolve aliases to canonical route name
-  function resolveRouteName(rawName) {
-    if (!rawName) return 'home';
-    const clean = rawName.toLowerCase().trim();
-    if (ROUTES[clean]) return clean;
-    for (const [key, cfg] of Object.entries(ROUTES)) {
-      if (cfg.aliases && cfg.aliases.includes(clean)) {
-        return key;
-      }
-    }
-    return 'home';
+  // Global helper for onclick triggers
+  function showView(routeKey) {
+    Router.navigate(routeKey);
   }
 
   // Update navigation highlight for desktop and mobile
@@ -1254,7 +1343,6 @@
     document.querySelectorAll('[data-bottom-nav]').forEach(el => {
       const key = el.getAttribute('data-bottom-nav');
       const icon = el.querySelector('.material-symbols-outlined');
-      const label = el.querySelector('.bottom-nav-label');
       if (key === routeKey) {
         el.classList.add('text-primary', 'font-bold');
         el.classList.remove('text-on-surface-variant');
@@ -1275,36 +1363,6 @@
         el.classList.remove('bg-soft-sky/40', 'text-primary', 'font-bold');
       }
     });
-  }
-
-  // Master showView router
-  function showView(requestedRoute) {
-    const routeKey = resolveRouteName(requestedRoute);
-    const cfg = ROUTES[routeKey] || ROUTES['home'];
-
-    // Hide all views
-    document.querySelectorAll('.app-view').forEach(el => el.classList.add('hidden'));
-
-    // Show target view container
-    const target = document.getElementById('view-' + cfg.viewId);
-    if (target) {
-      target.classList.remove('hidden');
-      window.scrollTo(0, 0);
-      if (cfg.viewId === 'success') triggerConfetti();
-    }
-
-    // Set document title
-    document.title = cfg.title;
-
-    // Update active highlight in navbars
-    updateNavHighlight(cfg.navKey);
-
-    // Update browser URL hash cleanly without page reload
-    try {
-      history.replaceState(null, '', '#' + routeKey);
-    } catch(e){}
-
-    toggleMobileDrawer(false);
   }
 
   function toggleMobileDrawer(open) {
@@ -1362,13 +1420,9 @@
     }
   }
 
-  window.addEventListener('load', () => {
-    const hash = window.location.hash.replace('#', '') || 'home';
-    showView(hash);
-  });
-  window.addEventListener('popstate', () => {
-    const hash = window.location.hash.replace('#', '') || 'home';
-    showView(hash);
+  // Initialize DOM Router on page load
+  window.addEventListener('DOMContentLoaded', () => {
+    Router.init();
   });
 </script>
 </body>
