@@ -365,50 +365,69 @@
       </a>
       <div>
         <h1 class="font-headline-lg-mobile text-2xl sm:text-headline-lg text-deep-ocean font-bold">Welcome Back</h1>
-        <p class="font-body-md text-xs sm:text-sm text-on-surface-variant mt-1">Sign in to continue your journey</p>
+        <p class="font-body-md text-xs sm:text-sm text-on-surface-variant mt-1">Sign in with Mobile Number &amp; 4-Digit PIN</p>
       </div>
     </header>
-    <form onsubmit="event.preventDefault(); showView('browse');" class="flex flex-col gap-4 w-full">
+    <form id="form-login" onsubmit="handleLoginSubmit(event)" class="flex flex-col gap-4 w-full">
+      <div id="login-error" class="hidden p-3 rounded-xl bg-red-50 text-red-600 border border-red-200 text-xs font-medium text-center"></div>
+
+      <!-- Mobile Number Field -->
       <div class="flex flex-col gap-1.5">
-        <label class="font-label-md text-xs sm:text-sm text-on-surface font-medium" for="email">Email or Mobile Number</label>
-        <div class="relative">
-          <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">person</span>
-          <input class="w-full pl-10 pr-4 py-2.5 sm:py-3 rounded-xl border border-soft-sky bg-surface-container-lowest font-body-md text-sm text-on-surface placeholder:text-outline input-glow transition-all duration-200" id="email" placeholder="Enter your email or mobile" value="priya.sharma@example.com" required="" type="text">
+        <label class="font-label-md text-xs sm:text-sm text-on-surface font-medium flex items-center justify-between" for="login-mobile">
+          <span>Mobile Number (મોબાઈલ નંબર)</span>
+          <span class="text-[11px] text-horizon-blue font-semibold">10 Digits</span>
+        </label>
+        <div class="flex rounded-xl border border-soft-sky bg-surface-container-lowest overflow-hidden focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/10 transition-all">
+          <span class="inline-flex items-center px-3 sm:px-3.5 bg-soft-sky/30 text-deep-ocean font-semibold text-xs sm:text-sm border-r border-soft-sky select-none">
+            🇮🇳 +91
+          </span>
+          <input class="w-full px-3.5 py-2.5 sm:py-3 bg-transparent font-body-md text-sm text-on-surface placeholder:text-outline focus:outline-none" id="login-mobile" placeholder="98765 43210" value="9876543210" required="" type="tel" maxlength="10" inputmode="numeric">
         </div>
       </div>
+
+      <!-- 4-Digit PIN Field -->
       <div class="flex flex-col gap-1.5">
-        <label class="font-label-md text-xs sm:text-sm text-on-surface font-medium" for="password">Password</label>
+        <div class="flex justify-between items-center">
+          <label class="font-label-md text-xs sm:text-sm text-on-surface font-medium" for="login-pin">4-Digit PIN (સુરક્ષા PIN)</label>
+          <span class="text-[11px] text-horizon-blue font-medium bg-soft-sky/40 px-2 py-0.5 rounded-md">Demo PIN: 1234</span>
+        </div>
         <div class="relative">
           <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">lock</span>
-          <input class="w-full pl-10 pr-10 py-2.5 sm:py-3 rounded-xl border border-soft-sky bg-surface-container-lowest font-body-md text-sm text-on-surface placeholder:text-outline input-glow transition-all duration-200" id="password" placeholder="Enter your password" value="password123" required="" type="password">
-          <button aria-label="Toggle password visibility" class="absolute right-3 top-1/2 -translate-y-1/2 text-outline hover:text-primary transition-colors focus:outline-none" type="button">
+          <input class="w-full pl-10 pr-10 py-2.5 sm:py-3 rounded-xl border border-soft-sky bg-surface-container-lowest font-body-md text-sm text-on-surface placeholder:text-outline focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all tracking-[0.25em]" id="login-pin" placeholder="••••" value="1234" required="" type="password" maxlength="4" inputmode="numeric">
+          <button aria-label="Toggle PIN visibility" onclick="togglePinVisibility('login-pin', this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-outline hover:text-primary transition-colors focus:outline-none cursor-pointer" type="button">
             <span class="material-symbols-outlined text-[18px]">visibility_off</span>
           </button>
         </div>
-        <div class="flex justify-end mt-0.5">
-          <a class="font-label-sm text-xs text-primary hover:text-deep-ocean transition-colors" href="#">Forgot Password?</a>
+        <div class="flex justify-between items-center mt-0.5">
+          <label class="flex items-center gap-1.5 cursor-pointer text-xs text-on-surface-variant">
+            <input type="checkbox" checked="" class="rounded border-soft-sky text-primary focus:ring-0">
+            <span>Remember Me</span>
+          </label>
+          <a class="font-label-sm text-xs text-primary hover:text-deep-ocean transition-colors cursor-pointer" href="javascript:void(0)" onclick="alert('Demo Reset: Your 4-digit PIN is 1234. You can also create a new profile with your custom PIN on the Register page.')">Forgot PIN?</a>
         </div>
       </div>
-      <button class="w-full bg-earth-warmth text-on-primary py-3 sm:py-3.5 rounded-xl font-label-md text-sm font-semibold hover:bg-secondary transition-colors duration-200 shadow-sm mt-1 flex items-center justify-center gap-2 cursor-pointer" type="submit">
-        Sign In
+
+      <button id="btn-login-submit" class="w-full bg-earth-warmth text-on-primary py-3 sm:py-3.5 rounded-xl font-label-md text-sm font-semibold hover:bg-secondary transition-colors duration-200 shadow-sm mt-1 flex items-center justify-center gap-2 cursor-pointer" type="submit">
+        <span>Sign In with PIN</span>
         <span class="material-symbols-outlined text-base">arrow_forward</span>
       </button>
     </form>
+
     <div class="flex items-center gap-4 py-1">
       <div class="flex-1 h-px bg-soft-sky"></div>
-      <span class="font-label-sm text-xs text-outline uppercase tracking-wider">Or</span>
+      <span class="font-label-sm text-xs text-outline uppercase tracking-wider">Fast Login</span>
       <div class="flex-1 h-px bg-soft-sky"></div>
     </div>
-    <div class="flex flex-col gap-2.5">
-      <button onclick="showView('browse')" class="w-full bg-surface-container-lowest border border-soft-sky text-deep-ocean py-2.5 sm:py-3 rounded-xl font-label-md text-xs sm:text-sm hover:border-primary hover:text-primary transition-colors duration-200 flex items-center justify-center gap-2 cursor-pointer" type="button">
-        <span class="material-symbols-outlined text-base">dialpad</span>
-        Login with OTP
-      </button>
+    
+    <div class="p-3 rounded-xl bg-soft-sky/30 border border-soft-sky/60 text-xs text-on-surface-variant flex items-center gap-2.5">
+      <span class="material-symbols-outlined text-primary text-xl flex-shrink-0">verified_user</span>
+      <span>Quick access via 10-digit mobile number and 4-digit PIN. No complex passwords or OTP wait!</span>
     </div>
-    <div class="text-center mt-2">
+
+    <div class="text-center mt-1">
       <p class="font-body-md text-xs sm:text-sm text-on-surface-variant">
         New to SagarSambandh? 
-        <a class="text-primary font-semibold hover:underline cursor-pointer" href="javascript:void(0)" onclick="showView('register')">Create Account</a>
+        <a class="text-primary font-bold hover:underline cursor-pointer ml-1" href="javascript:void(0)" onclick="showView('register')">Create Account &amp; Set PIN</a>
       </p>
     </div>
   </main>
@@ -1036,82 +1055,255 @@
   <main class="flex-grow flex flex-col items-center justify-center py-6 sm:py-10 px-4 sm:px-6 md:px-8 w-full max-w-[1200px] mx-auto">
     <div class="bg-surface-container-lowest rounded-2xl sm:rounded-3xl w-full max-w-2xl overflow-hidden border border-soft-sky/50 shadow-[0px_10px_30px_rgba(127,179,213,0.1)]">
       <div class="w-full bg-soft-sky h-2">
-        <div class="bg-primary-container h-full transition-all duration-500 ease-in-out" style="width: 40%;"></div>
+        <div class="bg-primary-container h-full transition-all duration-500 ease-in-out" style="width: 100%;"></div>
       </div>
       <div class="p-6 sm:p-10 md:p-12 flex flex-col gap-6 sm:gap-8">
         <div class="text-center">
-          <span class="font-label-sm text-xs text-horizon-blue uppercase tracking-wider mb-1.5 block font-semibold">Step 2 of 5</span>
-          <h2 class="font-headline-lg-mobile md:font-headline-lg text-2xl sm:text-3xl text-on-surface font-bold mb-1.5">Tell us more about yourself</h2>
-          <p class="font-body-md text-xs sm:text-sm text-outline">Help us find the best matches by sharing your personal and career details.</p>
+          <span class="font-label-sm text-xs text-horizon-blue uppercase tracking-wider mb-1.5 block font-semibold">Candidate Registration</span>
+          <h2 class="font-headline-lg-mobile md:font-headline-lg text-2xl sm:text-3xl text-on-surface font-bold mb-1.5">Create Your Profile</h2>
+          <p class="font-body-md text-xs sm:text-sm text-outline">Enter candidate details &amp; set a 4-digit PIN for daily login.</p>
         </div>
-        <form class="flex flex-col gap-4 sm:gap-6" onsubmit="event.preventDefault(); showView('success');">
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-            <div class="flex flex-col gap-1.5 sm:col-span-2">
-              <label class="font-label-md text-xs sm:text-sm text-on-surface-variant font-medium" for="mother_tongue">Mother Tongue</label>
-              <div class="relative">
-                <select class="w-full appearance-none bg-surface-container-lowest border border-soft-sky rounded-xl py-2.5 sm:py-3 pl-4 pr-10 font-body-md text-xs sm:text-sm text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all cursor-pointer" id="mother_tongue">
-                  <option value="gujarati" selected="">Gujarati</option>
-                  <option value="hindi">Hindi</option>
-                  <option value="marathi">Marathi</option>
-                  <option value="other">Other</option>
-                </select>
-                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-outline">
-                  <span class="material-symbols-outlined text-base">expand_more</span>
+
+        <form id="form-register" class="flex flex-col gap-5 sm:gap-6" onsubmit="handleRegisterSubmit(event)">
+          <div id="reg-error" class="hidden p-3 rounded-xl bg-red-50 text-red-600 border border-red-200 text-xs font-medium text-center"></div>
+
+          <!-- Section 1: Candidate Identity & Mobile -->
+          <div class="flex flex-col gap-3.5">
+            <div class="flex items-center gap-2 pb-2 border-b border-soft-sky">
+              <span class="material-symbols-outlined text-primary text-lg">person</span>
+              <h3 class="font-label-md text-sm sm:text-base text-deep-ocean font-bold">1. Candidate &amp; Mobile Details (ઉમેદવાર વિગતો)</h3>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <!-- Full Name -->
+              <div class="flex flex-col gap-1.5 sm:col-span-2">
+                <label class="font-label-md text-xs sm:text-sm text-on-surface font-medium" for="reg-name">
+                  Candidate Full Name (ઉમેદવારનું પૂરું નામ) <span class="text-red-500">*</span>
+                </label>
+                <div class="relative">
+                  <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">badge</span>
+                  <input class="w-full pl-10 pr-4 py-2.5 sm:py-3 rounded-xl border border-soft-sky bg-surface-container-lowest font-body-md text-xs sm:text-sm text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all" id="reg-name" placeholder="e.g. Rahul Patel / Aarti Sagar" value="Rahul Patel" required="" type="text">
                 </div>
               </div>
-            </div>
-            <div class="flex flex-col gap-1.5 sm:col-span-2">
-              <label class="font-label-md text-xs sm:text-sm text-on-surface-variant font-medium" for="education">Highest Education</label>
-              <div class="relative">
-                <select class="w-full appearance-none bg-surface-container-lowest border border-soft-sky rounded-xl py-2.5 sm:py-3 pl-4 pr-10 font-body-md text-xs sm:text-sm text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all cursor-pointer" id="education">
-                  <option value="bachelors" selected="">Bachelors Degree (B.Tech / B.E / B.Com)</option>
-                  <option value="masters">Masters Degree (MBA / MS / M.Tech)</option>
-                  <option value="doctorate">Doctorate / Ph.D</option>
-                  <option value="diploma">Diploma</option>
-                  <option value="other">Other</option>
-                </select>
-                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-outline">
-                  <span class="material-symbols-outlined text-base">expand_more</span>
+
+              <!-- Mobile Number for Login -->
+              <div class="flex flex-col gap-1.5 sm:col-span-2">
+                <label class="font-label-md text-xs sm:text-sm text-on-surface font-medium flex items-center justify-between" for="reg-mobile">
+                  <span>Mobile Number for Login (મોબાઈલ નંબર - Login માટે) <span class="text-red-500">*</span></span>
+                  <span class="text-[11px] text-horizon-blue font-semibold">10 Digits</span>
+                </label>
+                <div class="flex rounded-xl border border-soft-sky bg-surface-container-lowest overflow-hidden focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/10 transition-all">
+                  <span class="inline-flex items-center px-3 sm:px-3.5 bg-soft-sky/30 text-deep-ocean font-semibold text-xs sm:text-sm border-r border-soft-sky select-none">
+                    🇮🇳 +91
+                  </span>
+                  <input class="w-full px-3.5 py-2.5 sm:py-3 bg-transparent font-body-md text-sm text-on-surface placeholder:text-outline focus:outline-none" id="reg-mobile" placeholder="98765 43210" value="9876543210" required="" type="tel" maxlength="10" inputmode="numeric">
                 </div>
               </div>
-            </div>
-            <div class="flex flex-col gap-1.5">
-              <label class="font-label-md text-xs sm:text-sm text-on-surface-variant font-medium" for="profession">Profession</label>
-              <div class="relative">
-                <select class="w-full appearance-none bg-surface-container-lowest border border-soft-sky rounded-xl py-2.5 sm:py-3 pl-4 pr-10 font-body-md text-xs sm:text-sm text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all cursor-pointer" id="profession">
-                  <option value="it_software" selected="">IT / Software Engineer</option>
-                  <option value="business">Business / Entrepreneur</option>
-                  <option value="finance">Finance / Accounting</option>
-                  <option value="medical">Medical / Healthcare</option>
-                  <option value="education">Education / Teaching</option>
-                  <option value="other">Other</option>
-                </select>
-                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-outline">
-                  <span class="material-symbols-outlined text-base">expand_more</span>
+
+              <!-- Native Place / City -->
+              <div class="flex flex-col gap-1.5">
+                <label class="font-label-md text-xs sm:text-sm text-on-surface font-medium" for="reg-city">
+                  Native Place / City (ગામ / શહેર) <span class="text-red-500">*</span>
+                </label>
+                <div class="relative">
+                  <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">location_on</span>
+                  <input class="w-full pl-10 pr-4 py-2.5 sm:py-3 rounded-xl border border-soft-sky bg-surface-container-lowest font-body-md text-xs sm:text-sm text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all" id="reg-city" placeholder="e.g. Surat, Rajkot, Bhavnagar" value="Surat" required="" type="text">
                 </div>
               </div>
-            </div>
-            <div class="flex flex-col gap-1.5">
-              <label class="font-label-md text-xs sm:text-sm text-on-surface-variant font-medium" for="income">Annual Income</label>
-              <div class="relative">
-                <select class="w-full appearance-none bg-surface-container-lowest border border-soft-sky rounded-xl py-2.5 sm:py-3 pl-4 pr-10 font-body-md text-xs sm:text-sm text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all cursor-pointer" id="income">
-                  <option value="5_10lakh" selected="">5 - 10 Lakhs</option>
-                  <option value="10_20lakh">10 - 20 Lakhs</option>
-                  <option value="20_30lakh">20 - 30 Lakhs</option>
-                  <option value="50_plus">50 Lakhs+</option>
-                </select>
-                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-outline">
-                  <span class="material-symbols-outlined text-base">expand_more</span>
+
+              <!-- Samaj / Community -->
+              <div class="flex flex-col gap-1.5">
+                <label class="font-label-md text-xs sm:text-sm text-on-surface font-medium" for="reg-samaj">
+                  Samaj / Community (સમાજ) <span class="text-red-500">*</span>
+                </label>
+                <div class="relative">
+                  <select class="w-full appearance-none bg-surface-container-lowest border border-soft-sky rounded-xl py-2.5 sm:py-3 pl-4 pr-10 font-body-md text-xs sm:text-sm text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all cursor-pointer" id="reg-samaj">
+                    <option value="Sagar Samaj" selected="">Sagar Samaj (સાગર સમાજ)</option>
+                    <option value="Patel / Patidar">Patel / Patidar (પાટીદાર)</option>
+                    <option value="Brahmin">Brahmin (બ્રાહ્મણ)</option>
+                    <option value="Luhana">Luhana (લોહાણા)</option>
+                    <option value="Kshatriya">Kshatriya (ક્ષત્રિય)</option>
+                    <option value="Other Samaj">Other Samaj (અન્ય)</option>
+                  </select>
+                  <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-outline">
+                    <span class="material-symbols-outlined text-base">expand_more</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Profile For -->
+              <div class="flex flex-col gap-1.5">
+                <label class="font-label-md text-xs sm:text-sm text-on-surface font-medium" for="reg-profile-for">Profile Created For (કોના માટે)</label>
+                <div class="relative">
+                  <select class="w-full appearance-none bg-surface-container-lowest border border-soft-sky rounded-xl py-2.5 sm:py-3 pl-4 pr-10 font-body-md text-xs sm:text-sm text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all cursor-pointer" id="reg-profile-for">
+                    <option value="Self" selected="">Self (પોતાના માટે)</option>
+                    <option value="Son">Son (પુત્ર)</option>
+                    <option value="Daughter">Daughter (પુત્રી)</option>
+                    <option value="Brother">Brother (ભાઈ)</option>
+                    <option value="Sister">Sister (બહેન)</option>
+                  </select>
+                  <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-outline">
+                    <span class="material-symbols-outlined text-base">expand_more</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Gender -->
+              <div class="flex flex-col gap-1.5">
+                <label class="font-label-md text-xs sm:text-sm text-on-surface font-medium" for="reg-gender">Gender (જાતિ)</label>
+                <div class="relative">
+                  <select class="w-full appearance-none bg-surface-container-lowest border border-soft-sky rounded-xl py-2.5 sm:py-3 pl-4 pr-10 font-body-md text-xs sm:text-sm text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all cursor-pointer" id="reg-gender">
+                    <option value="Male" selected="">Male (પુરુષ)</option>
+                    <option value="Female">Female (સ્ત્રી)</option>
+                  </select>
+                  <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-outline">
+                    <span class="material-symbols-outlined text-base">expand_more</span>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-          <div class="mt-6 sm:mt-8 flex flex-col-reverse sm:flex-row items-center justify-between gap-3 sm:gap-4">
+
+          <!-- Section 2: Daily Login 4-Digit PIN -->
+          <div class="flex flex-col gap-3.5 p-4 sm:p-5 rounded-2xl bg-soft-sky/20 border border-soft-sky/70">
+            <div class="flex items-center justify-between pb-2 border-b border-soft-sky">
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary text-lg">lock</span>
+                <h3 class="font-label-md text-sm sm:text-base text-deep-ocean font-bold">2. Set 4-Digit Login PIN (રોજિંદા લૉગિન માટે PIN)</h3>
+              </div>
+              <span class="text-[11px] font-semibold text-horizon-blue bg-soft-sky/50 px-2.5 py-0.5 rounded-full">4 Digits</span>
+            </div>
+            <p class="text-xs text-on-surface-variant">
+              This 4-digit PIN will be used with your mobile number to sign in quickly anytime.
+            </p>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <!-- Set PIN -->
+              <div class="flex flex-col gap-1.5">
+                <label class="font-label-md text-xs sm:text-sm text-on-surface font-medium" for="reg-pin">
+                  Create 4-Digit PIN <span class="text-red-500">*</span>
+                </label>
+                <div class="relative">
+                  <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">key</span>
+                  <input class="w-full pl-10 pr-10 py-2.5 sm:py-3 rounded-xl border border-soft-sky bg-surface-container-lowest font-body-md text-xs sm:text-sm text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all tracking-[0.25em]" id="reg-pin" placeholder="••••" value="1234" required="" type="password" maxlength="4" inputmode="numeric">
+                  <button aria-label="Toggle PIN visibility" onclick="togglePinVisibility('reg-pin', this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-outline hover:text-primary transition-colors focus:outline-none cursor-pointer" type="button">
+                    <span class="material-symbols-outlined text-[18px]">visibility_off</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Confirm PIN -->
+              <div class="flex flex-col gap-1.5">
+                <label class="font-label-md text-xs sm:text-sm text-on-surface font-medium" for="reg-pin-confirm">
+                  Confirm 4-Digit PIN <span class="text-red-500">*</span>
+                </label>
+                <div class="relative">
+                  <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">lock_reset</span>
+                  <input class="w-full pl-10 pr-10 py-2.5 sm:py-3 rounded-xl border border-soft-sky bg-surface-container-lowest font-body-md text-xs sm:text-sm text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all tracking-[0.25em]" id="reg-pin-confirm" placeholder="••••" value="1234" required="" type="password" maxlength="4" inputmode="numeric">
+                  <button aria-label="Toggle PIN visibility" onclick="togglePinVisibility('reg-pin-confirm', this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-outline hover:text-primary transition-colors focus:outline-none cursor-pointer" type="button">
+                    <span class="material-symbols-outlined text-[18px]">visibility_off</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 3: Personal, Education & Career Details -->
+          <div class="flex flex-col gap-3.5">
+            <div class="flex items-center gap-2 pb-2 border-b border-soft-sky">
+              <span class="material-symbols-outlined text-primary text-lg">work</span>
+              <h3 class="font-label-md text-sm sm:text-base text-deep-ocean font-bold">3. Education &amp; Career Details (શિક્ષણ અને વ્યવસાય)</h3>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+              <!-- Mother Tongue -->
+              <div class="flex flex-col gap-1.5">
+                <label class="font-label-md text-xs sm:text-sm text-on-surface-variant font-medium" for="reg-mother-tongue">Mother Tongue (માતૃભાષા)</label>
+                <div class="relative">
+                  <select class="w-full appearance-none bg-surface-container-lowest border border-soft-sky rounded-xl py-2.5 sm:py-3 pl-4 pr-10 font-body-md text-xs sm:text-sm text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all cursor-pointer" id="reg-mother-tongue">
+                    <option value="gujarati" selected="">Gujarati (ગુજરાતી)</option>
+                    <option value="hindi">Hindi (હિન્દી)</option>
+                    <option value="marathi">Marathi (મરાઠી)</option>
+                    <option value="english">English</option>
+                    <option value="other">Other</option>
+                  </select>
+                  <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-outline">
+                    <span class="material-symbols-outlined text-base">expand_more</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Education -->
+              <div class="flex flex-col gap-1.5">
+                <label class="font-label-md text-xs sm:text-sm text-on-surface-variant font-medium" for="reg-education">Highest Education (અભ્યાસ)</label>
+                <div class="relative">
+                  <select class="w-full appearance-none bg-surface-container-lowest border border-soft-sky rounded-xl py-2.5 sm:py-3 pl-4 pr-10 font-body-md text-xs sm:text-sm text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all cursor-pointer" id="reg-education">
+                    <option value="bachelors" selected="">Bachelors (B.Tech / B.E / B.Com / B.Sc)</option>
+                    <option value="masters">Masters (MBA / MS / M.Tech / M.Sc)</option>
+                    <option value="doctorate">Doctorate / Ph.D</option>
+                    <option value="ca_cs">CA / CS / CFA</option>
+                    <option value="diploma">Diploma</option>
+                    <option value="other">Other</option>
+                  </select>
+                  <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-outline">
+                    <span class="material-symbols-outlined text-base">expand_more</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Profession -->
+              <div class="flex flex-col gap-1.5">
+                <label class="font-label-md text-xs sm:text-sm text-on-surface-variant font-medium" for="reg-profession">Profession (વ્યવસાય)</label>
+                <div class="relative">
+                  <select class="w-full appearance-none bg-surface-container-lowest border border-soft-sky rounded-xl py-2.5 sm:py-3 pl-4 pr-10 font-body-md text-xs sm:text-sm text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all cursor-pointer" id="reg-profession">
+                    <option value="it_software" selected="">IT / Software Engineer</option>
+                    <option value="business">Business / Entrepreneur</option>
+                    <option value="finance">Finance / Accounting / Banking</option>
+                    <option value="medical">Medical / Doctor / Healthcare</option>
+                    <option value="govt">Government / Public Sector</option>
+                    <option value="education">Education / Professor / Teacher</option>
+                    <option value="other">Other Profession</option>
+                  </select>
+                  <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-outline">
+                    <span class="material-symbols-outlined text-base">expand_more</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Annual Income -->
+              <div class="flex flex-col gap-1.5">
+                <label class="font-label-md text-xs sm:text-sm text-on-surface-variant font-medium" for="reg-income">Annual Income (વાર્ષિક આવક)</label>
+                <div class="relative">
+                  <select class="w-full appearance-none bg-surface-container-lowest border border-soft-sky rounded-xl py-2.5 sm:py-3 pl-4 pr-10 font-body-md text-xs sm:text-sm text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all cursor-pointer" id="reg-income">
+                    <option value="3_5lakh">3 - 5 Lakhs</option>
+                    <option value="5_10lakh" selected="">5 - 10 Lakhs</option>
+                    <option value="10_20lakh">10 - 20 Lakhs</option>
+                    <option value="20_30lakh">20 - 30 Lakhs</option>
+                    <option value="50_plus">50 Lakhs+</option>
+                  </select>
+                  <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-outline">
+                    <span class="material-symbols-outlined text-base">expand_more</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Terms Checkbox -->
+          <div class="flex items-start gap-2 pt-2">
+            <input type="checkbox" id="reg-terms" checked="" required="" class="mt-0.5 rounded border-soft-sky text-primary focus:ring-0 cursor-pointer">
+            <label for="reg-terms" class="text-xs text-on-surface-variant cursor-pointer">
+              I agree to the <a href="#" class="text-primary underline">Terms of Use</a> and <a href="#" class="text-primary underline">Privacy Policy</a> of SagarSambandh.in.
+            </label>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="mt-4 flex flex-col-reverse sm:flex-row items-center justify-between gap-3 sm:gap-4">
             <button onclick="showView('login')" class="w-full sm:w-auto font-label-md text-xs sm:text-sm text-on-surface-variant hover:text-horizon-blue py-3 px-6 rounded-xl transition-colors bg-surface-container-lowest border border-soft-sky cursor-pointer text-center" type="button">
-              Back to Login
+              ← Back to Login
             </button>
-            <button class="w-full sm:w-auto font-label-md text-xs sm:text-sm text-on-primary bg-earth-warmth hover:bg-secondary py-3 px-10 rounded-xl transition-colors shadow-sm flex items-center justify-center gap-2 group cursor-pointer" type="submit">
-              Continue
+            <button class="w-full sm:w-auto font-label-md text-xs sm:text-sm text-on-primary bg-earth-warmth hover:bg-secondary py-3 px-8 sm:px-10 rounded-xl transition-colors shadow-sm flex items-center justify-center gap-2 group cursor-pointer" type="submit">
+              <span>Create Account &amp; Set PIN</span>
               <span class="material-symbols-outlined text-base group-hover:translate-x-1 transition-transform">arrow_forward</span>
             </button>
           </div>
@@ -1418,6 +1610,149 @@
       if (Math.random() > 0.5) confetti.style.borderRadius = '50%';
       container.appendChild(confetti);
     }
+  }
+
+  // Helper to toggle 4-digit PIN visibility
+  function togglePinVisibility(inputId, btn) {
+    const input = document.getElementById(inputId);
+    const icon = btn ? btn.querySelector('.material-symbols-outlined') : null;
+    if (!input) return;
+    if (input.type === 'password') {
+      input.type = 'text';
+      if (icon) icon.textContent = 'visibility';
+    } else {
+      input.type = 'password';
+      if (icon) icon.textContent = 'visibility_off';
+    }
+  }
+
+  // Handle Login submission with Mobile Number and 4-Digit PIN
+  function handleLoginSubmit(e) {
+    e.preventDefault();
+    const mobileInput = document.getElementById('login-mobile');
+    const pinInput = document.getElementById('login-pin');
+    const errEl = document.getElementById('login-error');
+    if (errEl) { errEl.classList.add('hidden'); errEl.textContent = ''; }
+
+    const mobile = mobileInput ? mobileInput.value.trim().replace(/\D/g, '') : '';
+    const pin = pinInput ? pinInput.value.trim() : '';
+
+    if (!mobile || mobile.length !== 10) {
+      if (errEl) {
+        errEl.textContent = 'કૃપા કરીને 10-અંકનો માન્ય મોબાઈલ નંબર નાખો (Please enter valid 10-digit mobile number)';
+        errEl.classList.remove('hidden');
+      }
+      if (mobileInput) mobileInput.focus();
+      return;
+    }
+
+    if (!pin || pin.length !== 4) {
+      if (errEl) {
+        errEl.textContent = 'કૃપા કરીને 4-અંકનો સુરક્ષા PIN નાખો (PIN must be 4 digits)';
+        errEl.classList.remove('hidden');
+      }
+      if (pinInput) pinInput.focus();
+      return;
+    }
+
+    // Save demo user session to localStorage
+    try {
+      localStorage.setItem('sagar_session', JSON.stringify({
+        mobile: mobile,
+        name: 'Priya Sharma',
+        loginTime: new Date().toISOString()
+      }));
+    } catch(err) {}
+
+    // Navigate to browse matches view
+    showView('browse');
+  }
+
+  // Handle Candidate Registration submission with credentials & details
+  function handleRegisterSubmit(e) {
+    e.preventDefault();
+    const nameInput = document.getElementById('reg-name');
+    const mobileInput = document.getElementById('reg-mobile');
+    const cityInput = document.getElementById('reg-city');
+    const samajInput = document.getElementById('reg-samaj');
+    const profileForInput = document.getElementById('reg-profile-for');
+    const genderInput = document.getElementById('reg-gender');
+    const pinInput = document.getElementById('reg-pin');
+    const pinConfirmInput = document.getElementById('reg-pin-confirm');
+    const tongueInput = document.getElementById('reg-mother-tongue');
+    const eduInput = document.getElementById('reg-education');
+    const profInput = document.getElementById('reg-profession');
+    const incomeInput = document.getElementById('reg-income');
+    const errEl = document.getElementById('reg-error');
+    if (errEl) { errEl.classList.add('hidden'); errEl.textContent = ''; }
+
+    const name = nameInput ? nameInput.value.trim() : '';
+    const mobile = mobileInput ? mobileInput.value.trim().replace(/\D/g, '') : '';
+    const city = cityInput ? cityInput.value.trim() : '';
+    const pin = pinInput ? pinInput.value.trim() : '';
+    const pinConfirm = pinConfirmInput ? pinConfirmInput.value.trim() : '';
+
+    if (!name) {
+      if (errEl) {
+        errEl.textContent = 'કૃપા કરીને ઉમેદવારનું પૂરું નામ લખો (Please enter candidate full name)';
+        errEl.classList.remove('hidden');
+      }
+      if (nameInput) nameInput.focus();
+      return;
+    }
+
+    if (!mobile || mobile.length !== 10) {
+      if (errEl) {
+        errEl.textContent = 'કૃપા કરીને 10-અંકનો માન્ય મોબાઈલ નંબર નાખો (Please enter valid 10-digit mobile number)';
+        errEl.classList.remove('hidden');
+      }
+      if (mobileInput) mobileInput.focus();
+      return;
+    }
+
+    if (!pin || pin.length !== 4) {
+      if (errEl) {
+        errEl.textContent = 'PIN બરાબર 4 અંકનો હોવો જોઈએ (PIN must be 4 digits)';
+        errEl.classList.remove('hidden');
+      }
+      if (pinInput) pinInput.focus();
+      return;
+    }
+
+    if (pin !== pinConfirm) {
+      if (errEl) {
+        errEl.textContent = 'બંને PIN સરખા નથી (Both PINs do not match)';
+        errEl.classList.remove('hidden');
+      }
+      if (pinConfirmInput) pinConfirmInput.focus();
+      return;
+    }
+
+    // Save registered user demo session
+    try {
+      localStorage.setItem('sagar_registered_user', JSON.stringify({
+        name: name,
+        mobile: mobile,
+        city: city,
+        samaj: samajInput ? samajInput.value : 'Sagar Samaj',
+        profileFor: profileForInput ? profileForInput.value : 'Self',
+        gender: genderInput ? genderInput.value : 'Male',
+        pin: pin,
+        motherTongue: tongueInput ? tongueInput.value : 'Gujarati',
+        education: eduInput ? eduInput.value : 'Bachelors',
+        profession: profInput ? profInput.value : 'IT / Software Engineer',
+        income: incomeInput ? incomeInput.value : '5_10lakh',
+        registeredAt: new Date().toISOString()
+      }));
+      localStorage.setItem('sagar_session', JSON.stringify({
+        mobile: mobile,
+        name: name,
+        loginTime: new Date().toISOString()
+      }));
+    } catch(err) {}
+
+    // Navigate to Success onboarding screen
+    showView('success');
   }
 
   // Initialize DOM Router on page load
