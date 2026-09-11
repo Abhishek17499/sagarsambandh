@@ -1,2275 +1,301 @@
-<!DOCTYPE html>
-<!-- SAGAR SAMBANDH — USER APP — Modern Redesign v13 (Light Blue & Ocean Theme) -->
-<html lang="gu" class="scroll-smooth">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Sagar Sambandh - ખારવા સમાજ મેટ્રિમોનિઅલ પોર્ટલ</title>
-
-<!-- Google Fonts -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Gujarati:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
-
-<!-- Material Symbols Outlined -->
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
-
-<!-- Tailwind CSS CDN -->
-<script src="https://cdn.tailwindcss.com"></script>
+<!DOCTYPE html><html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>SagarSambandh.in - Find Your Shore of Togetherness</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Playfair+Display:wght@600;700&amp;display=swap" rel="stylesheet">
 <script id="tailwind-config">
   tailwind.config = {
+    darkMode: "class",
     theme: {
       extend: {
-        colors: {
-          'deep-ocean': '#0C2A46',
-          'horizon-blue': '#145C82',
-          'soft-sky': '#DCEBF2',
-          'premium-blue': '#7FB3D5',
-          'earth-warmth': '#CC6633',
-          'earth-dark': '#9D4311',
-          'cream-base': '#F9F7F2',
-          'primary': '#145C82',
-          'secondary': '#9D4311',
-          'surface': '#FBF9F4',
-          'surface-container-lowest': '#FFFFFF',
-          'surface-container': '#F0EEE9',
-          'on-surface': '#1B1C19',
-          'on-surface-variant': '#5A7A8C',
-          'outline-variant': '#C1C7CE',
-          'success': '#2E9E6B',
-          'danger': '#D8544A'
+        "colors": {
+                "on-surface": "#1b1c19",
+                "inverse-on-surface": "#f2f1ec",
+                "deep-ocean": "#0C2A46",
+                "surface": "#fbf9f4",
+                "surface-container-high": "#eae8e3",
+                "surface-dim": "#dbdad5",
+                "secondary": "#9d4311",
+                "on-secondary-container": "#702900",
+                "tertiary-container": "#78b3dd",
+                "on-primary-fixed": "#001e2d",
+                "horizon-blue": "#145C82",
+                "error": "#ba1a1a",
+                "on-background": "#1b1c19",
+                "on-secondary": "#ffffff",
+                "outline": "#71787e",
+                "on-error-container": "#93000a",
+                "premium-blue": "#7FB3D5",
+                "surface-tint": "#2d6482",
+                "secondary-fixed": "#ffdbcc",
+                "on-surface-variant": "#41484d",
+                "tertiary-fixed-dim": "#92cdf9",
+                "tertiary": "#21648a",
+                "primary": "#2d6482",
+                "on-tertiary-fixed": "#001e2f",
+                "surface-container-low": "#f5f3ee",
+                "inverse-surface": "#30312e",
+                "primary-container": "#7fb3d5",
+                "surface-variant": "#e4e2dd",
+                "inverse-primary": "#99cdf0",
+                "on-tertiary": "#ffffff",
+                "secondary-container": "#fe8d56",
+                "surface-bright": "#fbf9f4",
+                "surface-container-highest": "#e4e2dd",
+                "primary-fixed-dim": "#99cdf0",
+                "surface-container-lowest": "#ffffff",
+                "on-secondary-fixed": "#351000",
+                "on-secondary-fixed-variant": "#7c2e00",
+                "surface-container": "#f0eee9",
+                "on-tertiary-fixed-variant": "#004c6e",
+                "outline-variant": "#c1c7ce",
+                "secondary-fixed-dim": "#ffb595",
+                "on-primary": "#ffffff",
+                "on-primary-container": "#004562",
+                "tertiary-fixed": "#c9e6ff",
+                "earth-warmth": "#CC6633",
+                "soft-sky": "#DCEBF2",
+                "on-error": "#ffffff",
+                "error-container": "#ffdad6",
+                "primary-fixed": "#c6e7ff",
+                "cream-base": "#F9F7F2",
+                "background": "#fbf9f4",
+                "on-tertiary-container": "#004565",
+                "on-primary-fixed-variant": "#0a4c69"
         },
-        fontFamily: {
-          display: ['"Playfair Display"', 'serif'],
-          sans: ['"Inter"', '"Noto Sans Gujarati"', 'sans-serif'],
-          gujarati: ['"Noto Sans Gujarati"', '"Poppins"', 'sans-serif']
+        "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
         },
-        boxShadow: {
-          'ambient': '0 4px 24px rgba(12, 42, 70, 0.06)',
-          'ambient-lg': '0 10px 30px rgba(12, 42, 70, 0.10)',
-          'glow': '0 0 20px rgba(28, 147, 201, 0.25)'
+        "spacing": {
+                "section-gap": "80px",
+                "base": "8px",
+                "margin-mobile": "20px",
+                "gutter": "24px",
+                "margin-desktop": "64px"
+        },
+        "fontFamily": {
+                "display-lg": [
+                        "Playfair Display"
+                ],
+                "body-md": [
+                        "Inter"
+                ],
+                "label-sm": [
+                        "Inter"
+                ],
+                "body-lg": [
+                        "Inter"
+                ],
+                "headline-lg": [
+                        "Playfair Display"
+                ],
+                "label-md": [
+                        "Inter"
+                ],
+                "title-md": [
+                        "Playfair Display"
+                ],
+                "headline-lg-mobile": [
+                        "Playfair Display"
+                ]
+        },
+        "fontSize": {
+                "display-lg": [
+                        "48px",
+                        {
+                                "lineHeight": "56px",
+                                "letterSpacing": "-0.02em",
+                                "fontWeight": "700"
+                        }
+                ],
+                "body-md": [
+                        "16px",
+                        {
+                                "lineHeight": "24px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "label-sm": [
+                        "12px",
+                        {
+                                "lineHeight": "16px",
+                                "letterSpacing": "0.05em",
+                                "fontWeight": "600"
+                        }
+                ],
+                "body-lg": [
+                        "18px",
+                        {
+                                "lineHeight": "28px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "headline-lg": [
+                        "32px",
+                        {
+                                "lineHeight": "40px",
+                                "fontWeight": "600"
+                        }
+                ],
+                "label-md": [
+                        "14px",
+                        {
+                                "lineHeight": "20px",
+                                "letterSpacing": "0.01em",
+                                "fontWeight": "500"
+                        }
+                ],
+                "title-md": [
+                        "20px",
+                        {
+                                "lineHeight": "28px",
+                                "fontWeight": "600"
+                        }
+                ],
+                "headline-lg-mobile": [
+                        "28px",
+                        {
+                                "lineHeight": "36px",
+                                "fontWeight": "600"
+                        }
+                ]
         }
-      }
-    }
+      },
+    },
   }
 </script>
-
-<!-- Select2 & jQuery -->
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
-<!-- Firebase (compat SDK) -->
-<script src="https://www.gstatic.com/firebasejs/12.11.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/12.11.0/firebase-storage-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/12.11.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/12.11.0/firebase-app-check-compat.js"></script>
-
 <style>
-  :root {
-    --navy: #0C2A46;
-    --primary: #145C82;
-    --primary-light: #1C93C9;
-    --sky: #7FC7E0;
-    --ice: #D9EAF0;
-    --accent: #CC6633;
-    --text-dark: #0C2A46;
-    --text-mid: #5A7A8C;
-    --border: #DCEBF2;
-    --success: #2E9E6B;
-    --danger: #D8544A;
-  }
-  * { box-sizing: border-box; }
-  body {
-    background: #EAF2F6;
-    font-family: 'Inter', 'Noto Sans Gujarati', sans-serif;
-    color: #1B1C19;
-    min-height: 100vh;
-    margin: 0;
-    padding: 0;
-    -webkit-tap-highlight-color: transparent;
-  }
-  @media (min-width: 640px) {
-    body {
-      background: linear-gradient(135deg, #D4E6F1 0%, #EAF3F7 50%, #F5F9FB 100%);
-      padding: 24px 0;
-    }
-  }
-
-  .material-symbols-outlined {
-    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-    display: inline-block;
-    vertical-align: middle;
-    line-height: 1;
-  }
-  .material-symbols-fill {
-    font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-  }
-
-  /* App Phone Shell Container */
-  .app-shell {
-    width: 100%;
-    max-width: 480px;
-    margin: 0 auto;
-    background: #F9F7F2;
-    min-height: 100vh;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    box-shadow: 0 10px 40px -10px rgba(12, 42, 70, 0.12);
-  }
-  @media (min-width: 640px) {
-    .app-shell {
-      border-radius: 28px;
-      overflow: hidden;
-      border: 1px solid rgba(220, 235, 242, 0.9);
-      min-height: calc(100vh - 48px);
-    }
-  }
-
-  /* Form Inputs Glow & Styling */
-  .input-glow:focus {
-    border-color: #145C82;
-    box-shadow: 0 0 0 3px rgba(20, 92, 130, 0.15);
-    outline: none;
-  }
-  .otp-box {
-    width: 48px;
-    height: 56px;
-    text-align: center;
-    font-size: 22px;
-    font-weight: 700;
-    border: 1.5px solid #DCEBF2;
-    border-radius: 14px;
-    background: #FFFFFF;
-    color: #0C2A46;
-    outline: none;
-    transition: all 0.2s ease;
-  }
-  .otp-box:focus {
-    border-color: #145C82;
-    box-shadow: 0 0 0 3px rgba(20, 92, 130, 0.18);
-    background: #FFFFFF;
-  }
-
-  /* Select2 Custom Ocean Theme */
-  .select2-container { width: 100% !important; }
-  .select2-container--default .select2-selection--single {
-    border: 1.5px solid #DCEBF2;
-    border-radius: 12px;
-    background: #FFFFFF;
-    height: 48px;
-    display: flex;
-    align-items: center;
-    padding: 0 14px;
-    font-family: 'Inter', 'Noto Sans Gujarati', sans-serif;
-    transition: all 0.2s ease;
-  }
-  .select2-container--default.select2-container--open .select2-selection--single {
-    border-color: #145C82;
-    box-shadow: 0 0 0 3px rgba(20, 92, 130, 0.15);
-  }
-  .select2-container--default .select2-selection--single .select2-selection__rendered {
-    color: #0C2A46;
-    font-size: 14px;
-    font-weight: 500;
-    line-height: 48px;
-    padding: 0;
-  }
-  .select2-container--default .select2-selection--single .select2-selection__placeholder {
-    color: #94A3B8;
-  }
-  .select2-container--default .select2-selection--single .select2-selection__arrow {
-    height: 48px;
-    right: 12px;
-  }
-  .select2-dropdown {
-    border: 1.5px solid #DCEBF2;
-    border-radius: 14px;
-    box-shadow: 0 12px 32px -4px rgba(12, 42, 70, 0.15);
-    font-family: 'Inter', 'Noto Sans Gujarati', sans-serif;
-    overflow: hidden;
-    margin-top: 6px;
-    z-index: 9999;
-  }
-  .select2-container--default .select2-results__option {
-    font-size: 13.5px;
-    color: #0C2A46;
-    padding: 11px 16px;
-  }
-  .select2-container--default .select2-results__option--highlighted[aria-selected] {
-    background: #DCEBF2;
-    color: #0C2A46;
-  }
-  .select2-container--default .select2-results__option[aria-selected=true] {
-    background: #0C2A46;
-    color: #FFFFFF;
-  }
-  .select2-search--dropdown .select2-search__field {
-    border: 1.5px solid #DCEBF2;
-    border-radius: 8px;
-    padding: 8px 12px;
-    font-size: 13px;
-    outline: none;
-  }
-
-  /* Floating Toast Notification */
-  .toast {
-    position: fixed;
-    bottom: 96px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #0C2A46;
-    color: #FFFFFF;
-    padding: 12px 24px;
-    border-radius: 9999px;
-    font-size: 13px;
-    font-weight: 600;
-    z-index: 9999;
-    box-shadow: 0 10px 25px rgba(12, 42, 70, 0.35);
-    max-width: 90%;
-    text-align: center;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    animation: toastIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  @keyframes toastIn {
-    from { opacity: 0; transform: translate(-50%, 15px) scale(0.96); }
-    to { opacity: 1; transform: translate(-50%, 0) scale(1); }
-  }
-
-  /* Wave animation */
-  .wave-pulse {
-    animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-  }
+        .wave-divider {
+            background-image: url("data:image/svg+xml,%3Csvg width='100%25' height='24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 12 Q 25 24 50 12 T 100 12 T 150 12' stroke='%23DCEBF2' fill='none' stroke-width='1'/%3E%3C/svg%3E");
+            background-repeat: repeat-x;
+            height: 24px;
+            width: 100%;
+        }
 </style>
 </head>
-<body>
-
-<div class="app-shell" id="phone">
-  <div id="app" class="flex-1 flex flex-col min-h-screen relative"></div>
+<body class="bg-background text-on-surface antialiased">
+<!-- TopNavBar -->
+<nav class="w-full h-20 shadow-sm bg-background border-b border-soft-sky/30 sticky top-0 z-50">
+<div class="flex justify-between items-center px-margin-desktop max-w-[1200px] mx-auto h-full">
+<a href="index.html" class="flex items-center gap-4">
+<img alt="SagarSambandh.in Logo" class="h-10 w-10 object-contain rounded-md md:block" src="https://lh3.googleusercontent.com/aida/AEtjO1WE5ahoB1pdfSyoyVif2Z7Kbv3eqR1rRPDTA-Fm-EthV_kjfCTjkwh70BTGZU9s-ipVGCFHRxZrkl58MmXVJ1zJSGWybB8EZxNBXffAgFBdCT72GIApS9mYboXMnBJOWpXAsvY4TBiqsF-APUEv6wvASPeEkTDr7aMqYsWSWXjXiVWWYT140r-3IFQtImkbX3AnXzfMjwCCoXeMOdcSH4-Eqr1MEhQaDlHnPTFvT3ZRb3ujLwLKpziqAMPw">
+<span class="font-title-md text-title-md text-primary tracking-tight" style="color: rgb(127, 179, 213);">SagarSambandh.in</span>
+</a>
+<div class="hidden md:flex items-center gap-8">
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors duration-200" href="discover.html">Browse</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors duration-200" href="interests.html">Matches</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors duration-200" href="profile.html">Profile</a>
+<a class="font-body-md text-body-md font-bold text-earth-warmth hover:underline transition-colors duration-200" href="login.html">Login</a>
 </div>
-
-<script>
-// ============================================================
-// FIREBASE SETUP
-// ============================================================
-const firebaseConfig = {
-  apiKey: "AIzaSyDeGx5aNtf8aPRviA4rYfdM0Nc65F_35is",
-  authDomain: "sagar-sambandh.firebaseapp.com",
-  projectId: "sagar-sambandh",
-  storageBucket: "sagar-sambandh.firebasestorage.app",
-  messagingSenderId: "822553770547",
-  appId: "1:822553770547:web:ffb69be461f4a38d5d8146",
-};
-
-let db = null;
-let storage = null;
-let auth = null;
-let firebaseReady = false;
-let firebaseError = null;
-
-try {
-  firebase.initializeApp(firebaseConfig);
-  db = firebase.firestore();
-  storage = firebase.storage();
-  auth = firebase.auth();
-  firebaseReady = true;
-} catch (e) {
-  firebaseError = e.message;
-}
-
-const RECAPTCHA_V3_SITE_KEY = "REPLACE_WITH_RECAPTCHA_V3_SITE_KEY";
-if (firebaseReady && RECAPTCHA_V3_SITE_KEY !== "REPLACE_WITH_RECAPTCHA_V3_SITE_KEY") {
-  try {
-    firebase.appCheck().activate(
-      new firebase.appCheck.ReCaptchaV3Provider(RECAPTCHA_V3_SITE_KEY),
-      true
-    );
-  } catch (e) { console.warn("App Check activation failed:", e.message); }
-}
-
-let authReadyPromise = firebaseReady
-  ? new Promise((resolve) => {
-      auth.onAuthStateChanged(async (user) => {
-        if (!user) {
-          try { await auth.signInAnonymously(); }
-          catch (e) { firebaseError = "Auth failed: " + e.message; }
-        }
-        resolve();
-      });
-    })
-  : Promise.resolve();
-
-function mobileToEmail(mobile){ return `${mobile}@sagarsambandh.local`; }
-function pinToPassword(pin){ return `sagar${pin}bandh`; }
-
-// ============================================================
-// DATA SERVICE — Firestore calls
-// ============================================================
-const dataService = {
-  async signup(mobile, pin, name, village) {
-    if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
-    let cred;
-    try {
-      cred = await auth.createUserWithEmailAndPassword(mobileToEmail(mobile), pinToPassword(pin));
-    } catch (e) {
-      if (e.code === "auth/email-already-in-use") throw new Error("આ Mobile Number થી પહેલેથી account છે — Login કરો");
-      throw new Error(e.message || "Account બની ના શક્યું");
-    }
-    await db.collection("users").doc(cred.user.uid).set({
-      name, village, mobile, createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-    });
-    return { id: cred.user.uid, name, mobile, village };
-  },
-
-  async login(mobile, pin) {
-    if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
-    let cred;
-    try {
-      cred = await auth.signInWithEmailAndPassword(mobileToEmail(mobile), pinToPassword(pin));
-    } catch (e) {
-      if (e.code === "auth/user-not-found") throw new Error("આ Mobile Number થી કોઈ account નથી — 'નવું Account બનાવો' પસંદ કરો");
-      if (e.code === "auth/wrong-password" || e.code === "auth/invalid-credential") throw new Error("PIN ખોટો છે");
-      throw new Error(e.message || "Login ના થયું");
-    }
-    const doc = await db.collection("users").doc(cred.user.uid).get();
-    if (!doc.exists) throw new Error("Account ડેટા ના મળ્યો — Admin નો સંપર્ક કરો");
-    const data = doc.data();
-    if (data.blocked) {
-      await auth.signOut();
-      throw new Error("તમારું account block કરવામાં આવ્યું છે. Admin નો સંપર્ક કરો.");
-    }
-    return { id: cred.user.uid, name: data.name, mobile: data.mobile, village: data.village };
-  },
-
-  async logout() {
-    if (auth) await auth.signOut();
-  },
-
-  async getProfiles(userId) {
-    if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
-    const snap = await db.collection("candidates").where("status", "==", "approved").get();
-    let profiles = snap.docs.map(d => ({ id: d.id, ...d.data() })).filter(p => !p.deactivated);
-
-    let myRef = null;
-    if (userId) {
-      const mySnap = await db.collection("candidates").where("createdByUserId", "==", userId).get();
-      const myCandidates = mySnap.docs.map(d => d.data());
-      if (myCandidates.length > 0) myRef = myCandidates[0];
-    }
-    const COMPATIBLE_RASHI = {
-      "મેષ":["સિંહ","ધન"], "વૃષભ":["કન્યા","મકર"], "મિથુન":["તુલા","કુંભ"], "કર્ક":["વૃશ્ચિક","મીન"],
-      "સિંહ":["મેષ","ધન"], "કન્યા":["વૃષભ","મકર"], "તુલા":["મિથુન","કુંભ"], "વૃશ્ચિક":["કર્ક","મીન"],
-      "ધન":["મેષ","સિંહ"], "મકર":["વૃષભ","કન્યા"], "કુંભ":["મિથુન","તુલા"], "મીન":["કર્ક","વૃશ્ચિક"],
-    };
-    profiles = profiles.map(p => {
-      if (!myRef) return { ...p, matchScore: null };
-      let score = 0;
-      if (myRef.city && p.city && myRef.city === p.city) score += 1;
-      const ageDiff = Math.abs((myRef.age||0) - (p.age||0));
-      if (ageDiff <= 5) score += 2; else if (ageDiff <= 8) score += 1;
-      if (myRef.rashi && p.rashi) {
-        if (myRef.rashi === p.rashi) score += 1;
-        else if ((COMPATIBLE_RASHI[myRef.rashi]||[]).includes(p.rashi)) score += 1.5;
-      }
-      if (myRef.education && p.education && myRef.education === p.education) score += 1;
-      const finalScore = Math.min(5, Math.round(score * 2) / 2);
-      return { ...p, matchScore: finalScore };
-    });
-    return profiles;
-  },
-
-  async getProfileById(id) {
-    if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
-    const d = await db.collection("candidates").doc(id).get();
-    if (!d.exists) return null;
-    return { id: d.id, ...d.data() };
-  },
-
-  async sendInterest(userId, candidateId) {
-    if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
-    await db.collection("interests").add({
-      fromUserId: userId, toCandidateId: candidateId, status: "pending",
-      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-    });
-    return { success: true };
-  },
-
-  async getReceivedInterests(userId) {
-    if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
-    const myCandidates = await db.collection("candidates").where("createdByUserId", "==", userId).get();
-    const myCandidateIds = myCandidates.docs.map(d => d.id);
-    const candidateNameById = {};
-    myCandidates.docs.forEach(d => { candidateNameById[d.id] = d.data().name; });
-    if (myCandidateIds.length === 0) return [];
-    const results = [];
-    for (const cid of myCandidateIds) {
-      const snap = await db.collection("interests").where("toCandidateId", "==", cid).get();
-      for (const d of snap.docs) {
-        const data = d.data();
-        let fromUserName = "સભ્ય";
-        try {
-          const fromUserDoc = await db.collection("users").doc(data.fromUserId).get();
-          if (fromUserDoc.exists) fromUserName = fromUserDoc.data().name;
-        } catch(e){}
-        results.push({ id: d.id, ...data, forCandidateName: candidateNameById[cid], fromUserName });
-      }
-    }
-    return results.sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
-  },
-
-  async respondToInterest(interestId, response) {
-    if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
-    await db.collection("interests").doc(interestId).update({ status: response });
-    return { success: true };
-  },
-
-  async getMyCandidates(userId) {
-    if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
-    const snap = await db.collection("candidates").where("createdByUserId", "==", userId).get();
-    return snap.docs.map(d => ({ id: d.id, ...d.data() }))
-      .sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
-  },
-
-  async deactivateCandidate(candidateId) {
-    if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
-    await db.collection("candidates").doc(candidateId).update({ deactivated: true });
-    return { success: true };
-  },
-
-  async activateCandidate(candidateId) {
-    if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
-    await db.collection("candidates").doc(candidateId).update({ deactivated: false });
-    return { success: true };
-  },
-
-  async updateCandidate(candidateId, payload) {
-    if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
-    await db.collection("candidates").doc(candidateId).update({
-      ...payload,
-      status: "pending",
-    });
-    return { success: true };
-  },
-
-  async uploadPhoto(candidateId, file) {
-    if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
-    const ref = storage.ref().child(`candidates/${candidateId}/photo.jpg`);
-    await ref.put(file);
-    const url = await ref.getDownloadURL();
-    await db.collection("candidates").doc(candidateId).update({
-      photoURL: url,
-      status: "pending",
-    });
-    return url;
-  },
-
-  async uploadDocument(candidateId, docKey, file) {
-    if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
-    const ref = storage.ref().child(`candidates/${candidateId}/docs/${docKey}`);
-    await ref.put(file);
-    const url = await ref.getDownloadURL();
-    await db.collection("candidates").doc(candidateId).update({
-      [`docs.${docKey}`]: { url, uploadedAt: new Date().toISOString(), name: file.name },
-      status: "pending",
-    });
-    return url;
-  },
-
-  async createCandidate(userId, payload) {
-    if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
-    const existing = await db.collection("candidates").where("createdByUserId", "==", userId).get();
-    const activeCount = existing.docs.filter(d => !d.data().deactivated).length;
-    if (activeCount >= 4) throw new Error("એક account થી વધુમાં વધુ 4 active profiles બની શકે છે");
-    const photoStyles = [
-      { color:"linear-gradient(145deg, #145C82 0%, #0C2A46 100%)", emoji: payload.gender==="female" ? "👧" : "👦" },
-    ];
-    const ref = await db.collection("candidates").add({
-      ...payload,
-      createdByUserId: userId,
-      status: "pending",
-      photoVisible: false,
-      photoColor: photoStyles[0].color,
-      photoEmoji: photoStyles[0].emoji,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-    });
-    return { id: ref.id };
-  },
-
-  async setPhotoVisibility(candidateId, visible) {
-    if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
-    await db.collection("candidates").doc(candidateId).update({ photoVisible: visible });
-    return { success: true };
-  },
-};
-
-// ============================================================
-// APP STATE & MULTILINGUAL STRINGS
-// ============================================================
-const app = document.getElementById("app");
-let state = {
-  screen: "checking",
-  user: null,
-  pendingMobile: "",
-  openProfileId: null,
-  formDraft: {},
-  uploadCandidateId: null,
-  editCandidateId: null,
-  lang: "gu"
-};
-
-const STRINGS = {
-  gu: {
-    welcome: "નમસ્તે 🙏",
-    home: "સંબંધ શોધો",
-    search: "શોધો",
-    interest: "Interests",
-    profile: "પ્રોફાઇલ",
-    myProfiles: "મારા ઉમેદવારો",
-    myProfilesSub: "તમે બનાવેલા Candidate Profiles (મહત્તમ 4)",
-    interestsTitle: "સંબંધો અને રિકવેસ્ટ",
-    interestsSub: "તમારા ઉમેદવારો માટે આવેલી Interest વિનંતીઓ",
-    browseSub: "પોરબંદર ખારવા સમાજ • વેરિફાઇડ સંબંધો",
-    formStep1Title: "ઉમેદવાર ફોર્મ",
-    candidateName: "ઉમેદવારનું પૂરું નામ",
-    candidateNamePh: "દા.ત. પ્રિયા કિરીટભાઈ સોલંકી",
-    gender: "જાતિ (Gender)",
-    genderPh: "પસંદ કરો",
-    age: "ઉંમર",
-    agePh: "દા.ત. 26",
-    fatherName: "પિતાનું પૂરું નામ",
-    fatherNamePh: "પિતાનું પૂરું નામ",
-    motherName: "માતાનું નામ",
-    motherNamePh: "માતાનું પૂરું નામ",
-    rashi: "રાશી",
-    rashiPh: "રાશી પસંદ કરો",
-    fillAllFields: "કૃપા કરીને બધા જરૂરી fields ભરો",
-    nextBtn: "આગળ વધો →",
-    formStep2Title: "શિક્ષણ અને રહેઠાણ",
-    education: "શિક્ષણ",
-    educationPh: "દા.ત. B.Com, B.E., MBA",
-    occupation: "વ્યવસાય",
-    occupationPh: "દા.ત. Software Engineer, વેપાર",
-    city: "શહેર / ગામ",
-    cityPh: "દા.ત. પોરબંદર",
-    maritalStatus: "વૈવાહિક દરજ્જો",
-    maritalStatusPh: "દરજ્જો પસંદ કરો",
-    siblings: "ભાઈ-બહેન ની વિગત (Optional)",
-    siblingsPh: "દા.ત. 1 ભાઈ, 1 બહેન",
-    eduCityRequired: "શિક્ષણ અને શહેર ભરવા જરૂરી છે",
-    reviewTitle: "Review અને Submit",
-    reviewEditTitle: "Review અને Update",
-    reviewCheck: "તમે ભરેલી વિગતો ધ્યાનપૂર્વક ચકાસો",
-    submitBtn: "Submit કરો ✓",
-    updateBtn: "Update કરો ✓",
-    submitting: "Submit થઈ રહ્યું છે...",
-    updating: "Update થઈ રહ્યું છે...",
-    submitSuccess: "✓ વિગતો સાચવાઈ ગઈ! હવે Photo ઉમેરો",
-    updateSuccess: "✓ Update થયું! Admin ફરી verify કરશે",
-    reviewNote: "Submit કર્યા પછી, Admin આ profile ને verify કરશે. Approve થયા પછી જ profile બીજા members ને દેખાશે.",
-    reviewEditNote: "Update કર્યા પછી, profile ફરીથી Admin approval ની રાહ જોશે (re-verification જરૂરી).",
-    docsTitle: "Photo અને Documents",
-    photoVisible: "મારો Photo બીજા સભ્યોને દેખાડો",
-    photoDefault: "Default: છુપાયેલો — ગમે ત્યારે My Profiles માંથી બદલી શકાય",
-    docsRequired: "ઓળખ અને ચકાસણી દસ્તાવેજો",
-    docsNote: "Documents ફક્ત Admin verification માટે વપરાશે. Approve થયા પછી server પરથી delete થઈ જશે.",
-    doneBtn: "પૂર્ણ — My Profiles પર જાવ →",
-    photoPh: "સ્પષ્ટ, પાસપોર્ટ સાઇઝનો તાજેતરનો ફોટો",
-  },
-  en: {
-    welcome: "Welcome 🙏",
-    home: "Discover",
-    search: "Search",
-    interest: "Interests",
-    profile: "Profile",
-    myProfiles: "My Profiles",
-    myProfilesSub: "Candidate profiles you created (max 4)",
-    interestsTitle: "Connections & Requests",
-    interestsSub: "Interest requests received for your candidates",
-    browseSub: "Porbandar Kharwa Samaj • Verified Matrimony",
-    formStep1Title: "Candidate Form",
-    candidateName: "Candidate's Full Name",
-    candidateNamePh: "e.g. Priya Kiritbhai Solanki",
-    gender: "Gender",
-    genderPh: "Select Gender",
-    age: "Age",
-    agePh: "e.g. 26",
-    fatherName: "Father's Full Name",
-    fatherNamePh: "Father's full name",
-    motherName: "Mother's Name",
-    motherNamePh: "Mother's full name",
-    rashi: "Zodiac Sign (Rashi)",
-    rashiPh: "Select Zodiac Sign",
-    fillAllFields: "Please fill all required fields",
-    nextBtn: "Continue →",
-    formStep2Title: "Education & Address",
-    education: "Education",
-    educationPh: "e.g. B.Com, B.E., MBA",
-    occupation: "Occupation",
-    occupationPh: "e.g. Software Engineer, Business",
-    city: "City / Town",
-    cityPh: "e.g. Porbandar",
-    maritalStatus: "Marital Status",
-    maritalStatusPh: "Select Marital Status",
-    siblings: "Siblings Detail (Optional)",
-    siblingsPh: "e.g. 1 Brother, 1 Sister",
-    eduCityRequired: "Education and City are required",
-    reviewTitle: "Review & Submit",
-    reviewEditTitle: "Review & Update",
-    reviewCheck: "Verify candidate details carefully",
-    submitBtn: "Submit Profile ✓",
-    updateBtn: "Update Profile ✓",
-    submitting: "Submitting...",
-    updating: "Updating...",
-    submitSuccess: "✓ Details saved! Now upload photo/documents",
-    updateSuccess: "✓ Updated! Admin will re-verify",
-    reviewNote: "After submission, Admin will verify this profile. It will be visible to other members only after approval.",
-    reviewEditNote: "After update, the profile will await Admin re-approval.",
-    docsTitle: "Photo & Verification Docs",
-    photoVisible: "Show photo to other community members",
-    photoDefault: "Default: Hidden — can be changed anytime from My Profiles",
-    docsRequired: "Required Verification Documents",
-    docsNote: "Documents are only used for Admin verification and will be safely deleted after approval.",
-    doneBtn: "Done — Go to My Profiles →",
-    photoPh: "Passport size, recent clear photograph",
-  },
-};
-
-function t(key){ return (STRINGS[state.lang] && STRINGS[state.lang][key]) || STRINGS.gu[key] || key; }
-
-function langToggleHtml(){
-  return `
-    <div class="flex items-center bg-white/20 backdrop-blur-md rounded-full p-1 border border-white/30 text-[11px] font-semibold">
-      <button data-lang-btn="gu" class="px-2.5 py-1 rounded-full transition-all ${state.lang==='gu'?'bg-white text-deep-ocean shadow-sm font-bold':'text-white hover:text-white/90'}">ગુજ</button>
-      <button data-lang-btn="en" class="px-2.5 py-1 rounded-full transition-all ${state.lang==='en'?'bg-white text-deep-ocean shadow-sm font-bold':'text-white hover:text-white/90'}">EN</button>
-    </div>
-  `;
-}
-
-function attachLangToggle(){
-  document.querySelectorAll("[data-lang-btn]").forEach(el=>{
-    el.addEventListener("click", ()=>{
-      state.lang = el.getAttribute("data-lang-btn");
-      render();
-    });
-  });
-}
-
-function showToast(msg){
-  const existing = document.querySelector(".toast");
-  if(existing) existing.remove();
-  const t = document.createElement("div");
-  t.className = "toast";
-  t.textContent = msg;
-  document.body.appendChild(t);
-  setTimeout(()=> t.remove(), 2800);
-}
-
-// ============================================================
-// BOTTOM NAVIGATION COMPONENT (Floating Pill Design)
-// ============================================================
-function bottomNavHtml(active){
-  const items = [
-    { key: "home", icon: "search", label: "શોધો" },
-    { key: "interest", icon: "favorite", label: "Interests" },
-    { key: "profile", icon: "person", label: "પ્રોફાઇલ" }
-  ];
-  return `
-    <nav class="fixed bottom-0 left-0 right-0 z-40 flex justify-center pointer-events-none pb-3 sm:pb-5">
-      <div class="pointer-events-auto bg-white/95 backdrop-blur-md border border-soft-sky shadow-[0_8px_30px_rgba(12,42,70,0.12)] rounded-full px-7 py-2.5 flex items-center justify-around gap-8 max-w-sm w-[90%] sm:w-auto">
-        ${items.map(item => {
-          const isActive = active === item.key;
-          return `
-            <button data-nav="${item.key}" class="flex flex-col items-center gap-0.5 transition-transform active:scale-95 ${isActive ? 'text-deep-ocean font-bold' : 'text-on-surface-variant hover:text-deep-ocean'}">
-              <span class="material-symbols-outlined text-[24px] ${isActive ? 'material-symbols-fill text-horizon-blue' : ''}">${item.icon}</span>
-              <span class="text-[10px] tracking-tight">${item.label}</span>
-            </button>
-          `;
-        }).join("")}
-      </div>
-    </nav>
-  `;
-}
-
-function attachNavEvents(){
-  document.querySelectorAll("[data-nav]").forEach(el => {
-    el.addEventListener("click", () => {
-      const k = el.getAttribute("data-nav");
-      if (k === "home") { state.screen = "home"; render(); }
-      else if (k === "profile") { state.screen = "myProfiles"; render(); }
-      else if (k === "interest") { state.screen = "interest"; render(); }
-    });
-  });
-}
-
-// Wave SVG Divider
-function waveDividerSvg(color = "text-surface-container-lowest") {
-  return `
-    <div class="w-full overflow-hidden leading-none">
-      <svg class="w-full h-5 sm:h-6 ${color} fill-current" preserveAspectRatio="none" viewBox="0 0 1440 120">
-        <path d="M0,64L80,69.3C160,75,320,85,480,80C640,75,800,53,960,48C1120,43,1280,53,1360,58.7L1440,64L1440,120L1360,120C1280,120,1120,120,960,120C800,120,640,120,480,120C320,120,160,120,80,120L0,120Z"></path>
-      </svg>
-    </div>
-  `;
-}
-
-// ============================================================
-// SCREEN ROUTER
-// ============================================================
-function render(){
-  window.scrollTo(0,0);
-  if(state.screen==="checking") renderChecking();
-  else if(state.screen==="mobileEntry") renderMobileEntry();
-  else if(state.screen==="loginPin") renderLoginPin();
-  else if(state.screen==="signupDetails") renderSignupDetails();
-  else if(state.screen==="home") renderHome();
-  else if(state.screen==="detail") renderDetail();
-  else if(state.screen==="myProfiles") renderMyProfiles();
-  else if(state.screen==="interest") renderInterest();
-  else if(state.screen==="formStep1") renderFormStep1();
-  else if(state.screen==="formStep2") renderFormStep2();
-  else if(state.screen==="formReview") renderFormReview();
-  else if(state.screen==="formDocs") renderFormDocs();
-}
-
-// ============================================================
-// 1. SCREEN: CHECKING & INITIALIZATION
-// ============================================================
-function renderChecking(){
-  app.innerHTML = `
-    <div class="flex-1 flex flex-col items-center justify-center p-8 text-center bg-cream-base">
-      <!-- Animated Wave Logo Icon -->
-      <div class="relative w-24 h-24 mb-6 flex items-center justify-center">
-        <div class="absolute inset-0 rounded-full bg-soft-sky opacity-40 animate-ping"></div>
-        <div class="w-20 h-20 rounded-full bg-gradient-to-tr from-deep-ocean to-horizon-blue flex items-center justify-center text-white shadow-ambient-lg relative z-10">
-          <span class="material-symbols-outlined text-4xl text-sky-200">waves</span>
-        </div>
-      </div>
-      <h1 class="font-display text-2xl font-bold text-deep-ocean tracking-tight">સાગર સંબંધ</h1>
-      <p class="font-sans text-xs text-on-surface-variant mt-1.5 font-medium">પોરબંદર ખારવા સમાજ મેટ્રિમોનિઅલ પોર્ટલ</p>
-      
-      <div class="mt-8 flex items-center gap-2 text-xs text-horizon-blue font-semibold bg-white/80 border border-soft-sky px-4 py-2 rounded-full shadow-sm">
-        <span class="material-symbols-outlined text-base animate-spin">progress_activity</span>
-        <span>કનેક્શન ચકાસી રહ્યા છીએ...</span>
-      </div>
-    </div>
-  `;
-
-  setTimeout(async ()=>{
-    if(!firebaseReady){
-      app.innerHTML = `
-        <div class="p-6 bg-cream-base flex-1 flex flex-col justify-center text-center">
-          <div class="w-14 h-14 mx-auto rounded-full bg-red-100 text-danger flex items-center justify-center mb-4">
-            <span class="material-symbols-outlined text-3xl">cloud_off</span>
-          </div>
-          <h2 class="font-display text-xl font-bold text-deep-ocean">કનેક્શન ક્ષતિ (Connection Issue)</h2>
-          <p class="text-xs text-on-surface-variant mt-2 max-w-xs mx-auto">Firebase સેવાઓ લોડ થઈ શકી નથી. કૃપા કરીને ઇન્ટરનેટ કનેક્શન તપાસો અથવા પેજ રિફ્રેશ કરો.</p>
-          <p class="text-[11px] text-danger mt-3 bg-red-50 p-3 rounded-xl border border-red-200">${firebaseError || "Unknown error"}</p>
-          <button onclick="location.reload()" class="mt-6 bg-deep-ocean text-white font-bold py-3 px-6 rounded-xl text-sm shadow-sm hover:bg-horizon-blue transition-all">
-            ફરી પ્રયાસ કરો (Retry)
-          </button>
-        </div>
-      `;
-      return;
-    }
-
-    await authReadyPromise;
-    const currentUser = auth.currentUser;
-    if(currentUser && !currentUser.isAnonymous){
-      try{
-        const userDoc = await db.collection("users").doc(currentUser.uid).get();
-        if(userDoc.exists){
-          const data = userDoc.data();
-          if(!data.blocked){
-            state.user = { id: currentUser.uid, name: data.name, mobile: data.mobile, village: data.village };
-            state.screen = "home";
-            render();
-            return;
-          }
-        }
-      }catch(e){}
-    }
-    state.screen = "mobileEntry";
-    render();
-  }, 400);
-}
-
-// ============================================================
-// 2. SCREEN: MOBILE ENTRY (Login / Signup)
-// ============================================================
-function renderMobileEntry(){
-  app.innerHTML = `
-    <div class="flex-1 flex flex-col justify-between bg-cream-base relative overflow-hidden">
-      <!-- Decorative Background SVG -->
-      <div class="absolute -top-12 -right-12 w-64 h-64 bg-soft-sky/40 rounded-full blur-3xl pointer-events-none"></div>
-      <div class="absolute top-1/2 -left-16 w-56 h-56 bg-premium-blue/10 rounded-full blur-2xl pointer-events-none"></div>
-
-      <!-- Top Header Bar with Language Switcher -->
-      <div class="p-6 pb-0 flex items-center justify-between relative z-10">
-        <div class="flex items-center gap-2">
-          <div class="w-9 h-9 rounded-xl bg-deep-ocean flex items-center justify-center text-white shadow-sm">
-            <span class="material-symbols-outlined text-xl text-sky-200">waves</span>
-          </div>
-          <span class="font-display font-bold text-deep-ocean text-base">SagarSambandh</span>
-        </div>
-        ${langToggleHtml()}
-      </div>
-
-      <!-- Main Login Card Container -->
-      <div class="p-6 my-auto relative z-10">
-        <div class="bg-white rounded-3xl p-7 shadow-ambient border border-soft-sky/60">
-          <div class="text-center mb-6">
-            <div class="inline-flex items-center gap-1.5 bg-soft-sky/50 text-horizon-blue px-3 py-1 rounded-full text-xs font-semibold mb-3 border border-soft-sky">
-              <span class="material-symbols-outlined text-sm">verified_user</span>
-              <span>૧૦૦% સુરક્ષિત ખારવા સમાજ મંચ</span>
-            </div>
-            <h1 class="font-display text-2xl sm:text-3xl font-bold text-deep-ocean tracking-tight">નમસ્તે 🙏 ચાલો શરૂ કરીએ</h1>
-            <p class="font-sans text-xs text-on-surface-variant mt-2">યોગ્ય જીવનસાથીની શોધ અહીંથી શરૂ થાય છે</p>
-          </div>
-
-          <div class="space-y-4">
-            <div>
-              <label class="block text-xs font-bold text-deep-ocean mb-1.5">મોબાઈલ નંબર (Mobile Number)</label>
-              <div class="relative flex items-center">
-                <span class="absolute left-3.5 text-on-surface-variant text-sm font-semibold border-r border-soft-sky pr-2">+91</span>
-                <input id="f-mobile" type="tel" maxlength="10" placeholder="98765 43210"
-                  class="w-full pl-14 pr-4 py-3.5 rounded-xl border border-soft-sky bg-surface/50 font-sans text-sm font-semibold text-deep-ocean placeholder:text-outline-variant input-glow transition-all">
-              </div>
-            </div>
-
-            <div id="f-err"></div>
-
-            <div class="pt-2 space-y-3">
-              <button id="f-login" class="w-full bg-earth-warmth hover:bg-earth-dark text-white py-3.5 rounded-xl text-sm font-bold shadow-ambient transition-all duration-200 flex items-center justify-center gap-2 active:scale-[0.98]">
-                <span>Login કરો (પહેલેથી ખાતું છે)</span>
-                <span class="material-symbols-outlined text-base">arrow_forward</span>
-              </button>
-
-              <button id="f-signup" class="w-full bg-surface border border-soft-sky text-deep-ocean hover:border-horizon-blue py-3 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2 active:scale-[0.98]">
-                <span class="material-symbols-outlined text-base text-horizon-blue">person_add</span>
-                <span>નવું ખાતું બનાવો (Register)</span>
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div class="text-center mt-6 text-[11px] text-on-surface-variant">
-          🔒 સુરક્ષા: તમારો નંબર ફક્ત વેરિફિકેશન માટે વપરાય છે.
-        </div>
-      </div>
-
-      <!-- Footer Branding -->
-      <div class="p-4 text-center text-[11px] text-on-surface-variant/80">
-        શ્રી પોરબંદર સમગ્ર ખારવા જ્ઞાતિ મેટ્રિમોનિઅલ પોર્ટલ © 2026
-      </div>
-    </div>
-  `;
-
-  attachLangToggle();
-  const mobileInput = document.getElementById("f-mobile");
-  mobileInput.addEventListener("input", (e)=>{
-    e.target.value = e.target.value.replace(/\D/g,'').slice(0,10);
-  });
-  mobileInput.focus();
-
-  function proceed(target){
-    const mobile = mobileInput.value.trim();
-    const errEl = document.getElementById("f-err");
-    errEl.innerHTML = "";
-    if(mobile.length !== 10){
-      errEl.innerHTML = `<div class="bg-red-50 text-danger text-xs font-semibold p-2.5 rounded-xl border border-red-200 flex items-center gap-1.5"><span class="material-symbols-outlined text-sm">error</span>10-અંકનો સાચો મોબાઈલ નંબર દાખલ કરો</div>`;
-      mobileInput.focus();
-      return;
-    }
-    state.pendingMobile = mobile;
-    state.screen = target;
-    render();
-  }
-
-  document.getElementById("f-login").addEventListener("click", ()=> proceed("loginPin"));
-  document.getElementById("f-signup").addEventListener("click", ()=> proceed("signupDetails"));
-}
-
-// ============================================================
-// 3. SCREEN: LOGIN PIN
-// ============================================================
-function renderLoginPin(){
-  app.innerHTML = `
-    <div class="flex-1 flex flex-col justify-between bg-cream-base p-6">
-      <div>
-        <!-- Back Navigation -->
-        <button id="pin-back" class="inline-flex items-center gap-1 text-deep-ocean text-xs font-bold p-2 -ml-2 rounded-lg hover:bg-soft-sky/40 transition-colors">
-          <span class="material-symbols-outlined text-lg">arrow_back</span>
-          <span>નંબર બદલો</span>
-        </button>
-
-        <div class="mt-6 bg-white rounded-3xl p-7 shadow-ambient border border-soft-sky/60">
-          <div class="w-12 h-12 rounded-2xl bg-soft-sky/50 text-horizon-blue flex items-center justify-center mb-4">
-            <span class="material-symbols-outlined text-2xl">lock</span>
-          </div>
-          <h1 class="font-display text-2xl font-bold text-deep-ocean tracking-tight">🔐 સુરક્ષિત PIN દાખલ કરો</h1>
-          <p class="text-xs text-on-surface-variant mt-1.5 font-medium">
-            <b class="text-deep-ocean">+91 ${state.pendingMobile}</b> માટે તમારો 4-અંકનો લૉગિન PIN
-          </p>
-
-          <div class="flex justify-center gap-3 my-8">
-            ${[0,1,2,3].map(i=>`<input class="otp-box font-sans" maxlength="1" inputmode="numeric" type="password" data-pin="${i}">`).join("")}
-          </div>
-
-          <div id="pin-err"></div>
-
-          <button id="pin-submit" disabled class="w-full mt-2 bg-earth-warmth hover:bg-earth-dark disabled:opacity-50 disabled:cursor-not-allowed text-white py-3.5 rounded-xl text-sm font-bold shadow-ambient transition-all flex items-center justify-center gap-2">
-            <span>Login કરો</span>
-            <span class="material-symbols-outlined text-base">arrow_forward</span>
-          </button>
-        </div>
-      </div>
-
-      <div class="text-center text-xs text-on-surface-variant py-4">
-        PIN ભૂલી ગયા છો? સહાયતા માટે એડમિનનો સંપર્ક કરો.
-      </div>
-    </div>
-  `;
-
-  const boxes = Array.from(document.querySelectorAll("[data-pin]"));
-  const submitBtn = document.getElementById("pin-submit");
-  function checkFull(){ submitBtn.disabled = boxes.some(b=>!b.value); }
-
-  boxes.forEach((b,i)=>{
-    b.addEventListener("input", ()=>{
-      b.value = b.value.replace(/\D/g,'').slice(0,1);
-      if(b.value && boxes[i+1]) boxes[i+1].focus();
-      checkFull();
-    });
-    b.addEventListener("keydown", (e)=>{
-      if(e.key === "Backspace" && !b.value && boxes[i-1]){
-        boxes[i-1].focus();
-      }
-    });
-  });
-  if(boxes[0]) setTimeout(()=> boxes[0].focus(), 150);
-
-  document.getElementById("pin-back").addEventListener("click", ()=>{ state.screen = "mobileEntry"; render(); });
-
-  submitBtn.addEventListener("click", async (e)=>{
-    const pin = boxes.map(b=>b.value).join("");
-    const errEl = document.getElementById("pin-err");
-    errEl.innerHTML = "";
-    submitBtn.disabled = true;
-    submitBtn.innerHTML = `<span class="material-symbols-outlined text-base animate-spin">progress_activity</span><span>લૉગિન થઈ રહ્યા છીએ...</span>`;
-    try{
-      const result = await dataService.login(state.pendingMobile, pin);
-      state.user = result;
-      showToast(`નમસ્તે ${result.name || "સભ્ય"}! સ્વાગત છે 🙏`);
-      state.screen = "home";
-      render();
-    }catch(err){
-      submitBtn.disabled = false;
-      submitBtn.innerHTML = `<span>Login કરો</span><span class="material-symbols-outlined text-base">arrow_forward</span>`;
-      boxes.forEach(b=>b.value="");
-      if(boxes[0]) boxes[0].focus();
-      errEl.innerHTML = `<div class="bg-red-50 text-danger text-xs font-semibold p-3 rounded-xl border border-red-200 mb-3 flex items-center gap-1.5"><span class="material-symbols-outlined text-sm">error</span>${err.message}</div>`;
-    }
-  });
-}
-
-// ============================================================
-// 4. SCREEN: SIGNUP DETAILS
-// ============================================================
-function renderSignupDetails(){
-  app.innerHTML = `
-    <div class="flex-1 flex flex-col justify-between bg-cream-base p-6">
-      <div>
-        <button id="cp-back" class="inline-flex items-center gap-1 text-deep-ocean text-xs font-bold p-2 -ml-2 rounded-lg hover:bg-soft-sky/40 transition-colors">
-          <span class="material-symbols-outlined text-lg">arrow_back</span>
-          <span>નંબર બદલો</span>
-        </button>
-
-        <div class="mt-4 bg-white rounded-3xl p-6 sm:p-7 shadow-ambient border border-soft-sky/60">
-          <div class="w-12 h-12 rounded-2xl bg-soft-sky/50 text-horizon-blue flex items-center justify-center mb-4">
-            <span class="material-symbols-outlined text-2xl">person_add</span>
-          </div>
-          <h1 class="font-display text-2xl font-bold text-deep-ocean tracking-tight">🙏 નવું ખાતું બનાવો</h1>
-          <p class="text-xs text-on-surface-variant mt-1 font-medium">+91 ${state.pendingMobile} — તમારી માહિતી અને લૉગિન PIN સેટ કરો</p>
-
-          <div class="space-y-3.5 mt-5">
-            <div>
-              <label class="block text-xs font-bold text-deep-ocean mb-1">તમારું પૂરું નામ</label>
-              <div class="relative">
-                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline-variant text-[20px]">person</span>
-                <input id="cp-name" placeholder="દા.ત. રમેશભાઈ સોલંકી"
-                  class="w-full pl-10 pr-4 py-3 rounded-xl border border-soft-sky bg-surface/50 font-sans text-xs sm:text-sm text-deep-ocean input-glow transition-all">
-              </div>
-            </div>
-
-            <div>
-              <label class="block text-xs font-bold text-deep-ocean mb-1">ગામ / શહેર</label>
-              <div class="relative">
-                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline-variant text-[20px]">location_on</span>
-                <input id="cp-village" placeholder="દા.ત. પોરબંદર"
-                  class="w-full pl-10 pr-4 py-3 rounded-xl border border-soft-sky bg-surface/50 font-sans text-xs sm:text-sm text-deep-ocean input-glow transition-all">
-              </div>
-            </div>
-
-            <div class="grid grid-cols-2 gap-3">
-              <div>
-                <label class="block text-xs font-bold text-deep-ocean mb-1">4-અંકનો PIN</label>
-                <input id="cp-pin" type="password" inputmode="numeric" maxlength="4" placeholder="••••"
-                  class="w-full text-center tracking-widest px-3 py-3 rounded-xl border border-soft-sky bg-surface/50 font-sans text-base font-bold text-deep-ocean input-glow transition-all">
-              </div>
-              <div>
-                <label class="block text-xs font-bold text-deep-ocean mb-1">PIN ફરીથી</label>
-                <input id="cp-pin2" type="password" inputmode="numeric" maxlength="4" placeholder="••••"
-                  class="w-full text-center tracking-widest px-3 py-3 rounded-xl border border-soft-sky bg-surface/50 font-sans text-base font-bold text-deep-ocean input-glow transition-all">
-              </div>
-            </div>
-
-            <!-- Samaj Declaration -->
-            <div class="flex items-start gap-3 bg-soft-sky/30 border border-soft-sky p-3.5 rounded-2xl mt-2">
-              <input type="checkbox" id="cp-agree" checked class="mt-0.5 accent-deep-ocean w-4 h-4 rounded cursor-pointer">
-              <label for="cp-agree" class="text-[11px] text-deep-ocean leading-relaxed cursor-pointer font-medium">
-                હું ખાતરી આપું છું કે હું <b>પોરબંદર ખારવા સમાજ</b> નો સભ્ય છું અને આપેલી તમામ વિગતો સાચી છે.
-              </label>
-            </div>
-
-            <div id="cp-err"></div>
-
-            <button id="cp-submit" class="w-full mt-2 bg-earth-warmth hover:bg-earth-dark text-white py-3.5 rounded-xl text-sm font-bold shadow-ambient transition-all flex items-center justify-center gap-2">
-              <span>ખાતું બનાવો અને આગળ વધો</span>
-              <span class="material-symbols-outlined text-base">check_circle</span>
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  `;
-
-  document.getElementById("cp-back").addEventListener("click", ()=>{ state.screen = "mobileEntry"; render(); });
-  ["cp-pin","cp-pin2"].forEach(id=>{
-    document.getElementById(id).addEventListener("input", (e)=>{ e.target.value = e.target.value.replace(/\D/g,'').slice(0,4); });
-  });
-
-  document.getElementById("cp-submit").addEventListener("click", async (e)=>{
-    const name = document.getElementById("cp-name").value.trim();
-    const village = document.getElementById("cp-village").value.trim();
-    const pin = document.getElementById("cp-pin").value.trim();
-    const pin2 = document.getElementById("cp-pin2").value.trim();
-    const agreed = document.getElementById("cp-agree").checked;
-    const errEl = document.getElementById("cp-err");
-    errEl.innerHTML = "";
-
-    if(!name || !village || !agreed){
-      errEl.innerHTML = `<div class="bg-red-50 text-danger text-xs font-semibold p-2.5 rounded-xl border border-red-200">બધા ખાના ભરો અને નિયમો સ્વીકારો</div>`;
-      return;
-    }
-    if(pin.length !== 4){
-      errEl.innerHTML = `<div class="bg-red-50 text-danger text-xs font-semibold p-2.5 rounded-xl border border-red-200">PIN બરાબર 4 અંકનો હોવો જોઈએ</div>`;
-      return;
-    }
-    if(pin !== pin2){
-      errEl.innerHTML = `<div class="bg-red-50 text-danger text-xs font-semibold p-2.5 rounded-xl border border-red-200">બંને PIN સરખા નથી</div>`;
-      return;
-    }
-
-    const btn = document.getElementById("cp-submit");
-    btn.disabled = true;
-    btn.innerHTML = `<span class="material-symbols-outlined text-base animate-spin">progress_activity</span><span>ખાતું બની રહ્યું છે...</span>`;
-    try{
-      const user = await dataService.signup(state.pendingMobile, pin, name, village);
-      state.user = user;
-      showToast("ખાતું સફળતાપૂર્વક બની ગયું! 🙏");
-      state.screen = "home";
-      render();
-    }catch(err){
-      btn.disabled = false;
-      btn.innerHTML = `<span>ખાતું બનાવો અને આગળ વધો</span><span class="material-symbols-outlined text-base">check_circle</span>`;
-      errEl.innerHTML = `<div class="bg-red-50 text-danger text-xs font-semibold p-2.5 rounded-xl border border-red-200">${err.message}</div>`;
-    }
-  });
-}
-
-// ============================================================
-// 5. SCREEN: HOME / DISCOVER MATCHES
-// ============================================================
-function renderHome(){
-  app.innerHTML = `
-    <!-- Top Header -->
-    <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-soft-sky/80 px-5 pt-4 pb-3">
-      <div class="flex items-center justify-between">
-        <div class="flex items-center gap-2.5">
-          <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-deep-ocean to-horizon-blue flex items-center justify-center text-white shadow-sm">
-            <span class="material-symbols-outlined text-lg text-sky-200">waves</span>
-          </div>
-          <div>
-            <h1 class="font-display font-bold text-deep-ocean text-lg leading-tight">SagarSambandh</h1>
-            <p class="text-[11px] text-on-surface-variant font-medium">${t('welcome')} ${state.user?.name || "સભ્ય"}</p>
-          </div>
-        </div>
-        ${langToggleHtml()}
-      </div>
-
-      <!-- Search Input -->
-      <div class="mt-3.5 relative flex items-center">
-        <span class="material-symbols-outlined absolute left-3.5 text-on-surface-variant text-[20px]">search</span>
-        <input id="home-search" placeholder="નામ, શહેર, વ્યવસાય, શિક્ષણ શોધો..."
-          class="w-full pl-10 pr-9 py-2.5 rounded-full border border-soft-sky bg-surface font-sans text-xs text-deep-ocean placeholder:text-outline-variant input-glow transition-all">
-        <button id="search-clear" class="absolute right-3 text-outline-variant hover:text-deep-ocean hidden">
-          <span class="material-symbols-outlined text-lg">close</span>
-        </button>
-      </div>
-
-      <!-- Filter Chips Row -->
-      <div class="flex gap-2 mt-3 overflow-x-auto pb-1 no-scrollbar text-xs font-semibold">
-        <button class="chip active flex items-center gap-1 px-3.5 py-1.5 rounded-full border border-deep-ocean bg-deep-ocean text-white transition-all whitespace-nowrap" data-gender="">
-          <span>બધા</span>
-        </button>
-        <button class="chip flex items-center gap-1 px-3.5 py-1.5 rounded-full border border-soft-sky bg-white text-deep-ocean hover:border-horizon-blue transition-all whitespace-nowrap" data-gender="male">
-          <span>👦 યુવક</span>
-        </button>
-        <button class="chip flex items-center gap-1 px-3.5 py-1.5 rounded-full border border-soft-sky bg-white text-deep-ocean hover:border-horizon-blue transition-all whitespace-nowrap" data-gender="female">
-          <span>👧 યુવતી</span>
-        </button>
-        <button class="chip flex items-center gap-1 px-3.5 py-1.5 rounded-full border border-soft-sky bg-white text-deep-ocean hover:border-horizon-blue transition-all whitespace-nowrap" data-sort="match">
-          <span class="material-symbols-outlined text-sm text-earth-warmth material-symbols-fill">star</span>
-          <span>Best Match</span>
-        </button>
-      </div>
-    </header>
-
-    <!-- Content Feed Container -->
-    <main class="flex-1 p-5 pb-28" id="home-content">
-      <div class="py-16 text-center text-on-surface-variant flex flex-col items-center justify-center">
-        <span class="material-symbols-outlined text-3xl animate-spin text-horizon-blue mb-2">progress_activity</span>
-        <span class="text-xs font-semibold">પ્રોફાઇલ્સ લોડ થઈ રહ્યા છે...</span>
-      </div>
-    </main>
-
-    <!-- Bottom Nav -->
-    ${bottomNavHtml("home")}
-  `;
-
-  attachLangToggle();
-  attachNavEvents();
-
-  let allProfiles = [];
-  let activeGender = "";
-  let sortByMatch = false;
-
-  function paintList(list){
-    const el = document.getElementById("home-content");
-    if(!el) return;
-
-    if(list.length === 0){
-      el.innerHTML = `
-        <div class="bg-white rounded-3xl p-8 text-center border border-soft-sky shadow-ambient my-8">
-          <div class="w-14 h-14 mx-auto rounded-full bg-soft-sky/40 text-horizon-blue flex items-center justify-center mb-3">
-            <span class="material-symbols-outlined text-3xl">search_off</span>
-          </div>
-          <h3 class="font-display font-bold text-deep-ocean text-lg">કોઈ પ્રોફાઇલ ના મળી</h3>
-          <p class="text-xs text-on-surface-variant mt-1">તમારા સર્ચ અથવા ફિલ્ટર અનુસાર કોઈ ઉમેદવાર ઉપલબ્ધ નથી.</p>
-        </div>
-      `;
-      return;
-    }
-
-    el.innerHTML = `
-      <div class="mb-3 flex items-center justify-between text-xs font-bold text-on-surface-variant px-1">
-        <span>${list.length} યોગ્ય સંબંધો ઉપલબ્ધ</span>
-        <span class="text-[11px] text-horizon-blue">પોરબંદર ખારવા સમાજ</span>
-      </div>
-      <div class="space-y-5">
-        ${list.map(p => {
-          const showPhoto = p.photoVisible !== false && p.photoURL;
-          const matchPercent = p.matchScore != null ? Math.round((p.matchScore / 5) * 100) : null;
-
-          return `
-            <article class="bg-white rounded-3xl overflow-hidden shadow-ambient border border-soft-sky/70 transition-all duration-200 hover:shadow-ambient-lg cursor-pointer group" data-open="${p.id}">
-              <!-- Photo / Banner Header -->
-              <div class="relative w-full h-64 sm:h-72 bg-gradient-to-br from-deep-ocean to-horizon-blue overflow-hidden flex items-center justify-center">
-                ${showPhoto ? `
-                  <img src="${p.photoURL}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                ` : `
-                  <div class="text-center p-6">
-                    <div class="w-20 h-20 mx-auto rounded-full bg-white/15 backdrop-blur-md flex items-center justify-center text-4xl mb-2 border border-white/20">
-                      ${p.photoEmoji || (p.gender === 'female' ? '👧' : '👦')}
-                    </div>
-                    <span class="inline-block bg-white/20 backdrop-blur-md text-white text-[11px] font-semibold px-3 py-1 rounded-full border border-white/20">
-                      🔒 ફોટો ઉમેદવારે છુપાવેલ છે
-                    </span>
-                  </div>
-                `}
-
-                <!-- Top Left Verified Badge -->
-                <div class="absolute top-3.5 left-3.5 bg-white/95 backdrop-blur-md px-3 py-1 rounded-full flex items-center gap-1 border border-soft-sky shadow-sm">
-                  <span class="material-symbols-outlined text-earth-warmth text-sm material-symbols-fill">verified</span>
-                  <span class="text-[11px] font-bold text-deep-ocean">Verified</span>
-                </div>
-
-                <!-- Top Right Match Score Badge -->
-                ${matchPercent != null ? `
-                  <div class="absolute top-3.5 right-3.5 bg-deep-ocean/90 backdrop-blur-md text-white px-3 py-1 rounded-full flex items-center gap-1 border border-white/20 shadow-sm">
-                    <span class="material-symbols-outlined text-sky-300 text-xs material-symbols-fill">favorite</span>
-                    <span class="text-[11px] font-bold">${matchPercent}% Match</span>
-                  </div>
-                ` : ''}
-
-                <!-- Bottom Wave SVG Divider -->
-                <div class="absolute bottom-0 w-full leading-none">
-                  ${waveDividerSvg("text-white")}
-                </div>
-              </div>
-
-              <!-- Card Body Content -->
-              <div class="p-5 pt-2">
-                <div class="flex items-baseline justify-between mb-1.5">
-                  <h2 class="font-display text-xl font-bold text-deep-ocean tracking-tight">
-                    ${p.name}, <span class="font-sans text-base font-medium text-on-surface-variant">${p.age} વર્ષ</span>
-                  </h2>
-                </div>
-
-                <div class="flex flex-wrap items-center gap-y-1 gap-x-3 text-xs text-on-surface-variant font-medium mb-3.5">
-                  <span class="flex items-center gap-1">
-                    <span class="material-symbols-outlined text-sm text-earth-warmth">work</span>
-                    ${p.occupation || 'Private'}
-                  </span>
-                  <span>•</span>
-                  <span class="flex items-center gap-1">
-                    <span class="material-symbols-outlined text-sm text-earth-warmth">location_on</span>
-                    ${p.city || '-'}
-                  </span>
-                </div>
-
-                <!-- Tags Row -->
-                <div class="flex flex-wrap gap-1.5 mb-4">
-                  <span class="bg-soft-sky/40 text-horizon-blue border border-soft-sky px-2.5 py-1 rounded-full text-[11px] font-semibold">
-                    ${p.education || '-'}
-                  </span>
-                  <span class="bg-soft-sky/40 text-horizon-blue border border-soft-sky px-2.5 py-1 rounded-full text-[11px] font-semibold">
-                    ${p.rashi ? `રાશી: ${p.rashi}` : 'પોરબંદર ખારવા'}
-                  </span>
-                  <span class="bg-soft-sky/40 text-horizon-blue border border-soft-sky px-2.5 py-1 rounded-full text-[11px] font-semibold">
-                    ${p.maritalStatus || 'કુંવારા'}
-                  </span>
-                </div>
-
-                <!-- Action Button -->
-                <div class="flex gap-2">
-                  <button class="flex-1 bg-surface hover:bg-soft-sky/30 border border-soft-sky text-deep-ocean font-bold py-2.5 px-4 rounded-xl text-xs transition-colors flex items-center justify-center gap-1.5">
-                    <span>સંપૂર્ણ વિગત જુઓ</span>
-                    <span class="material-symbols-outlined text-sm">arrow_forward</span>
-                  </button>
-                  <button data-quick-int="${p.id}" class="bg-earth-warmth hover:bg-earth-dark text-white font-bold py-2.5 px-4 rounded-xl text-xs transition-colors flex items-center justify-center gap-1 shadow-sm">
-                    <span class="material-symbols-outlined text-sm material-symbols-fill">favorite</span>
-                    <span>Interest</span>
-                  </button>
-                </div>
-              </div>
-            </article>
-          `;
-        }).join("")}
-      </div>
-    `;
-
-    // Click Card to open detail
-    document.querySelectorAll("[data-open]").forEach(card => {
-      card.addEventListener("click", (e)=>{
-        if(e.target.closest("[data-quick-int]")) return;
-        state.openProfileId = card.getAttribute("data-open");
-        state.screen = "detail";
-        render();
-      });
-    });
-
-    // Quick Interest Action
-    document.querySelectorAll("[data-quick-int]").forEach(btn => {
-      btn.addEventListener("click", async (e)=>{
-        e.stopPropagation();
-        const cid = btn.getAttribute("data-quick-int");
-        btn.disabled = true;
-        try {
-          await dataService.sendInterest(state.user.id, cid);
-          showToast("💌 Interest વિનંતી સફળતાપૂર્વક મોકલાઈ ગઈ!");
-          btn.innerHTML = `<span class="material-symbols-outlined text-sm">check</span><span>મોકલાયું</span>`;
-          btn.classList.replace("bg-earth-warmth", "bg-success");
-        } catch(err) {
-          showToast("Error: " + err.message);
-          btn.disabled = false;
-        }
-      });
-    });
-  }
-
-  function applyFilters(){
-    const searchInput = document.getElementById("home-search");
-    const q = searchInput ? searchInput.value.trim().toLowerCase() : "";
-    const clearBtn = document.getElementById("search-clear");
-    if(clearBtn) clearBtn.classList.toggle("hidden", !q);
-
-    let list = allProfiles;
-    if(activeGender) list = list.filter(p => p.gender === activeGender);
-    if(q){
-      list = list.filter(p =>
-        (p.name||"").toLowerCase().includes(q) ||
-        (p.city||"").toLowerCase().includes(q) ||
-        (p.occupation||"").toLowerCase().includes(q) ||
-        (p.education||"").toLowerCase().includes(q) ||
-        (p.rashi||"").toLowerCase().includes(q)
-      );
-    }
-    if(sortByMatch) list = [...list].sort((a,b) => (b.matchScore||0) - (a.matchScore||0));
-    paintList(list);
-  }
-
-  document.querySelectorAll("[data-gender]").forEach(chip => {
-    chip.addEventListener("click", ()=>{
-      document.querySelectorAll("[data-gender]").forEach(c => {
-        c.classList.remove("active", "bg-deep-ocean", "text-white", "border-deep-ocean");
-        c.classList.add("bg-white", "text-deep-ocean", "border-soft-sky");
-      });
-      chip.classList.add("active", "bg-deep-ocean", "text-white", "border-deep-ocean");
-      chip.classList.remove("bg-white", "text-deep-ocean", "border-soft-sky");
-      activeGender = chip.getAttribute("data-gender");
-      applyFilters();
-    });
-  });
-
-  const sortChip = document.querySelector("[data-sort='match']");
-  sortChip.addEventListener("click", ()=>{
-    sortByMatch = !sortByMatch;
-    if(sortByMatch){
-      sortChip.classList.add("bg-deep-ocean", "text-white", "border-deep-ocean");
-      sortChip.classList.remove("bg-white", "text-deep-ocean", "border-soft-sky");
-    } else {
-      sortChip.classList.remove("bg-deep-ocean", "text-white", "border-deep-ocean");
-      sortChip.classList.add("bg-white", "text-deep-ocean", "border-soft-sky");
-    }
-    applyFilters();
-  });
-
-  const searchInput = document.getElementById("home-search");
-  searchInput.addEventListener("input", applyFilters);
-  document.getElementById("search-clear").addEventListener("click", ()=>{
-    searchInput.value = "";
-    applyFilters();
-    searchInput.focus();
-  });
-
-  dataService.getProfiles(state.user?.id).then(profiles => {
-    allProfiles = profiles;
-    paintList(allProfiles);
-  }).catch(err => {
-    const el = document.getElementById("home-content");
-    if(el) el.innerHTML = `<div class="bg-red-50 text-danger p-4 rounded-2xl border border-red-200 text-xs font-semibold text-center">ડેટા લોડ થઈ શક્યો નહીં: ${err.message}</div>`;
-  });
-}
-
-// ============================================================
-// 6. SCREEN: PROFILE DETAIL VIEW
-// ============================================================
-function renderDetail(){
-  app.innerHTML = `
-    <div class="flex-1 flex flex-col justify-center items-center p-8 text-on-surface-variant">
-      <span class="material-symbols-outlined text-3xl animate-spin text-horizon-blue mb-2">progress_activity</span>
-      <span class="text-xs font-semibold">પ્રોફાઇલ લોડ થઈ રહ્યો છે...</span>
-    </div>
-  `;
-
-  dataService.getProfileById(state.openProfileId).then(p => {
-    if(!p){
-      app.innerHTML = `
-        <div class="p-8 text-center">
-          <p class="text-sm font-bold text-danger">પ્રોફાઇલ મળી નથી</p>
-          <button id="back-home" class="mt-4 bg-deep-ocean text-white font-bold py-2.5 px-5 rounded-xl text-xs">પાછા જાવ</button>
-        </div>
-      `;
-      document.getElementById("back-home").addEventListener("click", ()=>{ state.screen = "home"; render(); });
-      return;
-    }
-
-    const showPhoto = p.photoVisible !== false && p.photoURL;
-
-    app.innerHTML = `
-      <!-- Top Fixed App Bar -->
-      <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-soft-sky/80 px-4 py-3 flex items-center justify-between">
-        <button id="detail-back" class="text-deep-ocean p-1.5 -ml-1 rounded-full hover:bg-soft-sky/40 transition-colors flex items-center gap-1 font-bold text-xs">
-          <span class="material-symbols-outlined text-xl">arrow_back</span>
-          <span>પાછા જાવ</span>
-        </button>
-        <span class="font-display font-bold text-deep-ocean text-base">ઉમેદવાર વિગત</span>
-        <div class="w-8"></div>
-      </header>
-
-      <main class="flex-1 pb-32">
-        <!-- Hero Photo Section -->
-        <div class="relative w-full h-72 sm:h-80 bg-gradient-to-br from-deep-ocean to-horizon-blue flex items-center justify-center overflow-hidden">
-          ${showPhoto ? `
-            <img src="${p.photoURL}" alt="${p.name}" class="w-full h-full object-cover">
-          ` : `
-            <div class="text-center p-6">
-              <div class="w-24 h-24 mx-auto rounded-full bg-white/15 backdrop-blur-md flex items-center justify-center text-5xl mb-3 border border-white/20">
-                ${p.photoEmoji || (p.gender === 'female' ? '👧' : '👦')}
-              </div>
-              <span class="bg-white/20 backdrop-blur-md text-white text-xs font-semibold px-3.5 py-1 rounded-full border border-white/20">
-                🔒 ફોટો પ્રાઇવેટ છે
-              </span>
-            </div>
-          `}
-
-          <!-- Verified Badge -->
-          <div class="absolute top-4 left-4 bg-white/95 backdrop-blur-md px-3 py-1 rounded-full flex items-center gap-1 border border-soft-sky shadow-sm">
-            <span class="material-symbols-outlined text-earth-warmth text-sm material-symbols-fill">verified</span>
-            <span class="text-xs font-bold text-deep-ocean">Verified Profile</span>
-          </div>
-
-          <!-- Wave Divider -->
-          <div class="absolute bottom-0 w-full leading-none">
-            ${waveDividerSvg("text-cream-base")}
-          </div>
-        </div>
-
-        <div class="px-5 -mt-2 space-y-4">
-          <!-- Title & Subtitle Card -->
-          <div class="bg-white rounded-3xl p-5 shadow-ambient border border-soft-sky/60">
-            <h1 class="font-display text-2xl font-bold text-deep-ocean tracking-tight">
-              ${p.name}
+<div class="flex items-center gap-3">
+<button onclick="location.href='discover.html'" class="hidden md:flex bg-primary text-on-primary font-label-md text-label-md px-6 py-3 rounded-xl hover:bg-primary-container transition-colors duration-200 shadow-sm scale-95 duration-150" style="background-color: rgb(127, 179, 213);">
+    Find My Partner
+</button>
+<!-- Mobile Menu / Login -->
+<a href="login.html" class="md:hidden flex items-center gap-1 text-primary font-bold text-sm bg-soft-sky/40 px-3 py-1.5 rounded-lg">
+  <span class="material-symbols-outlined text-base">login</span>
+  <span>Login</span>
+</a>
+</div>
+</div>
+</nav>
+<!-- Hero Section -->
+<header class="relative w-full max-w-[1200px] mx-auto px-margin-mobile md:px-margin-desktop py-section-gap flex flex-col md:flex-row items-center gap-gutter">
+<div class="flex-1 flex flex-col gap-6 z-10">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile md:font-display-lg md:text-display-lg text-primary leading-tight" style="color: rgb(127, 179, 213);">
+                Find Your Shore of Togetherness
             </h1>
-            <p class="text-xs text-on-surface-variant font-medium mt-1 flex items-center gap-2">
-              <span>${p.age} વર્ષ</span>
-              <span>•</span>
-              <span>${p.city || '-'}</span>
-              <span>•</span>
-              <span>${p.occupation || '-'}</span>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-lg">
+                Discover meaningful connections grounded in trust and compatibility. A refined matrimonial experience for a sophisticated audience.
             </p>
-          </div>
-
-          <!-- Section: Basic & Family Details -->
-          <div class="bg-white rounded-3xl p-5 shadow-ambient border border-soft-sky/60">
-            <h3 class="font-display text-base font-bold text-deep-ocean mb-3 flex items-center gap-2">
-              <span class="material-symbols-outlined text-horizon-blue text-xl">family_restroom</span>
-              <span>કૌટુંબિક અને અંગત વિગત</span>
-            </h3>
-            <div class="divide-y divide-soft-sky text-xs">
-              <div class="py-2.5 flex justify-between"><span class="text-on-surface-variant">પિતાનું પૂરું નામ</span><span class="font-bold text-deep-ocean">${p.fatherName || '-'}</span></div>
-              <div class="py-2.5 flex justify-between"><span class="text-on-surface-variant">માતાનું નામ</span><span class="font-bold text-deep-ocean">${p.motherName || '-'}</span></div>
-              <div class="py-2.5 flex justify-between"><span class="text-on-surface-variant">રાશી (Zodiac)</span><span class="font-bold text-deep-ocean">${p.rashi || '-'}</span></div>
-              <div class="py-2.5 flex justify-between"><span class="text-on-surface-variant">વૈવાહિક દરજ્જો</span><span class="font-bold text-deep-ocean">${p.maritalStatus || 'કુંવારા'}</span></div>
-              <div class="py-2.5 flex justify-between"><span class="text-on-surface-variant">ભાઈ-બહેન</span><span class="font-bold text-deep-ocean">${p.siblings || 'કોઈ વિગત નથી'}</span></div>
-            </div>
-          </div>
-
-          <!-- Section: Education & Profession -->
-          <div class="bg-white rounded-3xl p-5 shadow-ambient border border-soft-sky/60">
-            <h3 class="font-display text-base font-bold text-deep-ocean mb-3 flex items-center gap-2">
-              <span class="material-symbols-outlined text-horizon-blue text-xl">school</span>
-              <span>શિક્ષણ અને કારકિર્દી</span>
-            </h3>
-            <div class="divide-y divide-soft-sky text-xs">
-              <div class="py-2.5 flex justify-between"><span class="text-on-surface-variant">શિક્ષણ (Education)</span><span class="font-bold text-deep-ocean">${p.education || '-'}</span></div>
-              <div class="py-2.5 flex justify-between"><span class="text-on-surface-variant">વ્યવસાય (Occupation)</span><span class="font-bold text-deep-ocean">${p.occupation || '-'}</span></div>
-              <div class="py-2.5 flex justify-between"><span class="text-on-surface-variant">શહેર / ગામ</span><span class="font-bold text-deep-ocean">${p.city || '-'}</span></div>
-            </div>
-          </div>
-        </div>
-      </main>
-
-      <!-- Fixed Bottom Action Bar -->
-      <div class="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-soft-sky/80 p-4 flex justify-center">
-        <div class="max-w-md w-full flex items-center gap-3">
-          <button id="send-interest" class="flex-1 bg-earth-warmth hover:bg-earth-dark text-white font-bold py-3.5 px-6 rounded-2xl text-sm shadow-ambient flex items-center justify-center gap-2 transition-all active:scale-[0.98]">
-            <span class="material-symbols-outlined text-lg material-symbols-fill">favorite</span>
-            <span>Interest મોકલો (રસ દાખવો)</span>
-          </button>
-        </div>
-      </div>
-    `;
-
-    document.getElementById("detail-back").addEventListener("click", ()=>{ state.screen = "home"; render(); });
-
-    document.getElementById("send-interest").addEventListener("click", async (e)=>{
-      const btn = e.currentTarget;
-      btn.disabled = true;
-      btn.innerHTML = `<span class="material-symbols-outlined text-base animate-spin">progress_activity</span><span>મોકલાઈ રહ્યું છે...</span>`;
-      try{
-        await dataService.sendInterest(state.user.id, p.id);
-        showToast("💌 Interest વિનંતી સફળતાપૂર્વક મોકલાઈ ગઈ!");
-        btn.innerHTML = `<span class="material-symbols-outlined text-base">check</span><span>Interest મોકલાયું</span>`;
-        btn.classList.replace("bg-earth-warmth", "bg-success");
-      }catch(err){
-        showToast("Error: " + err.message);
-        btn.disabled = false;
-        btn.innerHTML = `<span class="material-symbols-outlined text-lg material-symbols-fill">favorite</span><span>Interest મોકલો</span>`;
-      }
-    });
-  });
-}
-
-// ============================================================
-// 7. SCREEN: INTERESTS RECEIVED
-// ============================================================
-function renderInterest(){
-  app.innerHTML = `
-    <!-- Top Header -->
-    <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-soft-sky/80 px-5 pt-4 pb-3">
-      <div class="flex items-center justify-between">
-        <div>
-          <h1 class="font-display font-bold text-deep-ocean text-xl">${t('interestsTitle')}</h1>
-          <p class="text-[11px] text-on-surface-variant font-medium">${t('interestsSub')}</p>
-        </div>
-        ${langToggleHtml()}
-      </div>
-    </header>
-
-    <main class="flex-1 p-5 pb-28" id="int-content">
-      <div class="py-16 text-center text-on-surface-variant flex flex-col items-center justify-center">
-        <span class="material-symbols-outlined text-3xl animate-spin text-horizon-blue mb-2">progress_activity</span>
-        <span class="text-xs font-semibold">વિનંતીઓ લોડ થઈ રહી છે...</span>
-      </div>
-    </main>
-
-    ${bottomNavHtml("interest")}
-  `;
-
-  attachLangToggle();
-  attachNavEvents();
-
-  dataService.getReceivedInterests(state.user.id).then(list => {
-    const el = document.getElementById("int-content");
-    if(!el) return;
-
-    if(list.length === 0){
-      el.innerHTML = `
-        <div class="bg-white rounded-3xl p-8 text-center border border-soft-sky shadow-ambient my-8">
-          <div class="w-14 h-14 mx-auto rounded-full bg-soft-sky/40 text-horizon-blue flex items-center justify-center mb-3">
-            <span class="material-symbols-outlined text-3xl">mark_email_unread</span>
-          </div>
-          <h3 class="font-display font-bold text-deep-ocean text-lg">હજુ કોઈ Interest નથી</h3>
-          <p class="text-xs text-on-surface-variant mt-1.5 leading-relaxed">
-            તમારા ઉમેદવાર પ્રોફાઇલ માટે જ્યારે અન્ય સભ્યો રસ દાખવશે, ત્યારે તે તમામ વિનંતીઓ અહીં દેખાશે.
-          </p>
-        </div>
-      `;
-      return;
-    }
-
-    el.innerHTML = `
-      <div class="space-y-4">
-        ${list.map(i => {
-          const isPending = i.status === 'pending';
-          const isAccepted = i.status === 'accepted';
-          const isDeclined = i.status === 'declined';
-
-          return `
-            <div class="bg-white rounded-3xl p-5 shadow-ambient border border-soft-sky/60">
-              <div class="flex items-start justify-between mb-3">
-                <div class="flex items-center gap-3">
-                  <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-deep-ocean to-horizon-blue flex items-center justify-center text-white text-xl shadow-sm">
-                    👤
-                  </div>
-                  <div>
-                    <h3 class="font-display font-bold text-deep-ocean text-base">${i.fromUserName}</h3>
-                    <p class="text-[11px] text-on-surface-variant font-medium">તમારા <b>"${i.forCandidateName}"</b> પ્રોફાઇલ માટે</p>
-                  </div>
-                </div>
-
-                <span class="px-3 py-1 rounded-full text-[11px] font-bold ${
-                  isAccepted ? 'bg-green-50 text-success border border-green-200' :
-                  isDeclined ? 'bg-red-50 text-danger border border-red-200' :
-                  'bg-amber-50 text-amber-700 border border-amber-200'
-                }">
-                  ${isAccepted ? '✓ સ્વીકારેલ (Accepted)' : isDeclined ? '✕ નકારેલ (Declined)' : '⏳ પ્રતીક્ષિત (Pending)'}
-                </span>
-              </div>
-
-              ${isPending ? `
-                <div class="flex gap-2 pt-2 border-t border-soft-sky/50 mt-3">
-                  <button data-accept="${i.id}" class="flex-1 bg-success hover:opacity-90 text-white font-bold py-2.5 rounded-xl text-xs transition-opacity flex items-center justify-center gap-1 shadow-sm">
-                    <span class="material-symbols-outlined text-sm">check</span>
-                    <span>Accept કરો</span>
-                  </button>
-                  <button data-decline="${i.id}" class="flex-1 bg-surface hover:bg-red-50 text-danger border border-red-200 font-bold py-2.5 rounded-xl text-xs transition-colors flex items-center justify-center gap-1">
-                    <span class="material-symbols-outlined text-sm">close</span>
-                    <span>Decline</span>
-                  </button>
-                </div>
-              ` : ''}
-            </div>
-          `;
-        }).join("")}
-      </div>
-    `;
-
-    document.querySelectorAll("[data-accept]").forEach(btn => {
-      btn.addEventListener("click", async ()=>{
-        btn.disabled = true;
-        try{
-          await dataService.respondToInterest(btn.getAttribute("data-accept"), "accepted");
-          showToast("✓ Interest સફળતાપૂર્વક Accept થયું");
-          renderInterest();
-        }catch(err){
-          showToast("Error: " + err.message);
-          btn.disabled = false;
-        }
-      });
-    });
-
-    document.querySelectorAll("[data-decline]").forEach(btn => {
-      btn.addEventListener("click", async ()=>{
-        btn.disabled = true;
-        try{
-          await dataService.respondToInterest(btn.getAttribute("data-decline"), "declined");
-          showToast("Interest Decline કરવામાં આવ્યું");
-          renderInterest();
-        }catch(err){
-          showToast("Error: " + err.message);
-          btn.disabled = false;
-        }
-      });
-    });
-  }).catch(err => {
-    const el = document.getElementById("int-content");
-    if(el) el.innerHTML = `<div class="bg-red-50 text-danger p-4 rounded-2xl border border-red-200 text-xs font-semibold text-center">${err.message}</div>`;
-  });
-}
-
-// ============================================================
-// 8. SCREEN: MY PROFILES
-// ============================================================
-function renderMyProfiles(){
-  app.innerHTML = `
-    <!-- Top Header -->
-    <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-soft-sky/80 px-5 pt-4 pb-3">
-      <div class="flex items-center justify-between">
-        <div>
-          <h1 class="font-display font-bold text-deep-ocean text-xl">${t('myProfiles')}</h1>
-          <p class="text-[11px] text-on-surface-variant font-medium">${t('myProfilesSub')}</p>
-        </div>
-        ${langToggleHtml()}
-      </div>
-    </header>
-
-    <main class="flex-1 p-5 pb-28 space-y-4" id="myp-content">
-      <div class="py-16 text-center text-on-surface-variant flex flex-col items-center justify-center">
-        <span class="material-symbols-outlined text-3xl animate-spin text-horizon-blue mb-2">progress_activity</span>
-        <span class="text-xs font-semibold">તમારા પ્રોફાઇલ્સ લોડ થઈ રહ્યા છે...</span>
-      </div>
-    </main>
-
-    ${bottomNavHtml("profile")}
-  `;
-
-  attachLangToggle();
-  attachNavEvents();
-
-  dataService.getMyCandidates(state.user.id).then(list => {
-    const el = document.getElementById("myp-content");
-    if(!el) return;
-
-    const activeCount = list.filter(c => !c.deactivated).length;
-    const canAddMore = activeCount < 4;
-
-    const cardsHtml = list.map(c => {
-      const showPhoto = c.photoVisible !== false && c.photoURL;
-      const isApproved = c.status === 'approved';
-      const isRejected = c.status === 'rejected';
-
-      return `
-        <div class="bg-white rounded-3xl p-5 shadow-ambient border border-soft-sky/70">
-          <div class="flex items-start gap-3.5 mb-4">
-            <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-deep-ocean to-horizon-blue overflow-hidden flex-shrink-0 flex items-center justify-center text-2xl text-white shadow-sm border border-soft-sky">
-              ${c.photoURL ? `<img src="${c.photoURL}" class="w-full h-full object-cover">` : (c.photoEmoji || '👤')}
-            </div>
-
-            <div class="flex-1 min-w-0">
-              <div class="flex items-baseline justify-between">
-                <h3 class="font-display font-bold text-deep-ocean text-base truncate">${c.name}</h3>
-                ${c.deactivated ? `
-                  <span class="text-[10px] font-bold bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">નિષ્ક્રિય</span>
-                ` : ''}
-              </div>
-              <p class="text-xs text-on-surface-variant font-medium mt-0.5">${c.age} વર્ષ • ${c.education || '-'} • ${c.city || '-'}</p>
-
-              <div class="mt-2">
-                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold ${
-                  c.deactivated ? 'bg-gray-100 text-gray-600' :
-                  isApproved ? 'bg-green-50 text-success border border-green-200' :
-                  isRejected ? 'bg-red-50 text-danger border border-red-200' :
-                  'bg-amber-50 text-amber-700 border border-amber-200'
-                }">
-                  <span class="w-1.5 h-1.5 rounded-full ${c.deactivated ? 'bg-gray-400' : isApproved ? 'bg-success' : isRejected ? 'bg-danger' : 'bg-amber-500'}"></span>
-                  ${c.deactivated ? 'લગ્ન થઈ ગયા / Settled' : isApproved ? 'Approved · Live' : isRejected ? 'Rejected' : 'Admin Review Pending'}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Profile Action Buttons -->
-          ${!c.deactivated ? `
-            <div class="space-y-2 pt-2 border-t border-soft-sky/60">
-              <div class="grid grid-cols-2 gap-2">
-                <button data-edit="${c.id}" class="bg-surface hover:bg-soft-sky/40 text-deep-ocean border border-soft-sky py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1">
-                  <span class="material-symbols-outlined text-sm text-horizon-blue">edit</span>
-                  <span>સુધારો (Edit)</span>
-                </button>
-                <button data-deactivate="${c.id}" class="bg-surface hover:bg-red-50 text-danger border border-red-200 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1">
-                  <span class="material-symbols-outlined text-sm">favorite</span>
-                  <span>લગ્ન થઈ ગયા</span>
-                </button>
-              </div>
-
-              <!-- Photo Visibility Toggle -->
-              <button data-toggle-photo="${c.id}" data-visible="${c.photoVisible!==false?'1':'0'}"
-                class="w-full py-2.5 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
-                  c.photoVisible!==false ? 'bg-green-50 text-success border border-green-200 hover:bg-green-100' : 'bg-soft-sky/40 text-horizon-blue border border-soft-sky hover:bg-soft-sky/70'
-                }">
-                <span class="material-symbols-outlined text-sm">${c.photoVisible!==false ? 'visibility' : 'visibility_off'}</span>
-                <span>${c.photoVisible!==false ? 'Photo બધાને દેખાય છે (છુપાવવા ક્લિક કરો)' : 'Photo છુપાયેલ છે (દેખાડવા ક્લિક કરો)'}</span>
-              </button>
-            </div>
-          ` : `
-            <div class="pt-2 border-t border-soft-sky/60">
-              <button data-activate="${c.id}" ${activeCount>=4 ? 'disabled' : ''}
-                class="w-full bg-surface hover:bg-soft-sky/40 text-deep-ocean border border-soft-sky py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1 disabled:opacity-50">
-                <span class="material-symbols-outlined text-sm">replay</span>
-                <span>ફરી સક્રિય કરો (Reactivate)</span>
-              </button>
-            </div>
-          `}
-        </div>
-      `;
-    }).join("");
-
-    el.innerHTML = `
-      <div class="space-y-4">
-        ${cardsHtml}
-
-        <!-- Add Candidate Card -->
-        ${canAddMore ? `
-          <button id="add-candidate" class="w-full border-2 border-dashed border-horizon-blue/40 hover:border-horizon-blue bg-white/70 hover:bg-white rounded-3xl p-6 text-center transition-all flex flex-col items-center justify-center group shadow-sm">
-            <div class="w-12 h-12 rounded-full bg-soft-sky/60 text-horizon-blue flex items-center justify-center text-2xl group-hover:scale-110 transition-transform mb-2">
-              <span class="material-symbols-outlined text-2xl">add</span>
-            </div>
-            <div class="font-display font-bold text-deep-ocean text-base">+ નવો Candidate Profile ઉમેરો</div>
-            <div class="text-[11px] text-on-surface-variant font-medium mt-0.5">તમે હજુ ${4-activeCount} વધુ પ્રોફાઇલ બનાવી શકો છો</div>
-          </button>
-        ` : `
-          <div class="bg-amber-50 text-amber-800 text-xs font-semibold p-4 rounded-2xl border border-amber-200 text-center">
-            તમે મહત્તમ 4 ઉમેદવારો ઉમેરી લીધા છે.
-          </div>
-        `}
-
-        <!-- Account Info & Logout Card -->
-        <div class="bg-white rounded-3xl p-5 shadow-ambient border border-soft-sky/60 mt-6">
-          <div class="flex items-center justify-between mb-4">
-            <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-full bg-soft-sky/50 text-deep-ocean flex items-center justify-center font-bold text-sm">
-                ${state.user.name?.charAt(0) || '👤'}
-              </div>
-              <div>
-                <h4 class="font-bold text-deep-ocean text-sm">${state.user.name}</h4>
-                <p class="text-[11px] text-on-surface-variant font-medium">+91 ${state.user.mobile} • ${state.user.village || 'પોરબંદર'}</p>
-              </div>
-            </div>
-          </div>
-
-          <button id="logout-btn" class="w-full bg-red-50 hover:bg-red-100 text-danger border border-red-200 py-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5">
-            <span class="material-symbols-outlined text-base">logout</span>
-            <span>લૉગઆઉટ (Logout)</span>
-          </button>
-        </div>
-      </div>
-    `;
-
-    const addBtn = document.getElementById("add-candidate");
-    if(addBtn) {
-      addBtn.addEventListener("click", ()=>{
-        state.formDraft = {};
-        state.editCandidateId = null;
-        state.screen = "formStep1";
-        render();
-      });
-    }
-
-    document.getElementById("logout-btn").addEventListener("click", async ()=>{
-      if(!confirm("શું તમે ખરેખર લૉગઆઉટ કરવા માંગો છો?")) return;
-      await dataService.logout();
-      state.user = null;
-      state.screen = "mobileEntry";
-      render();
-    });
-
-    document.querySelectorAll("[data-edit]").forEach(btn => {
-      btn.addEventListener("click", ()=>{
-        const candidate = list.find(c => c.id === btn.getAttribute("data-edit"));
-        state.editCandidateId = candidate.id;
-        state.formDraft = { ...candidate };
-        state.screen = "formStep1";
-        render();
-      });
-    });
-
-    document.querySelectorAll("[data-toggle-photo]").forEach(btn => {
-      btn.addEventListener("click", async ()=>{
-        const cid = btn.getAttribute("data-toggle-photo");
-        const isVisible = btn.getAttribute("data-visible") === "1";
-        btn.disabled = true;
-        try{
-          await dataService.setPhotoVisibility(cid, !isVisible);
-          showToast(isVisible ? "🙈 Photo છુપાવ્યો" : "👁️ Photo સભ્યોને દેખાડ્યો");
-          renderMyProfiles();
-        }catch(err){
-          showToast("Error: " + err.message);
-          btn.disabled = false;
-        }
-      });
-    });
-
-    document.querySelectorAll("[data-activate]").forEach(btn => {
-      btn.addEventListener("click", async ()=>{
-        btn.disabled = true;
-        try{
-          await dataService.activateCandidate(btn.getAttribute("data-activate"));
-          showToast("✓ Profile ફરી સક્રિય થયું");
-          renderMyProfiles();
-        }catch(err){
-          showToast("Error: " + err.message);
-          btn.disabled = false;
-        }
-      });
-    });
-
-    document.querySelectorAll("[data-deactivate]").forEach(btn => {
-      btn.addEventListener("click", async ()=>{
-        if(!confirm("શું આ ઉમેદવારના લગ્ન થઈ ગયા છે? ડિએક્ટિવેટ કર્યા પછી આ પ્રોફાઇલ અન્ય સભ્યોને નહીં દેખાય.")) return;
-        try{
-          await dataService.deactivateCandidate(btn.getAttribute("data-deactivate"));
-          showToast("✓ Profile સેટલ્ડ/ડિએક્ટિવેટ થયું");
-          renderMyProfiles();
-        }catch(err){
-          showToast("Error: " + err.message);
-        }
-      });
-    });
-  }).catch(err => {
-    const el = document.getElementById("myp-content");
-    if(el) el.innerHTML = `<div class="bg-red-50 text-danger p-4 rounded-2xl border border-red-200 text-xs font-semibold text-center">${err.message}</div>`;
-  });
-}
-
-// ============================================================
-// 9. ONBOARDING & CANDIDATE PROFILE FORM (Steps 1 to 4)
-// ============================================================
-function formHeaderHtml(stepNum, title){
-  return `
-    <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-soft-sky/80 px-5 pt-4 pb-3">
-      <div class="flex items-center justify-between mb-3">
-        <button id="form-back" class="text-deep-ocean p-1.5 -ml-1.5 rounded-full hover:bg-soft-sky/40 transition-colors flex items-center gap-1 font-bold text-xs">
-          <span class="material-symbols-outlined text-lg">arrow_back</span>
-          <span>પાછા</span>
-        </button>
-        <span class="font-display font-bold text-deep-ocean text-base">${title}</span>
-        <span class="text-xs font-bold text-horizon-blue bg-soft-sky/60 px-2.5 py-0.5 rounded-full">Step ${stepNum} of 4</span>
-      </div>
-
-      <!-- Stepper Progress Bars -->
-      <div class="grid grid-cols-4 gap-2">
-        ${[1,2,3,4].map(n => `
-          <div class="h-1.5 rounded-full transition-all duration-300 ${n <= stepNum ? 'bg-horizon-blue' : 'bg-soft-sky'}"></div>
-        `).join("")}
-      </div>
-    </header>
-  `;
-}
-
-const RASHI_DATA = [
-  { gu: "મેષ",      en: "Mesh Aries" },
-  { gu: "વૃષભ",     en: "Vrushabh Vrushbh Taurus" },
-  { gu: "મિથુન",    en: "Mithun Gemini" },
-  { gu: "કર્ક",      en: "Kark Cancer" },
-  { gu: "સિંહ",      en: "Sinh Simha Leo" },
-  { gu: "કન્યા",     en: "Kanya Virgo" },
-  { gu: "તુલા",      en: "Tula Libra" },
-  { gu: "વૃશ્ચિક",  en: "Vrushchik Vrischik Scorpio" },
-  { gu: "ધન",       en: "Dhan Dhanu Sagittarius" },
-  { gu: "મકર",      en: "Makar Capricorn" },
-  { gu: "કુંભ",      en: "Kumbh Aquarius" },
-  { gu: "મીન",       en: "Meen Pisces" }
-];
-
-function initSelect2(id, opts){
-  if(typeof $ === 'undefined') return;
-  $(`#${id}`).select2(Object.assign({
-    dropdownParent: $('#app'),
-    width: '100%',
-    language: { noResults: ()=>"કોઈ વિકલ્પ નથી" }
-  }, opts));
-}
-
-// --- Step 1: Personal & Family ---
-function renderFormStep1(){
-  const d = state.formDraft;
-  const gPh = t('genderPh');
-  const rPh = t('rashiPh');
-
-  app.innerHTML = `
-    ${formHeaderHtml(1, t('formStep1Title'))}
-
-    <main class="flex-1 p-5 pb-12 space-y-4">
-      <div class="bg-white rounded-3xl p-6 shadow-ambient border border-soft-sky/60 space-y-4">
-        <div>
-          <label class="block text-xs font-bold text-deep-ocean mb-1.5">${t('candidateName')}</label>
-          <input id="ff-name" value="${d.name||''}" placeholder="${t('candidateNamePh')}"
-            class="w-full px-4 py-3 rounded-xl border border-soft-sky bg-surface/50 font-sans text-xs sm:text-sm text-deep-ocean input-glow transition-all">
-        </div>
-
-        <div>
-          <label class="block text-xs font-bold text-deep-ocean mb-1.5">${t('gender')}</label>
-          <select id="ff-gender" style="width:100%" data-placeholder="${gPh}">
-            <option value=""></option>
-            <option value="male" ${d.gender==='male'?'selected':''}>👦 યુવક (Male)</option>
-            <option value="female" ${d.gender==='female'?'selected':''}>👧 યુવતી (Female)</option>
-          </select>
-        </div>
-
-        <div>
-          <label class="block text-xs font-bold text-deep-ocean mb-1.5">${t('age')}</label>
-          <input id="ff-age" type="number" value="${d.age||''}" placeholder="${t('agePh')}"
-            class="w-full px-4 py-3 rounded-xl border border-soft-sky bg-surface/50 font-sans text-xs sm:text-sm text-deep-ocean input-glow transition-all">
-        </div>
-
-        <div>
-          <label class="block text-xs font-bold text-deep-ocean mb-1.5">${t('fatherName')}</label>
-          <input id="ff-father" value="${d.fatherName||''}" placeholder="${t('fatherNamePh')}"
-            class="w-full px-4 py-3 rounded-xl border border-soft-sky bg-surface/50 font-sans text-xs sm:text-sm text-deep-ocean input-glow transition-all">
-        </div>
-
-        <div>
-          <label class="block text-xs font-bold text-deep-ocean mb-1.5">${t('motherName')}</label>
-          <input id="ff-mother" value="${d.motherName||''}" placeholder="${t('motherNamePh')}"
-            class="w-full px-4 py-3 rounded-xl border border-soft-sky bg-surface/50 font-sans text-xs sm:text-sm text-deep-ocean input-glow transition-all">
-        </div>
-
-        <div>
-          <label class="block text-xs font-bold text-deep-ocean mb-1.5">${t('rashi')}</label>
-          <select id="ff-rashi" style="width:100%" data-placeholder="${rPh}">
-            <option value=""></option>
-            ${RASHI_DATA.map(r=>`<option value="${r.gu}" data-search="${r.en.toLowerCase()} ${r.gu}" ${d.rashi===r.gu?'selected':''}>${r.gu}</option>`).join("")}
-          </select>
-        </div>
-
-        <div id="ff-err"></div>
-
-        <button id="ff-next" class="w-full mt-2 bg-earth-warmth hover:bg-earth-dark text-white py-3.5 rounded-xl text-sm font-bold shadow-ambient transition-all flex items-center justify-center gap-2">
-          <span>${t('nextBtn')}</span>
-          <span class="material-symbols-outlined text-base">arrow_forward</span>
-        </button>
-      </div>
-    </main>
-  `;
-
-  initSelect2('ff-gender', { minimumResultsForSearch: Infinity, placeholder: gPh, allowClear: true });
-
-  const rashiMatcher = function(params, data){
-    if(!params.term || params.term.trim() === '') return data;
-    if(!data.element) return null;
-    const q = params.term.trim().toLowerCase();
-    const guText  = (data.text || '').toLowerCase();
-    const enText  = ($(data.element).data('search') || '').toLowerCase();
-    return (guText.includes(q) || enText.includes(q)) ? data : null;
-  };
-
-  initSelect2('ff-rashi', {
-    placeholder: rPh,
-    allowClear: true,
-    matcher: rashiMatcher,
-    templateResult: function(data){
-      if(!data.id) return data.text;
-      const entry = RASHI_DATA.find(r => r.gu === data.id);
-      if(!entry) return data.text;
-      const en = entry.en.split(' ')[0];
-      const $el = $('<span></span>');
-      $el.append($('<strong></strong>').text(entry.gu));
-      $el.append($('<span style="color:#5A7A8C;font-size:11px;margin-left:8px;font-weight:400;"></span>').text(en));
-      return $el;
-    },
-    templateSelection: function(data){
-      if(!data.id) return $('<span style="color:#94A3B8;">'+rPh+'</span>');
-      const entry = RASHI_DATA.find(r => r.gu === data.id);
-      return entry ? entry.gu : data.id;
-    }
-  });
-
-  document.getElementById("form-back").addEventListener("click", ()=>{ state.screen = "myProfiles"; render(); });
-
-  document.getElementById("ff-next").addEventListener("click", ()=>{
-    const name = document.getElementById("ff-name").value.trim();
-    const gender = (typeof $!=='undefined') ? $('#ff-gender').val() : document.getElementById("ff-gender").value;
-    const age = document.getElementById("ff-age").value;
-    const fatherName = document.getElementById("ff-father").value.trim();
-    const motherName = document.getElementById("ff-mother").value.trim();
-    const rashi = (typeof $!=='undefined') ? $('#ff-rashi').val() : document.getElementById("ff-rashi").value;
-    const errEl = document.getElementById("ff-err");
-
-    if(!name || !gender || !age || !fatherName || !motherName){
-      errEl.innerHTML = `<div class="bg-red-50 text-danger text-xs font-semibold p-2.5 rounded-xl border border-red-200">${t('fillAllFields')}</div>`;
-      return;
-    }
-
-    Object.assign(state.formDraft, { name, gender, age: Number(age), fatherName, motherName, rashi });
-    state.screen = "formStep2";
-    render();
-  });
-}
-
-// --- Step 2: Education & Address ---
-function renderFormStep2(){
-  const d = state.formDraft;
-  const mPh = t('maritalStatusPh');
-
-  app.innerHTML = `
-    ${formHeaderHtml(2, t('formStep2Title'))}
-
-    <main class="flex-1 p-5 pb-12 space-y-4">
-      <div class="bg-white rounded-3xl p-6 shadow-ambient border border-soft-sky/60 space-y-4">
-        <div>
-          <label class="block text-xs font-bold text-deep-ocean mb-1.5">${t('education')}</label>
-          <input id="ff-edu" value="${d.education||''}" placeholder="${t('educationPh')}"
-            class="w-full px-4 py-3 rounded-xl border border-soft-sky bg-surface/50 font-sans text-xs sm:text-sm text-deep-ocean input-glow transition-all">
-        </div>
-
-        <div>
-          <label class="block text-xs font-bold text-deep-ocean mb-1.5">${t('occupation')}</label>
-          <input id="ff-occ" value="${d.occupation||''}" placeholder="${t('occupationPh')}"
-            class="w-full px-4 py-3 rounded-xl border border-soft-sky bg-surface/50 font-sans text-xs sm:text-sm text-deep-ocean input-glow transition-all">
-        </div>
-
-        <div>
-          <label class="block text-xs font-bold text-deep-ocean mb-1.5">${t('city')}</label>
-          <input id="ff-city" value="${d.city||''}" placeholder="${t('cityPh')}"
-            class="w-full px-4 py-3 rounded-xl border border-soft-sky bg-surface/50 font-sans text-xs sm:text-sm text-deep-ocean input-glow transition-all">
-        </div>
-
-        <div>
-          <label class="block text-xs font-bold text-deep-ocean mb-1.5">${t('maritalStatus')}</label>
-          <select id="ff-status" style="width:100%" data-placeholder="${mPh}">
-            <option value=""></option>
-            <option value="કુંવારા" ${d.maritalStatus==='કુંવારા'?'selected':''}>💍 કુંવારા (Unmarried)</option>
-            <option value="છૂટાછેડા" ${d.maritalStatus==='છૂટાછેડા'?'selected':''}>↩️ છૂટાછેડા (Divorced)</option>
-          </select>
-        </div>
-
-        <div>
-          <label class="block text-xs font-bold text-deep-ocean mb-1.5">${t('siblings')}</label>
-          <input id="ff-sib" value="${d.siblings||''}" placeholder="${t('siblingsPh')}"
-            class="w-full px-4 py-3 rounded-xl border border-soft-sky bg-surface/50 font-sans text-xs sm:text-sm text-deep-ocean input-glow transition-all">
-        </div>
-
-        <div id="ff2-err"></div>
-
-        <button id="ff2-next" class="w-full mt-2 bg-earth-warmth hover:bg-earth-dark text-white py-3.5 rounded-xl text-sm font-bold shadow-ambient transition-all flex items-center justify-center gap-2">
-          <span>${t('nextBtn')}</span>
-          <span class="material-symbols-outlined text-base">arrow_forward</span>
-        </button>
-      </div>
-    </main>
-  `;
-
-  initSelect2('ff-status', { minimumResultsForSearch: Infinity, placeholder: mPh, allowClear: true });
-  document.getElementById("form-back").addEventListener("click", ()=>{ state.screen = "formStep1"; render(); });
-
-  document.getElementById("ff2-next").addEventListener("click", ()=>{
-    const education = document.getElementById("ff-edu").value.trim();
-    const occupation = document.getElementById("ff-occ").value.trim();
-    const city = document.getElementById("ff-city").value.trim();
-    const maritalStatus = (typeof $!=='undefined') ? $('#ff-status').val() : document.getElementById("ff-status").value;
-    const siblings = document.getElementById("ff-sib").value.trim();
-    const errEl = document.getElementById("ff2-err");
-
-    if(!education || !city){
-      errEl.innerHTML = `<div class="bg-red-50 text-danger text-xs font-semibold p-2.5 rounded-xl border border-red-200">${t('eduCityRequired')}</div>`;
-      return;
-    }
-
-    Object.assign(state.formDraft, { education, occupation, city, maritalStatus, siblings: siblings || null });
-    state.screen = "formReview";
-    render();
-  });
-}
-
-// --- Step 3: Review & Submit ---
-function renderFormReview(){
-  const d = state.formDraft;
-  const isEdit = !!state.editCandidateId;
-
-  app.innerHTML = `
-    ${formHeaderHtml(3, isEdit ? t('reviewEditTitle') : t('reviewTitle'))}
-
-    <main class="flex-1 p-5 pb-12 space-y-4">
-      <div class="bg-white rounded-3xl p-6 shadow-ambient border border-soft-sky/60 space-y-4">
-        <div>
-          <h2 class="font-display text-lg font-bold text-deep-ocean mb-1">${t('reviewCheck')}</h2>
-          <p class="text-xs text-on-surface-variant font-medium">બધી વિગતો ચકાસીને કન્ફર્મ કરો</p>
-        </div>
-
-        <div class="divide-y divide-soft-sky text-xs">
-          <div class="py-2.5 flex justify-between"><span class="text-on-surface-variant">${t('candidateName')}</span><span class="font-bold text-deep-ocean">${d.name}</span></div>
-          <div class="py-2.5 flex justify-between"><span class="text-on-surface-variant">${t('gender')}</span><span class="font-bold text-deep-ocean">${d.gender === 'female' ? '👧 યુવતી' : '👦 યુવક'}</span></div>
-          <div class="py-2.5 flex justify-between"><span class="text-on-surface-variant">${t('age')}</span><span class="font-bold text-deep-ocean">${d.age} વર્ષ</span></div>
-          <div class="py-2.5 flex justify-between"><span class="text-on-surface-variant">${t('fatherName')}</span><span class="font-bold text-deep-ocean">${d.fatherName}</span></div>
-          <div class="py-2.5 flex justify-between"><span class="text-on-surface-variant">${t('motherName')}</span><span class="font-bold text-deep-ocean">${d.motherName}</span></div>
-          <div class="py-2.5 flex justify-between"><span class="text-on-surface-variant">${t('rashi')}</span><span class="font-bold text-deep-ocean">${d.rashi || '-'}</span></div>
-          <div class="py-2.5 flex justify-between"><span class="text-on-surface-variant">${t('education')}</span><span class="font-bold text-deep-ocean">${d.education}</span></div>
-          <div class="py-2.5 flex justify-between"><span class="text-on-surface-variant">${t('occupation')}</span><span class="font-bold text-deep-ocean">${d.occupation || '-'}</span></div>
-          <div class="py-2.5 flex justify-between"><span class="text-on-surface-variant">${t('city')}</span><span class="font-bold text-deep-ocean">${d.city}</span></div>
-          <div class="py-2.5 flex justify-between"><span class="text-on-surface-variant">${t('maritalStatus')}</span><span class="font-bold text-deep-ocean">${d.maritalStatus || 'કુંવારા'}</span></div>
-        </div>
-
-        <div class="bg-soft-sky/40 border border-soft-sky p-3.5 rounded-2xl flex items-start gap-2.5 text-xs text-deep-ocean leading-relaxed font-medium">
-          <span class="material-symbols-outlined text-horizon-blue text-base mt-0.5">verified_user</span>
-          <p>${isEdit ? t('reviewEditNote') : t('reviewNote')}</p>
-        </div>
-
-        <div id="ff3-err"></div>
-
-        <button id="ff3-submit" class="w-full bg-earth-warmth hover:bg-earth-dark text-white py-3.5 rounded-xl text-sm font-bold shadow-ambient transition-all flex items-center justify-center gap-2">
-          <span>${isEdit ? t('updateBtn') : t('submitBtn')}</span>
-          <span class="material-symbols-outlined text-base">check</span>
-        </button>
-      </div>
-    </main>
-  `;
-
-  document.getElementById("form-back").addEventListener("click", ()=>{ state.screen = "formStep2"; render(); });
-
-  document.getElementById("ff3-submit").addEventListener("click", async (e)=>{
-    const btn = e.currentTarget;
-    btn.disabled = true;
-    btn.innerHTML = `<span class="material-symbols-outlined text-base animate-spin">progress_activity</span><span>${isEdit ? t('updating') : t('submitting')}</span>`;
-    try{
-      if(isEdit){
-        await dataService.updateCandidate(state.editCandidateId, state.formDraft);
-        showToast(t('updateSuccess'));
-        state.formDraft = {};
-        state.editCandidateId = null;
-        state.screen = "myProfiles";
-        render();
-      } else {
-        const result = await dataService.createCandidate(state.user.id, state.formDraft);
-        state.formDraft = {};
-        state.uploadCandidateId = result.id;
-        showToast("✓ વિગતો સાચવાઈ ગઈ! હવે Photo ઉમેરો");
-        state.screen = "formDocs";
-        render();
-      }
-    }catch(err){
-      btn.disabled = false;
-      btn.innerHTML = `<span>${isEdit ? t('updateBtn') : t('submitBtn')}</span><span class="material-symbols-outlined text-base">check</span>`;
-      document.getElementById("ff3-err").innerHTML = `<div class="bg-red-50 text-danger text-xs font-semibold p-2.5 rounded-xl border border-red-200">${err.message}</div>`;
-    }
-  });
-}
-
-// --- Step 4: Photo & Documents Upload ---
-function renderFormDocs(){
-  const candidateId = state.uploadCandidateId;
-
-  app.innerHTML = `
-    ${formHeaderHtml(4, t('docsTitle'))}
-
-    <main class="flex-1 p-5 pb-12 space-y-4">
-      <!-- Photo Upload Box -->
-      <div class="bg-white rounded-3xl p-6 shadow-ambient border border-soft-sky/60 text-center">
-        <div class="w-16 h-16 mx-auto rounded-full bg-soft-sky/50 text-horizon-blue flex items-center justify-center mb-3">
-          <span class="material-symbols-outlined text-3xl">add_a_photo</span>
-        </div>
-        <h3 class="font-display font-bold text-deep-ocean text-base">Latest Color Photo</h3>
-        <p class="text-[11px] text-on-surface-variant font-medium mt-1 mb-4">${t('photoPh')}</p>
-
-        <div class="max-w-xs mx-auto">
-          <input type="file" accept="image/*" id="photo-input" class="w-full text-xs text-on-surface-variant file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-horizon-blue file:text-white hover:file:bg-deep-ocean cursor-pointer">
-          <div id="photo-status" class="text-xs font-bold text-success mt-2"></div>
-        </div>
-
-        <div class="flex items-center justify-center gap-2 mt-5 pt-4 border-t border-soft-sky">
-          <input type="checkbox" id="photo-visible-toggle" class="accent-deep-ocean w-4 h-4 rounded cursor-pointer">
-          <label for="photo-visible-toggle" class="text-xs font-bold text-deep-ocean cursor-pointer">મારો Photo બીજા સભ્યોને દેખાડો</label>
-        </div>
-        <p class="text-[10px] text-on-surface-variant mt-1">${t('photoDefault')}</p>
-      </div>
-
-      <!-- Verification Docs Upload -->
-      <div class="bg-white rounded-3xl p-6 shadow-ambient border border-soft-sky/60 space-y-3">
-        <h3 class="font-display font-bold text-deep-ocean text-base mb-1">${t('docsRequired')}</h3>
-        <p class="text-[11px] text-on-surface-variant font-medium mb-3">${t('docsNote')}</p>
-
-        ${["aadhar","education","lc"].map(key => `
-          <div class="border border-soft-sky rounded-2xl p-3.5 bg-surface/40">
-            <div class="font-bold text-xs text-deep-ocean mb-1.5 flex items-center gap-1.5">
-              <span class="material-symbols-outlined text-sm text-horizon-blue">
-                ${key === 'aadhar' ? 'badge' : key === 'education' ? 'school' : 'description'}
-              </span>
-              <span>${key === 'aadhar' ? 'Aadhar Card' : key === 'education' ? 'શિક્ષણ પ્રમાણપત્ર (Degree / Marksheet)' : 'જન્મ તારીખ દાખલો / LC'}</span>
-            </div>
-            <input type="file" accept="image/*,.pdf" data-doc="${key}" class="w-full text-[11px] text-on-surface-variant file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-soft-sky file:text-deep-ocean cursor-pointer">
-            <div id="doc-status-${key}" class="text-[11px] font-bold text-success mt-1"></div>
-          </div>
-        `).join("")}
-
-        <button id="docs-done" class="w-full mt-4 bg-earth-warmth hover:bg-earth-dark text-white py-3.5 rounded-xl text-sm font-bold shadow-ambient transition-all flex items-center justify-center gap-2">
-          <span>${t('doneBtn')}</span>
-          <span class="material-symbols-outlined text-base">check_circle</span>
-        </button>
-      </div>
-    </main>
-  `;
-
-  document.getElementById("form-back").addEventListener("click", ()=>{ state.screen = "myProfiles"; render(); });
-
-  document.getElementById("photo-visible-toggle").addEventListener("change", async (e)=>{
-    try{ await dataService.setPhotoVisibility(candidateId, e.target.checked); }
-    catch(err){ showToast("Error: " + err.message); e.target.checked = !e.target.checked; }
-  });
-
-  document.getElementById("photo-input").addEventListener("change", async (e)=>{
-    const file = e.target.files[0]; if(!file) return;
-    const statusEl = document.getElementById("photo-status");
-    statusEl.innerHTML = `<span class="animate-pulse">Upload થઈ રહ્યું છે...</span>`;
-    try{
-      await dataService.uploadPhoto(candidateId, file);
-      statusEl.textContent = "✓ Photo Upload થઈ ગયો";
-      statusEl.className = "text-xs font-bold text-success mt-2";
-    }catch(err){
-      statusEl.className = "text-xs font-bold text-danger mt-2";
-      statusEl.textContent = "Error: " + err.message;
-    }
-  });
-
-  document.querySelectorAll("[data-doc]").forEach(input => {
-    input.addEventListener("change", async (e)=>{
-      const key = input.getAttribute("data-doc");
-      const file = e.target.files[0]; if(!file) return;
-      const statusEl = document.getElementById("doc-status-" + key);
-      statusEl.innerHTML = `<span class="animate-pulse">Upload થઈ રહ્યું છે...</span>`;
-      try{
-        await dataService.uploadDocument(candidateId, key, file);
-        statusEl.textContent = "✓ Document Upload થઈ ગયું";
-        statusEl.className = "text-[11px] font-bold text-success mt-1";
-      }catch(err){
-        statusEl.className = "text-[11px] font-bold text-danger mt-1";
-        statusEl.textContent = "Error: " + err.message;
-      }
-    });
-  });
-
-  document.getElementById("docs-done").addEventListener("click", ()=>{
-    state.uploadCandidateId = null;
-    state.screen = "myProfiles";
-    render();
-  });
-}
-
-// Initial Kickoff
-render();
-</script>
-</body>
-</html>
+<!-- Quick Search Bar (Bento style) -->
+<div class="bg-surface-container-lowest rounded-[24px] p-6 shadow-[0_4px_20px_rgba(12,42,70,0.04)] border border-soft-sky mt-4">
+<div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+<div class="flex flex-col gap-2">
+<label class="font-label-sm text-label-sm text-outline uppercase tracking-wider">I am looking for a</label>
+<select class="w-full bg-transparent border-b border-soft-sky focus:border-primary focus:ring-0 px-0 py-2 font-body-md text-body-md text-on-surface">
+<option>Woman</option>
+<option>Man</option>
+</select>
+</div>
+<div class="flex flex-col gap-2">
+<label class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Age Range</label>
+<div class="flex items-center gap-2">
+<select class="w-full bg-transparent border-b border-soft-sky focus:border-primary focus:ring-0 px-0 py-2 font-body-md text-body-md text-on-surface">
+<option>25</option>
+</select>
+<span class="text-outline">to</span>
+<select class="w-full bg-transparent border-b border-soft-sky focus:border-primary focus:ring-0 px-0 py-2 font-body-md text-body-md text-on-surface">
+<option>35</option>
+</select>
+</div>
+</div>
+</div>
+<button onclick="location.href='discover.html'" class="w-full mt-6 bg-earth-warmth text-white font-label-md text-label-md py-4 rounded-xl hover:bg-earth-warmth/90 transition-colors shadow-sm flex items-center justify-center gap-2">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">search</span>
+    Begin Search
+</button>
+</div>
+</div>
+<div class="flex-1 relative w-full h-[500px] md:h-[600px] rounded-[32px] overflow-hidden shadow-[0_10px_30px_rgba(12,42,70,0.08)]">
+<div class="absolute inset-0 bg-cover bg-center w-full h-full" data-alt="A warm, highly detailed photograph of an elegant Indian couple in their late 20s, standing together in a sophisticated modern indoor setting with soft natural light. The lighting creates a serene, premium light-mode aesthetic, highlighting the subtle deep ocean teal and cream base tones of their contemporary ethnic wear. The mood is intimate, respectful, and joyful, embodying long-term commitment." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC7evwbPxzRdF-V_azz5EPA99sekNsijPkRAvqWNayUNc5MwY0bQXWcE-4w1UqevNVErdv8M8ryiAjTRA4tcSwb0Ton-Dpdiu7_eDK4hyS4Vp9yfdXr_-qZFrezgPBAztg1DVbWzQqqTVLLLT9HlW1PvbPlDBsOY1LspVo2BBgaeGY0QSK94FcF6MUN86WyTPdLZ2qLE53U8oIqFyXMqIsTXHgSnCwkPS3hB1mJLLPVKdDKAbITp25N8g')"></div>
+<!-- Decorative wave overlay at bottom -->
+<div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent"></div>
+</div>
+</header>
+<div class="w-full flex justify-center py-8">
+<div class="wave-divider max-w-xs"></div>
+</div>
+<!-- Value Props Section -->
+<section class="w-full max-w-[1200px] mx-auto px-margin-mobile md:px-margin-desktop py-section-gap">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- Prop 1 -->
+<div class="bg-surface-container-lowest rounded-[24px] p-8 shadow-[0_4px_20px_rgba(12,42,70,0.04)] border border-soft-sky flex flex-col items-center text-center gap-4 hover:-translate-y-1 transition-transform duration-300">
+<div class="w-16 h-16 rounded-full bg-soft-sky flex items-center justify-center text-primary mb-2" style="color: rgb(127, 179, 213);">
+<span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+</div>
+<h3 class="font-title-md text-title-md text-primary" style="color: rgb(127, 179, 213);">Verified Profiles</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Every member is authenticated to ensure a secure and genuine community of individuals seeking true connection.</p>
+</div>
+<!-- Prop 2 -->
+<div class="bg-surface-container-lowest rounded-[24px] p-8 shadow-[0_4px_20px_rgba(12,42,70,0.04)] border border-soft-sky flex flex-col items-center text-center gap-4 hover:-translate-y-1 transition-transform duration-300">
+<div class="w-16 h-16 rounded-full bg-soft-sky flex items-center justify-center text-primary mb-2" style="color: rgb(127, 179, 213);">
+<span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">favorite</span>
+</div>
+<h3 class="font-title-md text-title-md text-primary" style="color: rgb(127, 179, 213);">Deep Compatibility</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Our algorithms go beyond the surface, focusing on shared values, lifestyle, and life goals for lasting harmony.</p>
+</div>
+<!-- Prop 3 -->
+<div class="bg-surface-container-lowest rounded-[24px] p-8 shadow-[0_4px_20px_rgba(12,42,70,0.04)] border border-soft-sky flex flex-col items-center text-center gap-4 hover:-translate-y-1 transition-transform duration-300">
+<div class="w-16 h-16 rounded-full bg-soft-sky flex items-center justify-center text-primary mb-2" style="color: rgb(127, 179, 213);">
+<span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">lock</span>
+</div>
+<h3 class="font-title-md text-title-md text-primary" style="color: rgb(127, 179, 213);">Secure &amp; Private</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Your journey is yours alone. Robust privacy controls allow you to share your information only when you are ready.</p>
+</div>
+</div>
+</section>
+<!-- Footer -->
+<footer class="w-full py-section-gap bg-deep-ocean flat no shadows">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter px-margin-desktop max-w-[1200px] mx-auto">
+<div class="col-span-1 md:col-span-1 flex flex-col gap-4">
+<img src="https://lh3.googleusercontent.com/aida/AEtjO1WE5ahoB1pdfSyoyVif2Z7Kbv3eqR1rRPDTA-Fm-EthV_kjfCTjkwh70BTGZU9s-ipVGCFHRxZrkl58MmXVJ1zJSGWybB8EZxNBXffAgFBdCT72GIApS9mYboXMnBJOWpXAsvY4TBiqsF-APUEv6wvASPeEkTDr7aMqYsWSWXjXiVWWYT140r-3IFQtImkbX3AnXzfMjwCCoXeMOdcSH4-Eqr1MEhQaDlHnPTFvT3ZRb3ujLwLKpziqAMPw" alt="SagarSambandh.in Logo" class="h-10 w-10 object-contain rounded-md mb-2"><span class="font-headline-lg text-headline-lg text-cream-base">SagarSambandh.in</span>
+<p class="font-label-md text-label-md text-cream-base/80">© 2024 SagarSambandh.in. All rights reserved.</p>
+</div>
+<div class="col-span-1 md:col-span-3 flex flex-wrap gap-8 md:justify-end items-center opacity-80 hover:opacity-100">
+<a class="font-label-md text-label-md text-cream-base/80 hover:text-earth-warmth transition-colors duration-200" href="#">Success Stories</a>
+<a class="font-label-md text-label-md text-cream-base/80 hover:text-earth-warmth transition-colors duration-200" href="#">Privacy</a>
+<a class="font-label-md text-label-md text-cream-base/80 hover:text-earth-warmth transition-colors duration-200" href="#">Safety</a>
+<a class="font-label-md text-label-md text-cream-base/80 hover:text-earth-warmth transition-colors duration-200" href="#">About Us</a>
+<a class="font-label-md text-label-md text-cream-base/80 hover:text-earth-warmth transition-colors duration-200" href="#">Terms of Service</a>
+</div>
+</div>
+</footer>
+</body></html>
