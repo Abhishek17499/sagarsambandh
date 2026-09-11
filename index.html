@@ -1,19 +1,65 @@
 <!DOCTYPE html>
-<!-- SAGAR SAMBANDH — USER APP — v12 (22 Aug 2026) — Mobile + PIN login (temporary fallback; real Phone OTP is throttled by Firebase due to an App Check misconfiguration on 22 Aug — see Sagar-Sambandh-OTP-Bug-Summary.docx). Anonymous Auth (for Firestore/Storage rules) unchanged. -->
-<html lang="gu">
+<!-- SAGAR SAMBANDH — USER APP — Modern Redesign v13 (Light Blue & Ocean Theme) -->
+<html lang="gu" class="scroll-smooth">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sagar Sambandh - User App</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Gujarati:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Sagar Sambandh - ખારવા સમાજ મેટ્રિમોનિઅલ પોર્ટલ</title>
 
-<!-- Select2 -->
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Gujarati:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script id="tailwind-config">
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          'deep-ocean': '#0C2A46',
+          'horizon-blue': '#145C82',
+          'soft-sky': '#DCEBF2',
+          'premium-blue': '#7FB3D5',
+          'earth-warmth': '#CC6633',
+          'earth-dark': '#9D4311',
+          'cream-base': '#F9F7F2',
+          'primary': '#145C82',
+          'secondary': '#9D4311',
+          'surface': '#FBF9F4',
+          'surface-container-lowest': '#FFFFFF',
+          'surface-container': '#F0EEE9',
+          'on-surface': '#1B1C19',
+          'on-surface-variant': '#5A7A8C',
+          'outline-variant': '#C1C7CE',
+          'success': '#2E9E6B',
+          'danger': '#D8544A'
+        },
+        fontFamily: {
+          display: ['"Playfair Display"', 'serif'],
+          sans: ['"Inter"', '"Noto Sans Gujarati"', 'sans-serif'],
+          gujarati: ['"Noto Sans Gujarati"', '"Poppins"', 'sans-serif']
+        },
+        boxShadow: {
+          'ambient': '0 4px 24px rgba(12, 42, 70, 0.06)',
+          'ambient-lg': '0 10px 30px rgba(12, 42, 70, 0.10)',
+          'glow': '0 0 20px rgba(28, 147, 201, 0.25)'
+        }
+      }
+    }
+  }
+</script>
+
+<!-- Select2 & jQuery -->
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-<!-- Firebase (compat SDK — works with plain <script> tags, no build step needed) -->
+<!-- Firebase (compat SDK) -->
 <script src="https://www.gstatic.com/firebasejs/12.11.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/12.11.0/firebase-storage-compat.js"></script>
@@ -21,139 +67,188 @@
 <script src="https://www.gstatic.com/firebasejs/12.11.0/firebase-app-check-compat.js"></script>
 
 <style>
-  :root{
-    --navy:#0C2A46; --primary:#145C82; --primary-light:#1C93C9;
-    --sky:#7FC7E0; --ice:#D9EAF0; --accent:#E8A33D;
-    --text-dark:#0C2A46; --text-mid:#5A7A8C; --border:#DCE7EC;
-    --success:#2E9E6B; --danger:#D8544A;
+  :root {
+    --navy: #0C2A46;
+    --primary: #145C82;
+    --primary-light: #1C93C9;
+    --sky: #7FC7E0;
+    --ice: #D9EAF0;
+    --accent: #CC6633;
+    --text-dark: #0C2A46;
+    --text-mid: #5A7A8C;
+    --border: #DCEBF2;
+    --success: #2E9E6B;
+    --danger: #D8544A;
   }
-  *{box-sizing:border-box; margin:0; padding:0;}
-  body{
-    background: linear-gradient(180deg, #DCEBF2 0%, #EAF3F7 45%);
-    font-family:'Noto Sans Gujarati','Poppins',sans-serif;
-    min-height:100vh;
+  * { box-sizing: border-box; }
+  body {
+    background: #EAF2F6;
+    font-family: 'Inter', 'Noto Sans Gujarati', sans-serif;
+    color: #1B1C19;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
   }
-  .phone{
-    width:100%; max-width:480px; margin:0 auto;
-    background:#F5F9FB;
-    min-height:100vh;
-    position:relative;
-    display:flex; flex-direction:column;
+  @media (min-width: 640px) {
+    body {
+      background: linear-gradient(135deg, #D4E6F1 0%, #EAF3F7 50%, #F5F9FB 100%);
+      padding: 24px 0;
+    }
   }
-  .notch{ display:none; }
-  .header{ background: linear-gradient(135deg, var(--navy) 0%, var(--primary) 60%, var(--primary-light) 100%); padding:28px 20px 20px; color:#fff; flex-shrink:0; }
-  .header-title{ font-size:18px; font-weight:800; }
-  .header-sub{ font-size:12px; opacity:0.82; margin-top:3px; }
-  .content{ flex:1; padding:20px 20px 100px; max-width:480px; margin:0 auto; width:100%; }
-  .field{ margin-bottom:15px; }
-  .otp-boxes{ display:flex; gap:10px; justify-content:center; margin:10px 0 20px; }
-  .otp-box{
-    width:44px; height:52px; text-align:center; font-size:20px; font-weight:700;
-    border:1.5px solid var(--border); border-radius:12px; background:#fff;
-    color:var(--text-dark); outline:none;
-  }
-  .otp-box:focus{ border-color:var(--primary-light); box-shadow:0 0 0 3px rgba(28,147,201,0.12); }
-  .field label{ display:block; font-size:12px; font-weight:600; color:var(--text-dark); margin-bottom:6px; }
-  .input-wrap{ display:flex; align-items:center; border:1.5px solid var(--border); border-radius:12px; background:#fff; padding:0 13px; }
-  .input-wrap:focus-within{ border-color:var(--primary-light); box-shadow:0 0 0 3px rgba(28,147,201,0.12); }
-  .input-wrap input{ border:none; outline:none; padding:12px 0; font-size:13.5px; width:100%; font-family:inherit; color:var(--text-dark); background:transparent; }
 
-  /* ── Select2 custom theme ── */
-  .select2-container{ width:100% !important; }
-  .select2-container--default .select2-selection--single{
-    border:1.5px solid var(--border); border-radius:12px; background:#fff;
-    height:46px; display:flex; align-items:center; padding:0 13px;
-    font-family:'Noto Sans Gujarati','Poppins',sans-serif;
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    display: inline-block;
+    vertical-align: middle;
+    line-height: 1;
   }
-  .select2-container--default.select2-container--open .select2-selection--single{
-    border-color:var(--primary-light); box-shadow:0 0 0 3px rgba(28,147,201,0.12);
+  .material-symbols-fill {
+    font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
   }
-  .select2-container--default .select2-selection--single .select2-selection__rendered{
-    color:var(--text-dark); font-size:13.5px; font-family:inherit; padding:0; line-height:46px;
+
+  /* App Phone Shell Container */
+  .app-shell {
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
+    background: #F9F7F2;
+    min-height: 100vh;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 10px 40px -10px rgba(12, 42, 70, 0.12);
   }
-  .select2-container--default .select2-selection--single .select2-selection__placeholder{
-    color:#aabcc6;
+  @media (min-width: 640px) {
+    .app-shell {
+      border-radius: 28px;
+      overflow: hidden;
+      border: 1px solid rgba(220, 235, 242, 0.9);
+      min-height: calc(100vh - 48px);
+    }
   }
-  .select2-container--default .select2-selection--single .select2-selection__arrow{
-    height:46px; right:10px;
+
+  /* Form Inputs Glow & Styling */
+  .input-glow:focus {
+    border-color: #145C82;
+    box-shadow: 0 0 0 3px rgba(20, 92, 130, 0.15);
+    outline: none;
   }
-  .select2-container--default .select2-selection--single .select2-selection__arrow b{
-    border-color:var(--text-mid) transparent transparent transparent;
+  .otp-box {
+    width: 48px;
+    height: 56px;
+    text-align: center;
+    font-size: 22px;
+    font-weight: 700;
+    border: 1.5px solid #DCEBF2;
+    border-radius: 14px;
+    background: #FFFFFF;
+    color: #0C2A46;
+    outline: none;
+    transition: all 0.2s ease;
   }
-  .select2-container--default.select2-container--open .select2-selection--single .select2-selection__arrow b{
-    border-color:transparent transparent var(--primary) transparent;
+  .otp-box:focus {
+    border-color: #145C82;
+    box-shadow: 0 0 0 3px rgba(20, 92, 130, 0.18);
+    background: #FFFFFF;
   }
-  .select2-dropdown{
-    border:1.5px solid var(--border); border-radius:12px; box-shadow:0 8px 24px -6px rgba(12,42,70,0.18);
-    font-family:'Noto Sans Gujarati','Poppins',sans-serif; overflow:hidden; margin-top:4px;
+
+  /* Select2 Custom Ocean Theme */
+  .select2-container { width: 100% !important; }
+  .select2-container--default .select2-selection--single {
+    border: 1.5px solid #DCEBF2;
+    border-radius: 12px;
+    background: #FFFFFF;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    font-family: 'Inter', 'Noto Sans Gujarati', sans-serif;
+    transition: all 0.2s ease;
   }
-  .select2-container--default .select2-results__option{
-    font-size:13.5px; color:var(--text-dark); padding:10px 14px;
+  .select2-container--default.select2-container--open .select2-selection--single {
+    border-color: #145C82;
+    box-shadow: 0 0 0 3px rgba(20, 92, 130, 0.15);
   }
-  .select2-container--default .select2-results__option--highlighted[aria-selected]{
-    background:var(--ice); color:var(--primary);
+  .select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: #0C2A46;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 48px;
+    padding: 0;
   }
-  .select2-container--default .select2-results__option[aria-selected=true]{
-    background:var(--navy); color:#fff;
+  .select2-container--default .select2-selection--single .select2-selection__placeholder {
+    color: #94A3B8;
   }
-  .select2-search--dropdown .select2-search__field{
-    border:1.5px solid var(--border); border-radius:8px; padding:8px 10px;
-    font-size:13px; font-family:inherit; outline:none;
+  .select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 48px;
+    right: 12px;
   }
-  .select2-search--dropdown .select2-search__field:focus{
-    border-color:var(--primary-light); box-shadow:0 0 0 2px rgba(28,147,201,0.12);
+  .select2-dropdown {
+    border: 1.5px solid #DCEBF2;
+    border-radius: 14px;
+    box-shadow: 0 12px 32px -4px rgba(12, 42, 70, 0.15);
+    font-family: 'Inter', 'Noto Sans Gujarati', sans-serif;
+    overflow: hidden;
+    margin-top: 6px;
+    z-index: 9999;
   }
-  /* hide search box for small lists */
-  .select2-nosearch .select2-search--dropdown{ display:none; }
-  /* make select2 fit naturally in field */
-  .field .select2-container--default .select2-selection--single{ height:46px; }
-  /* placeholder color */
-  .select2-container--default .select2-selection--single .select2-selection__rendered[title=""]{ color:#aabcc6; }
-  /* clear (×) button */
-  .select2-container--default .select2-selection--single .select2-selection__clear{ color:var(--text-mid); font-size:16px; margin-right:6px; font-weight:400; }
-  .select2-container--default .select2-selection--single .select2-selection__clear:hover{ color:var(--danger); }
-  .btn{ width:100%; padding:14px; border-radius:12px; border:none; font-size:13.5px; font-weight:700; font-family:inherit; cursor:pointer; }
-  .btn-primary{ background:linear-gradient(135deg,var(--navy),var(--primary-light)); color:#fff; box-shadow:0 10px 20px -8px rgba(12,42,70,0.5); }
-  .btn-primary:disabled{ opacity:0.45; cursor:not-allowed; box-shadow:none; }
-  .btn-ghost{ background:var(--ice); color:var(--primary); margin-top:10px; }
-  .center-note{ text-align:center; font-size:12px; color:var(--text-mid); margin-top:14px; }
-  .declaration{ display:flex; gap:10px; align-items:flex-start; background:var(--ice); border:1.5px solid var(--sky); border-radius:12px; padding:13px 14px; margin:16px 0; }
-  .declaration input{ margin-top:3px; accent-color:var(--navy); width:16px; height:16px; flex-shrink:0; }
-  .declaration p{ font-size:12px; color:var(--text-dark); line-height:1.55; }
-  .search-bar{ margin-top:14px; background:rgba(255,255,255,0.95); border-radius:14px; padding:11px 14px; display:flex; align-items:center; gap:10px; color:var(--text-mid); font-size:13px; }
-  .filters-row{ display:flex; gap:8px; padding:12px 0 4px; overflow-x:auto; }
-  .chip{ flex-shrink:0; font-size:11.5px; font-weight:600; color:var(--primary); background:var(--ice); border:1px solid var(--sky); padding:7px 13px; border-radius:20px; white-space:nowrap; cursor:pointer; }
-  .chip.active{ background:var(--navy); color:#fff; border-color:var(--navy); }
-  .card{ background:#fff; border-radius:18px; box-shadow:0 6px 18px -8px rgba(12,42,70,0.18); display:flex; overflow:hidden; margin-bottom:14px; border:1px solid #EDF4F7; cursor:pointer; }
-  .card-photo{ width:100px; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:32px; color:#fff; position:relative; }
-  .verified-tag{ position:absolute; bottom:6px; left:6px; right:6px; background:rgba(12,42,70,0.75); color:#fff; font-size:8px; font-weight:700; text-align:center; padding:3px 0; border-radius:6px; }
-  .card-body{ padding:12px 13px; flex:1; }
-  .card-name{ font-size:14px; font-weight:700; color:var(--navy); }
-  .card-sub{ font-size:11px; color:var(--text-mid); margin-top:2px; }
-  .loading{ text-align:center; padding:60px 20px; color:var(--text-mid); font-size:13px; }
-  .empty{ text-align:center; padding:60px 20px; color:var(--text-mid); font-size:12.5px; }
-  .bottom-nav{ position:fixed; bottom:0; left:0; right:0; background:#fff; border-top:1px solid var(--border); display:flex; justify-content:center; gap:0; padding:10px 6px calc(10px + env(safe-area-inset-bottom)); flex-shrink:0; z-index:50; }
-  .bottom-nav-inner{ display:flex; justify-content:space-around; width:100%; max-width:480px; }
-  .nav-item{ display:flex; flex-direction:column; align-items:center; gap:3px; font-size:9.5px; color:var(--text-mid); font-weight:600; cursor:pointer; }
-  .nav-item.active{ color:var(--primary); }
-  .nav-icon{ font-size:17px; }
-  .back-row{ display:flex; align-items:center; gap:12px; }
-  .back-btn{ width:30px; height:30px; border-radius:9px; background:rgba(255,255,255,0.18); display:flex; align-items:center; justify-content:center; font-size:14px; cursor:pointer; flex-shrink:0; }
-  .toast{ position:fixed; bottom:90px; left:50%; transform:translateX(-50%); background:var(--navy); color:#fff; padding:12px 22px; border-radius:30px; font-size:13px; font-weight:600; z-index:999; box-shadow:0 10px 24px rgba(0,0,0,0.3); max-width:85%; text-align:center; }
-  .status-banner{ padding:10px 14px; border-radius:12px; font-size:11.5px; font-weight:600; margin-bottom:14px; text-align:center; }
-  .mini-btn{ font-size:10.5px; font-weight:700; padding:7px 12px; border-radius:8px; border:none; cursor:pointer; font-family:inherit; }
-  .mini-accept{ background:var(--success); color:#fff; }
-  .mini-decline{ background:#FCEBEA; color:var(--danger); }
-  .status-ok{ background:#E7F6EF; color:var(--success); }
-  .status-err{ background:#FCEBEA; color:var(--danger); }
-  .err-text{ font-size:11.5px; color:var(--danger); margin-top:-6px; margin-bottom:10px; }
-  .status-pending{ font-size:10px; font-weight:700; padding:4px 9px; border-radius:9px; display:inline-block; margin-top:6px; }
-  .detail-row{ display:flex; justify-content:space-between; padding:9px 0; border-bottom:1px solid var(--border); font-size:13px; }
-  .detail-row .k{ color:var(--text-mid); } .detail-row .v{ color:var(--text-dark); font-weight:600; }
+  .select2-container--default .select2-results__option {
+    font-size: 13.5px;
+    color: #0C2A46;
+    padding: 11px 16px;
+  }
+  .select2-container--default .select2-results__option--highlighted[aria-selected] {
+    background: #DCEBF2;
+    color: #0C2A46;
+  }
+  .select2-container--default .select2-results__option[aria-selected=true] {
+    background: #0C2A46;
+    color: #FFFFFF;
+  }
+  .select2-search--dropdown .select2-search__field {
+    border: 1.5px solid #DCEBF2;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 13px;
+    outline: none;
+  }
+
+  /* Floating Toast Notification */
+  .toast {
+    position: fixed;
+    bottom: 96px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #0C2A46;
+    color: #FFFFFF;
+    padding: 12px 24px;
+    border-radius: 9999px;
+    font-size: 13px;
+    font-weight: 600;
+    z-index: 9999;
+    box-shadow: 0 10px 25px rgba(12, 42, 70, 0.35);
+    max-width: 90%;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    animation: toastIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @keyframes toastIn {
+    from { opacity: 0; transform: translate(-50%, 15px) scale(0.96); }
+    to { opacity: 1; transform: translate(-50%, 0) scale(1); }
+  }
+
+  /* Wave animation */
+  .wave-pulse {
+    animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
 </style>
 </head>
 <body>
-<div class="phone" id="phone"><div class="notch"></div><div id="app"></div></div>
+
+<div class="app-shell" id="phone">
+  <div id="app" class="flex-1 flex flex-col min-h-screen relative"></div>
+</div>
 
 <script>
 // ============================================================
@@ -184,17 +279,6 @@ try {
   firebaseError = e.message;
 }
 
-// App Check — verifies requests come from this real website, not a
-// copy-pasted config used in someone else's script/page. Team must replace
-// RECAPTCHA_V3_SITE_KEY below with the real key from Firebase Console
-// (Build → App Check → register a reCAPTCHA v3 site). Wrapped so a
-// missing/placeholder key never breaks the rest of the app.
-// TEMPORARILY DISABLED (22 Aug 2026): this reCAPTCHA v3 key was not yet
-// registered under Firebase Console → App Check → Apps, causing every
-// token-exchange call to fail with 403 and the Firebase SDK to throttle
-// ALL further auth attempts client-side for ~24 hours. Re-enable only
-// after the key is properly registered in App Check + Google reCAPTCHA
-// Admin Console for the sagarsambandh.in domain.
 const RECAPTCHA_V3_SITE_KEY = "REPLACE_WITH_RECAPTCHA_V3_SITE_KEY";
 if (firebaseReady && RECAPTCHA_V3_SITE_KEY !== "REPLACE_WITH_RECAPTCHA_V3_SITE_KEY") {
   try {
@@ -205,12 +289,6 @@ if (firebaseReady && RECAPTCHA_V3_SITE_KEY !== "REPLACE_WITH_RECAPTCHA_V3_SITE_K
   } catch (e) { console.warn("App Check activation failed:", e.message); }
 }
 
-// Anonymous sign-in: gives every visitor a silent Firebase Auth session.
-// This lets Firestore/Storage Rules require request.auth != null, which blocks
-// Waits for Firebase to restore any existing session first (a returning
-// member's phone-verified login persists automatically). Only falls back to
-// a silent Anonymous session if nobody is signed in — this way Firestore
-// Rules can always require request.auth != null, even for pre-login browsing.
 let authReadyPromise = firebaseReady
   ? new Promise((resolve) => {
       auth.onAuthStateChanged(async (user) => {
@@ -223,32 +301,13 @@ let authReadyPromise = firebaseReady
     })
   : Promise.resolve();
 
-// ⚠️ DEV/TESTING FALLBACK (22 Aug 2026): Real Phone OTP is temporarily
-// throttled server-side by Firebase (App Check misconfiguration earlier
-// today — see Sagar-Sambandh-OTP-Bug-Summary.docx). Until that clears and
-// we consciously decide to switch back, login uses Mobile Number + 4-digit
-// PIN — but under the hood it still creates a REAL (non-anonymous) Firebase
-// Auth session via Email/Password, exactly like admin.html does for Admin
-// login. This matters because Firestore Rules check
-// request.auth.token.firebase.sign_in_provider != 'anonymous' — a plain
-// Anonymous session (no real per-person identity) gets blocked by Rules,
-// which is exactly correct/secure behaviour, not a bug.
 function mobileToEmail(mobile){ return `${mobile}@sagarsambandh.local`; }
-function pinToPassword(pin){ return `sagar${pin}bandh`; } // Firebase needs 6+ chars; PIN itself stays 4 digits in the UI
+function pinToPassword(pin){ return `sagar${pin}bandh`; }
 
 // ============================================================
-// DATA SERVICE — real Firestore calls
-// Collections used:
-//   users      { name, mobile, village, createdAt } — doc ID = Firebase Auth uid
-//   candidates { name, gender, age, education, city, occupation, rashi,
-//                maritalStatus, fatherName, motherName, height,
-//                siblings, status: "approved"|"pending", photoEmoji, photoColor, createdAt }
-//   interests  { fromUserId, toCandidateId, status: "pending", createdAt }
+// DATA SERVICE — Firestore calls
 // ============================================================
 const dataService = {
-  // Mobile+PIN fallback — signup creates a real (non-anonymous) Firebase
-  // Auth user, then a matching users/{uid} Firestore doc (doc ID = uid, to
-  // match Security Rules' `request.auth.uid == userId` check).
   async signup(mobile, pin, name, village) {
     if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
     let cred;
@@ -293,8 +352,6 @@ const dataService = {
     const snap = await db.collection("candidates").where("status", "==", "approved").get();
     let profiles = snap.docs.map(d => ({ id: d.id, ...d.data() })).filter(p => !p.deactivated);
 
-    // Match Score: compare against the logged-in user's own (opposite-gender) candidate profile.
-    // If user hasn't created a profile yet, no score is shown — matching needs a reference point.
     let myRef = null;
     if (userId) {
       const mySnap = await db.collection("candidates").where("createdByUserId", "==", userId).get();
@@ -391,7 +448,7 @@ const dataService = {
     if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
     await db.collection("candidates").doc(candidateId).update({
       ...payload,
-      status: "pending", // edit પછી re-approval જરૂરી, જેમ earlier નક્કી કરેલું
+      status: "pending",
     });
     return { success: true };
   },
@@ -426,13 +483,13 @@ const dataService = {
     const activeCount = existing.docs.filter(d => !d.data().deactivated).length;
     if (activeCount >= 4) throw new Error("એક account થી વધુમાં વધુ 4 active profiles બની શકે છે");
     const photoStyles = [
-      { color:"linear-gradient(160deg,#7FC7E0,#1C93C9)", emoji: payload.gender==="female" ? "👩" : "👨" },
+      { color:"linear-gradient(145deg, #145C82 0%, #0C2A46 100%)", emoji: payload.gender==="female" ? "👧" : "👦" },
     ];
     const ref = await db.collection("candidates").add({
       ...payload,
       createdByUserId: userId,
       status: "pending",
-      photoVisible: false, // નવા profiles માટે Default: Hidden — candidate પોતે My Profiles માંથી Show કરી શકે
+      photoVisible: false,
       photoColor: photoStyles[0].color,
       photoEmoji: photoStyles[0].emoji,
       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
@@ -440,37 +497,43 @@ const dataService = {
     return { id: ref.id };
   },
 
-  // Photo visibility toggle — candidate પોતાના photo ને બીજા members થી Show/Hide કરી શકે.
-  // આ ફક્ત display-preference છે (candidate ની actual data નહીં), એટલે status ને "pending" નથી કરતું —
-  // re-approval જરૂરી નથી.
   async setPhotoVisibility(candidateId, visible) {
     if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
     await db.collection("candidates").doc(candidateId).update({ photoVisible: visible });
     return { success: true };
   },
 };
-// ============================================================
 
+// ============================================================
+// APP STATE & MULTILINGUAL STRINGS
+// ============================================================
 const app = document.getElementById("app");
-let state = { screen: "checking", user: null, openProfileId: null, formDraft: {}, uploadCandidateId: null, editCandidateId: null, lang: "gu" };
+let state = {
+  screen: "checking",
+  user: null,
+  pendingMobile: "",
+  openProfileId: null,
+  formDraft: {},
+  uploadCandidateId: null,
+  editCandidateId: null,
+  lang: "gu"
+};
 
-// Note: session persistence is now handled natively by Firebase Auth
-// (auth.currentUser survives refresh automatically) — see renderChecking().
-
-// ============================================================
-// LANGUAGE — lightweight Gu/En toggle for key UI strings.
-// Firestore data itself (names, education entered by users) stays as-typed.
-// ============================================================
 const STRINGS = {
   gu: {
-    welcome: "નમસ્તે 🙏", home: "Home", search: "Search", interest: "Interest", profile: "Profile",
-    myProfiles: "📁 My Profiles", myProfilesSub: "તમે બનાવેલા candidate profiles (max 4)",
-    interestsTitle: "💌 Interests", interestsSub: "તમારા candidates ને મળેલા Interest requests",
-    browseSub: "Community profiles browse કરો (Live Firestore data)",
-    // Form Step 1
+    welcome: "નમસ્તે 🙏",
+    home: "સંબંધ શોધો",
+    search: "શોધો",
+    interest: "Interests",
+    profile: "પ્રોફાઇલ",
+    myProfiles: "મારા ઉમેદવારો",
+    myProfilesSub: "તમે બનાવેલા Candidate Profiles (મહત્તમ 4)",
+    interestsTitle: "સંબંધો અને રિકવેસ્ટ",
+    interestsSub: "તમારા ઉમેદવારો માટે આવેલી Interest વિનંતીઓ",
+    browseSub: "પોરબંદર ખારવા સમાજ • વેરિફાઇડ સંબંધો",
     formStep1Title: "ઉમેદવાર ફોર્મ",
     candidateName: "ઉમેદવારનું પૂરું નામ",
-    candidateNamePh: "દા.ત. પ્રિયા કિરીટભાઈ પટેલ",
+    candidateNamePh: "દા.ત. પ્રિયા કિરીટભાઈ સોલંકી",
     gender: "જાતિ (Gender)",
     genderPh: "પસંદ કરો",
     age: "ઉંમર",
@@ -481,51 +544,53 @@ const STRINGS = {
     motherNamePh: "માતાનું પૂરું નામ",
     rashi: "રાશી",
     rashiPh: "રાશી પસંદ કરો",
-    fillAllFields: "કૃપા કરીને બધા fields ભરો",
+    fillAllFields: "કૃપા કરીને બધા જરૂરી fields ભરો",
     nextBtn: "આગળ વધો →",
-    // Form Step 2
-    formStep2Title: "શિક્ષણ અને સરનામું",
+    formStep2Title: "શિક્ષણ અને રહેઠાણ",
     education: "શિક્ષણ",
-    educationPh: "દા.ત. B.Com",
+    educationPh: "દા.ત. B.Com, B.E., MBA",
     occupation: "વ્યવસાય",
-    occupationPh: "દા.ત. Private Job",
+    occupationPh: "દા.ત. Software Engineer, વેપાર",
     city: "શહેર / ગામ",
     cityPh: "દા.ત. પોરબંદર",
-    maritalStatus: "દરજ્જો",
+    maritalStatus: "વૈવાહિક દરજ્જો",
     maritalStatusPh: "દરજ્જો પસંદ કરો",
     siblings: "ભાઈ-બહેન ની વિગત (Optional)",
-    siblingsPh: "દા.ત. 1 ભાઈ, 0 બહેન",
+    siblingsPh: "દા.ત. 1 ભાઈ, 1 બહેન",
     eduCityRequired: "શિક્ષણ અને શહેર ભરવા જરૂરી છે",
-    // Review
     reviewTitle: "Review અને Submit",
     reviewEditTitle: "Review અને Update",
-    reviewCheck: "તમે ભરેલી વિગતો ચકાસો",
+    reviewCheck: "તમે ભરેલી વિગતો ધ્યાનપૂર્વક ચકાસો",
     submitBtn: "Submit કરો ✓",
     updateBtn: "Update કરો ✓",
     submitting: "Submit થઈ રહ્યું છે...",
     updating: "Update થઈ રહ્યું છે...",
-    submitSuccess: "✓ Basic details save થયા! હવે Photo/Documents ઉમેરો",
+    submitSuccess: "✓ વિગતો સાચવાઈ ગઈ! હવે Photo ઉમેરો",
     updateSuccess: "✓ Update થયું! Admin ફરી verify કરશે",
-    reviewNote: "Submit કર્યા પછી, Admin આ profile ને verify કરશે. Approve થયા પછી જ profile બીજા members ને દે઺8ાશે.",
+    reviewNote: "Submit કર્યા પછી, Admin આ profile ને verify કરશે. Approve થયા પછી જ profile બીજા members ને દેખાશે.",
     reviewEditNote: "Update કર્યા પછી, profile ફરીથી Admin approval ની રાહ જોશે (re-verification જરૂરી).",
-    // Docs
     docsTitle: "Photo અને Documents",
-    photoVisible: "મારો Photo બીજા members ને દે઺8ાડો",
+    photoVisible: "મારો Photo બીજા સભ્યોને દેખાડો",
     photoDefault: "Default: છુપાયેલો — ગમે ત્યારે My Profiles માંથી બદલી શકાય",
-    docsRequired: "જરૂરી Documents",
-    docsNote: "Documents ફક્ત Admin verification માટે વપરાશે. Approve થયા પછી server પરથી delete થઈ જશે — ફક્ત Photo રહશે.",
-    doneBtn: "Done — My Profiles પર જાવ →",
-    photoPh: "Passport size, સ્પષ્ટ, તાજેતરની",
+    docsRequired: "ઓળખ અને ચકાસણી દસ્તાવેજો",
+    docsNote: "Documents ફક્ત Admin verification માટે વપરાશે. Approve થયા પછી server પરથી delete થઈ જશે.",
+    doneBtn: "પૂર્ણ — My Profiles પર જાવ →",
+    photoPh: "સ્પષ્ટ, પાસપોર્ટ સાઇઝનો તાજેતરનો ફોટો",
   },
   en: {
-    welcome: "Welcome 🙏", home: "Home", search: "Search", interest: "Interest", profile: "Profile",
-    myProfiles: "📁 My Profiles", myProfilesSub: "Candidate profiles you created (max 4)",
-    interestsTitle: "💌 Interests", interestsSub: "Interest requests received for your candidates",
-    browseSub: "Browse community profiles (Live Firestore data)",
-    // Form Step 1
+    welcome: "Welcome 🙏",
+    home: "Discover",
+    search: "Search",
+    interest: "Interests",
+    profile: "Profile",
+    myProfiles: "My Profiles",
+    myProfilesSub: "Candidate profiles you created (max 4)",
+    interestsTitle: "Connections & Requests",
+    interestsSub: "Interest requests received for your candidates",
+    browseSub: "Porbandar Kharwa Samaj • Verified Matrimony",
     formStep1Title: "Candidate Form",
     candidateName: "Candidate's Full Name",
-    candidateNamePh: "e.g. Priya Kiritbhai Patel",
+    candidateNamePh: "e.g. Priya Kiritbhai Solanki",
     gender: "Gender",
     genderPh: "Select Gender",
     age: "Age",
@@ -537,58 +602,123 @@ const STRINGS = {
     rashi: "Zodiac Sign (Rashi)",
     rashiPh: "Select Zodiac Sign",
     fillAllFields: "Please fill all required fields",
-    nextBtn: "Next →",
-    // Form Step 2
+    nextBtn: "Continue →",
     formStep2Title: "Education & Address",
     education: "Education",
-    educationPh: "e.g. B.Com",
+    educationPh: "e.g. B.Com, B.E., MBA",
     occupation: "Occupation",
-    occupationPh: "e.g. Private Job",
-    city: "City / Village",
+    occupationPh: "e.g. Software Engineer, Business",
+    city: "City / Town",
     cityPh: "e.g. Porbandar",
     maritalStatus: "Marital Status",
     maritalStatusPh: "Select Marital Status",
     siblings: "Siblings Detail (Optional)",
-    siblingsPh: "e.g. 1 Brother, 0 Sister",
+    siblingsPh: "e.g. 1 Brother, 1 Sister",
     eduCityRequired: "Education and City are required",
-    // Review
     reviewTitle: "Review & Submit",
     reviewEditTitle: "Review & Update",
-    reviewCheck: "Verify your filled details",
-    submitBtn: "Submit ✓",
-    updateBtn: "Update ✓",
+    reviewCheck: "Verify candidate details carefully",
+    submitBtn: "Submit Profile ✓",
+    updateBtn: "Update Profile ✓",
     submitting: "Submitting...",
     updating: "Updating...",
-    submitSuccess: "✓ Details saved! Now add Photo/Documents",
+    submitSuccess: "✓ Details saved! Now upload photo/documents",
     updateSuccess: "✓ Updated! Admin will re-verify",
     reviewNote: "After submission, Admin will verify this profile. It will be visible to other members only after approval.",
-    reviewEditNote: "After update, the profile will await Admin re-approval (re-verification required).",
-    // Docs
-    docsTitle: "Photo & Documents",
-    photoVisible: "Show my Photo to other members",
+    reviewEditNote: "After update, the profile will await Admin re-approval.",
+    docsTitle: "Photo & Verification Docs",
+    photoVisible: "Show photo to other community members",
     photoDefault: "Default: Hidden — can be changed anytime from My Profiles",
-    docsRequired: "Required Documents",
-    docsNote: "Documents will only be used for Admin verification. They will be deleted from server after approval — only Photo remains.",
+    docsRequired: "Required Verification Documents",
+    docsNote: "Documents are only used for Admin verification and will be safely deleted after approval.",
     doneBtn: "Done — Go to My Profiles →",
-    photoPh: "Passport size, clear, recent photo",
+    photoPh: "Passport size, recent clear photograph",
   },
 };
+
 function t(key){ return (STRINGS[state.lang] && STRINGS[state.lang][key]) || STRINGS.gu[key] || key; }
+
 function langToggleHtml(){
   return `
-    <div style="position:absolute; top:20px; right:20px; display:flex; background:rgba(255,255,255,0.18); border-radius:16px; padding:2px; font-size:10.5px; font-weight:700; z-index:5;">
-      <span data-lang-btn="gu" style="padding:5px 10px;border-radius:14px;cursor:pointer;${state.lang==='gu'?'background:#fff;color:var(--navy);':'color:rgba(255,255,255,0.85);'}">ગુજ</span>
-      <span data-lang-btn="en" style="padding:5px 10px;border-radius:14px;cursor:pointer;${state.lang==='en'?'background:#fff;color:var(--navy);':'color:rgba(255,255,255,0.85);'}">EN</span>
+    <div class="flex items-center bg-white/20 backdrop-blur-md rounded-full p-1 border border-white/30 text-[11px] font-semibold">
+      <button data-lang-btn="gu" class="px-2.5 py-1 rounded-full transition-all ${state.lang==='gu'?'bg-white text-deep-ocean shadow-sm font-bold':'text-white hover:text-white/90'}">ગુજ</button>
+      <button data-lang-btn="en" class="px-2.5 py-1 rounded-full transition-all ${state.lang==='en'?'bg-white text-deep-ocean shadow-sm font-bold':'text-white hover:text-white/90'}">EN</button>
     </div>
   `;
 }
+
 function attachLangToggle(){
   document.querySelectorAll("[data-lang-btn]").forEach(el=>{
-    el.addEventListener("click", ()=>{ state.lang = el.getAttribute("data-lang-btn"); render(); });
+    el.addEventListener("click", ()=>{
+      state.lang = el.getAttribute("data-lang-btn");
+      render();
+    });
   });
 }
 
+function showToast(msg){
+  const existing = document.querySelector(".toast");
+  if(existing) existing.remove();
+  const t = document.createElement("div");
+  t.className = "toast";
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(()=> t.remove(), 2800);
+}
+
+// ============================================================
+// BOTTOM NAVIGATION COMPONENT (Floating Pill Design)
+// ============================================================
+function bottomNavHtml(active){
+  const items = [
+    { key: "home", icon: "search", label: "શોધો" },
+    { key: "interest", icon: "favorite", label: "Interests" },
+    { key: "profile", icon: "person", label: "પ્રોફાઇલ" }
+  ];
+  return `
+    <nav class="fixed bottom-0 left-0 right-0 z-40 flex justify-center pointer-events-none pb-3 sm:pb-5">
+      <div class="pointer-events-auto bg-white/95 backdrop-blur-md border border-soft-sky shadow-[0_8px_30px_rgba(12,42,70,0.12)] rounded-full px-7 py-2.5 flex items-center justify-around gap-8 max-w-sm w-[90%] sm:w-auto">
+        ${items.map(item => {
+          const isActive = active === item.key;
+          return `
+            <button data-nav="${item.key}" class="flex flex-col items-center gap-0.5 transition-transform active:scale-95 ${isActive ? 'text-deep-ocean font-bold' : 'text-on-surface-variant hover:text-deep-ocean'}">
+              <span class="material-symbols-outlined text-[24px] ${isActive ? 'material-symbols-fill text-horizon-blue' : ''}">${item.icon}</span>
+              <span class="text-[10px] tracking-tight">${item.label}</span>
+            </button>
+          `;
+        }).join("")}
+      </div>
+    </nav>
+  `;
+}
+
+function attachNavEvents(){
+  document.querySelectorAll("[data-nav]").forEach(el => {
+    el.addEventListener("click", () => {
+      const k = el.getAttribute("data-nav");
+      if (k === "home") { state.screen = "home"; render(); }
+      else if (k === "profile") { state.screen = "myProfiles"; render(); }
+      else if (k === "interest") { state.screen = "interest"; render(); }
+    });
+  });
+}
+
+// Wave SVG Divider
+function waveDividerSvg(color = "text-surface-container-lowest") {
+  return `
+    <div class="w-full overflow-hidden leading-none">
+      <svg class="w-full h-5 sm:h-6 ${color} fill-current" preserveAspectRatio="none" viewBox="0 0 1440 120">
+        <path d="M0,64L80,69.3C160,75,320,85,480,80C640,75,800,53,960,48C1120,43,1280,53,1360,58.7L1440,64L1440,120L1360,120C1280,120,1120,120,960,120C800,120,640,120,480,120C320,120,160,120,80,120L0,120Z"></path>
+      </svg>
+    </div>
+  `;
+}
+
+// ============================================================
+// SCREEN ROUTER
+// ============================================================
 function render(){
+  window.scrollTo(0,0);
   if(state.screen==="checking") renderChecking();
   else if(state.screen==="mobileEntry") renderMobileEntry();
   else if(state.screen==="loginPin") renderLoginPin();
@@ -603,44 +733,48 @@ function render(){
   else if(state.screen==="formDocs") renderFormDocs();
 }
 
-function showToast(msg){
-  const t=document.createElement("div"); t.className="toast"; t.textContent=msg;
-  document.body.appendChild(t);
-  setTimeout(()=>t.remove(),2600);
-}
-
+// ============================================================
+// 1. SCREEN: CHECKING & INITIALIZATION
+// ============================================================
 function renderChecking(){
-  app.innerHTML = `<div class="content"><div class="loading">Firebase connection check થઈ રહ્યું છે...</div></div>`;
+  app.innerHTML = `
+    <div class="flex-1 flex flex-col items-center justify-center p-8 text-center bg-cream-base">
+      <!-- Animated Wave Logo Icon -->
+      <div class="relative w-24 h-24 mb-6 flex items-center justify-center">
+        <div class="absolute inset-0 rounded-full bg-soft-sky opacity-40 animate-ping"></div>
+        <div class="w-20 h-20 rounded-full bg-gradient-to-tr from-deep-ocean to-horizon-blue flex items-center justify-center text-white shadow-ambient-lg relative z-10">
+          <span class="material-symbols-outlined text-4xl text-sky-200">waves</span>
+        </div>
+      </div>
+      <h1 class="font-display text-2xl font-bold text-deep-ocean tracking-tight">સાગર સંબંધ</h1>
+      <p class="font-sans text-xs text-on-surface-variant mt-1.5 font-medium">પોરબંદર ખારવા સમાજ મેટ્રિમોનિઅલ પોર્ટલ</p>
+      
+      <div class="mt-8 flex items-center gap-2 text-xs text-horizon-blue font-semibold bg-white/80 border border-soft-sky px-4 py-2 rounded-full shadow-sm">
+        <span class="material-symbols-outlined text-base animate-spin">progress_activity</span>
+        <span>કનેક્શન ચકાસી રહ્યા છીએ...</span>
+      </div>
+    </div>
+  `;
+
   setTimeout(async ()=>{
     if(!firebaseReady){
       app.innerHTML = `
-        <div class="header"><div class="header-title">⚠ Connection Issue</div></div>
-        <div class="content">
-          <div class="status-banner status-err">Firebase load ના થયું</div>
-          <p style="font-size:12.5px;color:var(--text-mid);line-height:1.7;">
-            આ preview sandbox માં external Firebase scripts block થઈ શકે છે. Real testing માટે આ file ને Firebase Hosting (અથવા કોઈ પણ live web server) પર deploy કરવી પડશે — ત્યાં આ સમસ્યા નહીં આવે.
-          </p>
-          <p style="font-size:11px;color:var(--danger);margin-top:10px;">Error: ${firebaseError||"unknown"}</p>
-        </div>`;
+        <div class="p-6 bg-cream-base flex-1 flex flex-col justify-center text-center">
+          <div class="w-14 h-14 mx-auto rounded-full bg-red-100 text-danger flex items-center justify-center mb-4">
+            <span class="material-symbols-outlined text-3xl">cloud_off</span>
+          </div>
+          <h2 class="font-display text-xl font-bold text-deep-ocean">કનેક્શન ક્ષતિ (Connection Issue)</h2>
+          <p class="text-xs text-on-surface-variant mt-2 max-w-xs mx-auto">Firebase સેવાઓ લોડ થઈ શકી નથી. કૃપા કરીને ઇન્ટરનેટ કનેક્શન તપાસો અથવા પેજ રિફ્રેશ કરો.</p>
+          <p class="text-[11px] text-danger mt-3 bg-red-50 p-3 rounded-xl border border-red-200">${firebaseError || "Unknown error"}</p>
+          <button onclick="location.reload()" class="mt-6 bg-deep-ocean text-white font-bold py-3 px-6 rounded-xl text-sm shadow-sm hover:bg-horizon-blue transition-all">
+            ફરી પ્રયાસ કરો (Retry)
+          </button>
+        </div>
+      `;
       return;
     }
+
     await authReadyPromise;
-    if(firebaseError && !firebaseError.startsWith("Auth failed:")){
-      app.innerHTML = `
-        <div class="header"><div class="header-title">⚠ Connection Issue</div></div>
-        <div class="content">
-          <div class="status-banner status-err">Authentication setup ના થયું</div>
-          <p style="font-size:12.5px;color:var(--text-mid);line-height:1.7;">
-            Firebase Console માં "Authentication → Sign-in method → Anonymous" enable કરેલું છે કે નહીં ચકાસો.
-          </p>
-          <p style="font-size:11px;color:var(--danger);margin-top:10px;">Error: ${firebaseError}</p>
-        </div>`;
-      return;
-    }
-    // Session restore: relies on Firebase Auth's own persisted session
-    // (same pattern as admin.html) — a real (non-anonymous) signed-in user
-    // survives page refresh automatically. Anonymous sessions never count
-    // as "logged in" here (and Firestore Rules would block them anyway).
     const currentUser = auth.currentUser;
     if(currentUser && !currentUser.isAnonymous){
       try{
@@ -649,164 +783,374 @@ function renderChecking(){
           const data = userDoc.data();
           if(!data.blocked){
             state.user = { id: currentUser.uid, name: data.name, mobile: data.mobile, village: data.village };
-            state.screen="home"; render(); return;
+            state.screen = "home";
+            render();
+            return;
           }
         }
-      }catch(e){ /* fall through to mobileEntry if lookup fails */ }
+      }catch(e){}
     }
-    state.screen="mobileEntry"; render();
+    state.screen = "mobileEntry";
+    render();
   }, 400);
 }
 
+// ============================================================
+// 2. SCREEN: MOBILE ENTRY (Login / Signup)
+// ============================================================
 function renderMobileEntry(){
   app.innerHTML = `
-    <div class="header">
-      <div class="header-title">નમસ્તે 🙏 ચાલો શરૂ કરીએ</div>
-      <div class="header-sub">Mobile Number નાખો</div>
-    </div>
-    <div class="content">
-      <div class="field"><label>મોબાઈલ નંબર</label><div class="input-wrap"><input id="f-mobile" placeholder="98765 43210" maxlength="10"></div></div>
-      <div id="f-err"></div>
-      <button class="btn btn-primary" id="f-login">Login કરો (પહેલેથી Account છે) →</button>
-      <button class="btn btn-ghost" id="f-signup">નવું Account બનાવો →</button>
-      <div class="center-note" style="margin-top:12px; opacity:0.7;">(Testing phase: Mobile + PIN — Real SMS OTP હાલ કામચલાઉ બંધ છે)</div>
+    <div class="flex-1 flex flex-col justify-between bg-cream-base relative overflow-hidden">
+      <!-- Decorative Background SVG -->
+      <div class="absolute -top-12 -right-12 w-64 h-64 bg-soft-sky/40 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute top-1/2 -left-16 w-56 h-56 bg-premium-blue/10 rounded-full blur-2xl pointer-events-none"></div>
+
+      <!-- Top Header Bar with Language Switcher -->
+      <div class="p-6 pb-0 flex items-center justify-between relative z-10">
+        <div class="flex items-center gap-2">
+          <div class="w-9 h-9 rounded-xl bg-deep-ocean flex items-center justify-center text-white shadow-sm">
+            <span class="material-symbols-outlined text-xl text-sky-200">waves</span>
+          </div>
+          <span class="font-display font-bold text-deep-ocean text-base">SagarSambandh</span>
+        </div>
+        ${langToggleHtml()}
+      </div>
+
+      <!-- Main Login Card Container -->
+      <div class="p-6 my-auto relative z-10">
+        <div class="bg-white rounded-3xl p-7 shadow-ambient border border-soft-sky/60">
+          <div class="text-center mb-6">
+            <div class="inline-flex items-center gap-1.5 bg-soft-sky/50 text-horizon-blue px-3 py-1 rounded-full text-xs font-semibold mb-3 border border-soft-sky">
+              <span class="material-symbols-outlined text-sm">verified_user</span>
+              <span>૧૦૦% સુરક્ષિત ખારવા સમાજ મંચ</span>
+            </div>
+            <h1 class="font-display text-2xl sm:text-3xl font-bold text-deep-ocean tracking-tight">નમસ્તે 🙏 ચાલો શરૂ કરીએ</h1>
+            <p class="font-sans text-xs text-on-surface-variant mt-2">યોગ્ય જીવનસાથીની શોધ અહીંથી શરૂ થાય છે</p>
+          </div>
+
+          <div class="space-y-4">
+            <div>
+              <label class="block text-xs font-bold text-deep-ocean mb-1.5">મોબાઈલ નંબર (Mobile Number)</label>
+              <div class="relative flex items-center">
+                <span class="absolute left-3.5 text-on-surface-variant text-sm font-semibold border-r border-soft-sky pr-2">+91</span>
+                <input id="f-mobile" type="tel" maxlength="10" placeholder="98765 43210"
+                  class="w-full pl-14 pr-4 py-3.5 rounded-xl border border-soft-sky bg-surface/50 font-sans text-sm font-semibold text-deep-ocean placeholder:text-outline-variant input-glow transition-all">
+              </div>
+            </div>
+
+            <div id="f-err"></div>
+
+            <div class="pt-2 space-y-3">
+              <button id="f-login" class="w-full bg-earth-warmth hover:bg-earth-dark text-white py-3.5 rounded-xl text-sm font-bold shadow-ambient transition-all duration-200 flex items-center justify-center gap-2 active:scale-[0.98]">
+                <span>Login કરો (પહેલેથી ખાતું છે)</span>
+                <span class="material-symbols-outlined text-base">arrow_forward</span>
+              </button>
+
+              <button id="f-signup" class="w-full bg-surface border border-soft-sky text-deep-ocean hover:border-horizon-blue py-3 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2 active:scale-[0.98]">
+                <span class="material-symbols-outlined text-base text-horizon-blue">person_add</span>
+                <span>નવું ખાતું બનાવો (Register)</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-center mt-6 text-[11px] text-on-surface-variant">
+          🔒 સુરક્ષા: તમારો નંબર ફક્ત વેરિફિકેશન માટે વપરાય છે.
+        </div>
+      </div>
+
+      <!-- Footer Branding -->
+      <div class="p-4 text-center text-[11px] text-on-surface-variant/80">
+        શ્રી પોરબંદર સમગ્ર ખારવા જ્ઞાતિ મેટ્રિમોનિઅલ પોર્ટલ © 2026
+      </div>
     </div>
   `;
-  document.getElementById("f-mobile").addEventListener("input", (e)=>{ e.target.value = e.target.value.replace(/\D/g,'').slice(0,10); });
+
+  attachLangToggle();
+  const mobileInput = document.getElementById("f-mobile");
+  mobileInput.addEventListener("input", (e)=>{
+    e.target.value = e.target.value.replace(/\D/g,'').slice(0,10);
+  });
+  mobileInput.focus();
 
   function proceed(target){
-    const mobile=document.getElementById("f-mobile").value.trim();
-    const errEl=document.getElementById("f-err"); errEl.innerHTML="";
-    if(mobile.length!==10){ errEl.innerHTML = `<div class="err-text">10-અંકનો સાચો મોબાઈલ નંબર નાખો</div>`; return; }
+    const mobile = mobileInput.value.trim();
+    const errEl = document.getElementById("f-err");
+    errEl.innerHTML = "";
+    if(mobile.length !== 10){
+      errEl.innerHTML = `<div class="bg-red-50 text-danger text-xs font-semibold p-2.5 rounded-xl border border-red-200 flex items-center gap-1.5"><span class="material-symbols-outlined text-sm">error</span>10-અંકનો સાચો મોબાઈલ નંબર દાખલ કરો</div>`;
+      mobileInput.focus();
+      return;
+    }
     state.pendingMobile = mobile;
-    state.screen = target; render();
+    state.screen = target;
+    render();
   }
+
   document.getElementById("f-login").addEventListener("click", ()=> proceed("loginPin"));
   document.getElementById("f-signup").addEventListener("click", ()=> proceed("signupDetails"));
 }
 
+// ============================================================
+// 3. SCREEN: LOGIN PIN
+// ============================================================
 function renderLoginPin(){
   app.innerHTML = `
-    <div class="header">
-      <div class="header-title">🔐 PIN નાખો</div>
-      <div class="header-sub">+91 ${state.pendingMobile} માટે તમારો 4-અંકનો PIN</div>
-    </div>
-    <div class="content">
-      <div class="otp-boxes">
-        ${[0,1,2,3].map(i=>`<input class="otp-box" maxlength="1" inputmode="numeric" data-pin="${i}">`).join("")}
+    <div class="flex-1 flex flex-col justify-between bg-cream-base p-6">
+      <div>
+        <!-- Back Navigation -->
+        <button id="pin-back" class="inline-flex items-center gap-1 text-deep-ocean text-xs font-bold p-2 -ml-2 rounded-lg hover:bg-soft-sky/40 transition-colors">
+          <span class="material-symbols-outlined text-lg">arrow_back</span>
+          <span>નંબર બદલો</span>
+        </button>
+
+        <div class="mt-6 bg-white rounded-3xl p-7 shadow-ambient border border-soft-sky/60">
+          <div class="w-12 h-12 rounded-2xl bg-soft-sky/50 text-horizon-blue flex items-center justify-center mb-4">
+            <span class="material-symbols-outlined text-2xl">lock</span>
+          </div>
+          <h1 class="font-display text-2xl font-bold text-deep-ocean tracking-tight">🔐 સુરક્ષિત PIN દાખલ કરો</h1>
+          <p class="text-xs text-on-surface-variant mt-1.5 font-medium">
+            <b class="text-deep-ocean">+91 ${state.pendingMobile}</b> માટે તમારો 4-અંકનો લૉગિન PIN
+          </p>
+
+          <div class="flex justify-center gap-3 my-8">
+            ${[0,1,2,3].map(i=>`<input class="otp-box font-sans" maxlength="1" inputmode="numeric" type="password" data-pin="${i}">`).join("")}
+          </div>
+
+          <div id="pin-err"></div>
+
+          <button id="pin-submit" disabled class="w-full mt-2 bg-earth-warmth hover:bg-earth-dark disabled:opacity-50 disabled:cursor-not-allowed text-white py-3.5 rounded-xl text-sm font-bold shadow-ambient transition-all flex items-center justify-center gap-2">
+            <span>Login કરો</span>
+            <span class="material-symbols-outlined text-base">arrow_forward</span>
+          </button>
+        </div>
       </div>
-      <div id="pin-err"></div>
-      <button class="btn btn-primary" id="pin-submit" disabled>Login કરો →</button>
-      <div class="center-note"><b style="color:var(--primary);cursor:pointer;" id="pin-back">← નંબર બદલો</b></div>
+
+      <div class="text-center text-xs text-on-surface-variant py-4">
+        PIN ભૂલી ગયા છો? સહાયતા માટે એડમિનનો સંપર્ક કરો.
+      </div>
     </div>
   `;
+
   const boxes = Array.from(document.querySelectorAll("[data-pin]"));
   const submitBtn = document.getElementById("pin-submit");
   function checkFull(){ submitBtn.disabled = boxes.some(b=>!b.value); }
+
   boxes.forEach((b,i)=>{
     b.addEventListener("input", ()=>{
       b.value = b.value.replace(/\D/g,'').slice(0,1);
       if(b.value && boxes[i+1]) boxes[i+1].focus();
       checkFull();
     });
+    b.addEventListener("keydown", (e)=>{
+      if(e.key === "Backspace" && !b.value && boxes[i-1]){
+        boxes[i-1].focus();
+      }
+    });
   });
-  document.getElementById("pin-back").addEventListener("click", ()=>{ state.screen="mobileEntry"; render(); });
+  if(boxes[0]) setTimeout(()=> boxes[0].focus(), 150);
+
+  document.getElementById("pin-back").addEventListener("click", ()=>{ state.screen = "mobileEntry"; render(); });
+
   submitBtn.addEventListener("click", async (e)=>{
     const pin = boxes.map(b=>b.value).join("");
-    const errEl=document.getElementById("pin-err"); errEl.innerHTML="";
-    e.target.disabled=true; e.target.textContent="Login થઈ રહ્યા છીએ...";
+    const errEl = document.getElementById("pin-err");
+    errEl.innerHTML = "";
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = `<span class="material-symbols-outlined text-base animate-spin">progress_activity</span><span>લૉગિન થઈ રહ્યા છીએ...</span>`;
     try{
       const result = await dataService.login(state.pendingMobile, pin);
       state.user = result;
-      state.screen="home"; render();
+      showToast(`નમસ્તે ${result.name || "સભ્ય"}! સ્વાગત છે 🙏`);
+      state.screen = "home";
+      render();
     }catch(err){
-      e.target.disabled=false; e.target.textContent="Login કરો →";
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = `<span>Login કરો</span><span class="material-symbols-outlined text-base">arrow_forward</span>`;
       boxes.forEach(b=>b.value="");
       if(boxes[0]) boxes[0].focus();
-      errEl.innerHTML = `<div class="err-text">${err.message}</div>`;
+      errEl.innerHTML = `<div class="bg-red-50 text-danger text-xs font-semibold p-3 rounded-xl border border-red-200 mb-3 flex items-center gap-1.5"><span class="material-symbols-outlined text-sm">error</span>${err.message}</div>`;
     }
   });
 }
 
+// ============================================================
+// 4. SCREEN: SIGNUP DETAILS
+// ============================================================
 function renderSignupDetails(){
   app.innerHTML = `
-    <div class="header">
-      <div class="header-title">🙏 નવું ખાતું</div>
-      <div class="header-sub">+91 ${state.pendingMobile} — તમારી થોડી માહિતી અને 4-અંકનો PIN સેટ કરો</div>
-    </div>
-    <div class="content">
-      <div class="field"><label>પૂરું નામ</label><div class="input-wrap"><input id="cp-name" placeholder="દા.ત. રમેશ સોલંકી"></div></div>
-      <div class="field"><label>ગામ / શહેર</label><div class="input-wrap"><input id="cp-village" placeholder="દા.ત. પોરબંદર"></div></div>
-      <div class="field"><label>4-અંકનો PIN સેટ કરો (daily login માટે)</label><div class="input-wrap"><input id="cp-pin" type="password" inputmode="numeric" maxlength="4" placeholder="••••"></div></div>
-      <div class="field"><label>PIN ફરીથી નાખો</label><div class="input-wrap"><input id="cp-pin2" type="password" inputmode="numeric" maxlength="4" placeholder="••••"></div></div>
-      <div class="declaration">
-        <input type="checkbox" id="cp-agree" checked>
-        <p>હું પુષ્ટિ કરું છું કે હું <b>પોરબંદર ખારવા સમાજ</b> નો સભ્ય છું અને આપેલી માહિતી સાચી છે.</p>
+    <div class="flex-1 flex flex-col justify-between bg-cream-base p-6">
+      <div>
+        <button id="cp-back" class="inline-flex items-center gap-1 text-deep-ocean text-xs font-bold p-2 -ml-2 rounded-lg hover:bg-soft-sky/40 transition-colors">
+          <span class="material-symbols-outlined text-lg">arrow_back</span>
+          <span>નંબર બદલો</span>
+        </button>
+
+        <div class="mt-4 bg-white rounded-3xl p-6 sm:p-7 shadow-ambient border border-soft-sky/60">
+          <div class="w-12 h-12 rounded-2xl bg-soft-sky/50 text-horizon-blue flex items-center justify-center mb-4">
+            <span class="material-symbols-outlined text-2xl">person_add</span>
+          </div>
+          <h1 class="font-display text-2xl font-bold text-deep-ocean tracking-tight">🙏 નવું ખાતું બનાવો</h1>
+          <p class="text-xs text-on-surface-variant mt-1 font-medium">+91 ${state.pendingMobile} — તમારી માહિતી અને લૉગિન PIN સેટ કરો</p>
+
+          <div class="space-y-3.5 mt-5">
+            <div>
+              <label class="block text-xs font-bold text-deep-ocean mb-1">તમારું પૂરું નામ</label>
+              <div class="relative">
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline-variant text-[20px]">person</span>
+                <input id="cp-name" placeholder="દા.ત. રમેશભાઈ સોલંકી"
+                  class="w-full pl-10 pr-4 py-3 rounded-xl border border-soft-sky bg-surface/50 font-sans text-xs sm:text-sm text-deep-ocean input-glow transition-all">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-deep-ocean mb-1">ગામ / શહેર</label>
+              <div class="relative">
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline-variant text-[20px]">location_on</span>
+                <input id="cp-village" placeholder="દા.ત. પોરબંદર"
+                  class="w-full pl-10 pr-4 py-3 rounded-xl border border-soft-sky bg-surface/50 font-sans text-xs sm:text-sm text-deep-ocean input-glow transition-all">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-bold text-deep-ocean mb-1">4-અંકનો PIN</label>
+                <input id="cp-pin" type="password" inputmode="numeric" maxlength="4" placeholder="••••"
+                  class="w-full text-center tracking-widest px-3 py-3 rounded-xl border border-soft-sky bg-surface/50 font-sans text-base font-bold text-deep-ocean input-glow transition-all">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-deep-ocean mb-1">PIN ફરીથી</label>
+                <input id="cp-pin2" type="password" inputmode="numeric" maxlength="4" placeholder="••••"
+                  class="w-full text-center tracking-widest px-3 py-3 rounded-xl border border-soft-sky bg-surface/50 font-sans text-base font-bold text-deep-ocean input-glow transition-all">
+              </div>
+            </div>
+
+            <!-- Samaj Declaration -->
+            <div class="flex items-start gap-3 bg-soft-sky/30 border border-soft-sky p-3.5 rounded-2xl mt-2">
+              <input type="checkbox" id="cp-agree" checked class="mt-0.5 accent-deep-ocean w-4 h-4 rounded cursor-pointer">
+              <label for="cp-agree" class="text-[11px] text-deep-ocean leading-relaxed cursor-pointer font-medium">
+                હું ખાતરી આપું છું કે હું <b>પોરબંદર ખારવા સમાજ</b> નો સભ્ય છું અને આપેલી તમામ વિગતો સાચી છે.
+              </label>
+            </div>
+
+            <div id="cp-err"></div>
+
+            <button id="cp-submit" class="w-full mt-2 bg-earth-warmth hover:bg-earth-dark text-white py-3.5 rounded-xl text-sm font-bold shadow-ambient transition-all flex items-center justify-center gap-2">
+              <span>ખાતું બનાવો અને આગળ વધો</span>
+              <span class="material-symbols-outlined text-base">check_circle</span>
+            </button>
+          </div>
+        </div>
       </div>
-      <div id="cp-err"></div>
-      <button class="btn btn-primary" id="cp-submit">ખાતું બનાવો →</button>
-      <div class="center-note"><b style="color:var(--primary);cursor:pointer;" id="cp-back">← નંબર બદલો</b></div>
     </div>
   `;
-  document.getElementById("cp-back").addEventListener("click", ()=>{ state.screen="mobileEntry"; render(); });
+
+  document.getElementById("cp-back").addEventListener("click", ()=>{ state.screen = "mobileEntry"; render(); });
   ["cp-pin","cp-pin2"].forEach(id=>{
     document.getElementById(id).addEventListener("input", (e)=>{ e.target.value = e.target.value.replace(/\D/g,'').slice(0,4); });
   });
+
   document.getElementById("cp-submit").addEventListener("click", async (e)=>{
-    const name=document.getElementById("cp-name").value.trim();
-    const village=document.getElementById("cp-village").value.trim();
-    const pin=document.getElementById("cp-pin").value.trim();
-    const pin2=document.getElementById("cp-pin2").value.trim();
-    const agreed=document.getElementById("cp-agree").checked;
-    const errEl=document.getElementById("cp-err"); errEl.innerHTML="";
-    if(!name || !village || !agreed){ errEl.innerHTML = `<div class="err-text">બધા fields ભરો</div>`; return; }
-    if(pin.length!==4){ errEl.innerHTML = `<div class="err-text">PIN બરાબર 4 અંકનો હોવો જોઈએ</div>`; return; }
-    if(pin!==pin2){ errEl.innerHTML = `<div class="err-text">બંને PIN સરખા નથી</div>`; return; }
-    e.target.disabled=true; e.target.textContent="ખાતું બની રહ્યું છે...";
+    const name = document.getElementById("cp-name").value.trim();
+    const village = document.getElementById("cp-village").value.trim();
+    const pin = document.getElementById("cp-pin").value.trim();
+    const pin2 = document.getElementById("cp-pin2").value.trim();
+    const agreed = document.getElementById("cp-agree").checked;
+    const errEl = document.getElementById("cp-err");
+    errEl.innerHTML = "";
+
+    if(!name || !village || !agreed){
+      errEl.innerHTML = `<div class="bg-red-50 text-danger text-xs font-semibold p-2.5 rounded-xl border border-red-200">બધા ખાના ભરો અને નિયમો સ્વીકારો</div>`;
+      return;
+    }
+    if(pin.length !== 4){
+      errEl.innerHTML = `<div class="bg-red-50 text-danger text-xs font-semibold p-2.5 rounded-xl border border-red-200">PIN બરાબર 4 અંકનો હોવો જોઈએ</div>`;
+      return;
+    }
+    if(pin !== pin2){
+      errEl.innerHTML = `<div class="bg-red-50 text-danger text-xs font-semibold p-2.5 rounded-xl border border-red-200">બંને PIN સરખા નથી</div>`;
+      return;
+    }
+
+    const btn = document.getElementById("cp-submit");
+    btn.disabled = true;
+    btn.innerHTML = `<span class="material-symbols-outlined text-base animate-spin">progress_activity</span><span>ખાતું બની રહ્યું છે...</span>`;
     try{
       const user = await dataService.signup(state.pendingMobile, pin, name, village);
-      state.user = user; state.screen="home"; render();
+      state.user = user;
+      showToast("ખાતું સફળતાપૂર્વક બની ગયું! 🙏");
+      state.screen = "home";
+      render();
     }catch(err){
-      e.target.disabled=false; e.target.textContent="ખાતું બનાવો →";
-      errEl.innerHTML = `<div class="err-text">${err.message}</div>`;
+      btn.disabled = false;
+      btn.innerHTML = `<span>ખાતું બનાવો અને આગળ વધો</span><span class="material-symbols-outlined text-base">check_circle</span>`;
+      errEl.innerHTML = `<div class="bg-red-50 text-danger text-xs font-semibold p-2.5 rounded-xl border border-red-200">${err.message}</div>`;
     }
   });
 }
 
-function bottomNavHtml(active){
-  const items=[["home","🏠","Home"],["search","🔍","Search"],["interest","💌","Interest"],["profile","👤","Profile"]];
-  return `<div class="bottom-nav"><div class="bottom-nav-inner">${items.map(([k,i,l])=>`
-    <div class="nav-item ${active===k?'active':''}" data-nav="${k}"><span class="nav-icon">${i}</span>${l}</div>
-  `).join("")}</div></div>`;
-}
-
+// ============================================================
+// 5. SCREEN: HOME / DISCOVER MATCHES
+// ============================================================
 function renderHome(){
   app.innerHTML = `
-    <div class="header" style="position:relative;">
-      ${langToggleHtml()}
-      <div class="header-title">${t('welcome')} ${state.user?.name || "સભ્ય"}</div>
-      <div class="header-sub">${t('browseSub')}</div>
-      <div class="search-bar"><span>🔍</span><input id="home-search" placeholder="નામ, શહેર, વ્યવસાય શોધો..." style="border:none;outline:none;background:transparent;font-family:inherit;font-size:13px;width:100%;color:var(--text-dark);"></div>
-      <div class="filters-row">
-        <div class="chip active" data-gender="">બધા</div>
-        <div class="chip" data-gender="male">યુવક</div>
-        <div class="chip" data-gender="female">યુવતી</div>
-        <div class="chip" data-sort="match">⭐ Best Match</div>
+    <!-- Top Header -->
+    <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-soft-sky/80 px-5 pt-4 pb-3">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-deep-ocean to-horizon-blue flex items-center justify-center text-white shadow-sm">
+            <span class="material-symbols-outlined text-lg text-sky-200">waves</span>
+          </div>
+          <div>
+            <h1 class="font-display font-bold text-deep-ocean text-lg leading-tight">SagarSambandh</h1>
+            <p class="text-[11px] text-on-surface-variant font-medium">${t('welcome')} ${state.user?.name || "સભ્ય"}</p>
+          </div>
+        </div>
+        ${langToggleHtml()}
       </div>
-    </div>
-    <div class="content" id="home-content"><div class="loading">Firestore માંથી profiles load થઈ રહ્યા છે...</div></div>
+
+      <!-- Search Input -->
+      <div class="mt-3.5 relative flex items-center">
+        <span class="material-symbols-outlined absolute left-3.5 text-on-surface-variant text-[20px]">search</span>
+        <input id="home-search" placeholder="નામ, શહેર, વ્યવસાય, શિક્ષણ શોધો..."
+          class="w-full pl-10 pr-9 py-2.5 rounded-full border border-soft-sky bg-surface font-sans text-xs text-deep-ocean placeholder:text-outline-variant input-glow transition-all">
+        <button id="search-clear" class="absolute right-3 text-outline-variant hover:text-deep-ocean hidden">
+          <span class="material-symbols-outlined text-lg">close</span>
+        </button>
+      </div>
+
+      <!-- Filter Chips Row -->
+      <div class="flex gap-2 mt-3 overflow-x-auto pb-1 no-scrollbar text-xs font-semibold">
+        <button class="chip active flex items-center gap-1 px-3.5 py-1.5 rounded-full border border-deep-ocean bg-deep-ocean text-white transition-all whitespace-nowrap" data-gender="">
+          <span>બધા</span>
+        </button>
+        <button class="chip flex items-center gap-1 px-3.5 py-1.5 rounded-full border border-soft-sky bg-white text-deep-ocean hover:border-horizon-blue transition-all whitespace-nowrap" data-gender="male">
+          <span>👦 યુવક</span>
+        </button>
+        <button class="chip flex items-center gap-1 px-3.5 py-1.5 rounded-full border border-soft-sky bg-white text-deep-ocean hover:border-horizon-blue transition-all whitespace-nowrap" data-gender="female">
+          <span>👧 યુવતી</span>
+        </button>
+        <button class="chip flex items-center gap-1 px-3.5 py-1.5 rounded-full border border-soft-sky bg-white text-deep-ocean hover:border-horizon-blue transition-all whitespace-nowrap" data-sort="match">
+          <span class="material-symbols-outlined text-sm text-earth-warmth material-symbols-fill">star</span>
+          <span>Best Match</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Content Feed Container -->
+    <main class="flex-1 p-5 pb-28" id="home-content">
+      <div class="py-16 text-center text-on-surface-variant flex flex-col items-center justify-center">
+        <span class="material-symbols-outlined text-3xl animate-spin text-horizon-blue mb-2">progress_activity</span>
+        <span class="text-xs font-semibold">પ્રોફાઇલ્સ લોડ થઈ રહ્યા છે...</span>
+      </div>
+    </main>
+
+    <!-- Bottom Nav -->
     ${bottomNavHtml("home")}
   `;
+
   attachLangToggle();
-  document.querySelectorAll("[data-nav]").forEach(el=>{
-    el.addEventListener("click", ()=>{
-      const k = el.getAttribute("data-nav");
-      if(k==="home") render();
-      else if(k==="profile"){ state.screen="myProfiles"; render(); }
-      else if(k==="interest"){ state.screen="interest"; render(); }
-      else showToast("આ screen આગળના phase માં બનશે");
-    });
-  });
+  attachNavEvents();
 
   let allProfiles = [];
   let activeGender = "";
@@ -815,27 +1159,153 @@ function renderHome(){
   function paintList(list){
     const el = document.getElementById("home-content");
     if(!el) return;
-    if(list.length===0){ el.innerHTML = `<div class="empty">કોઈ profile ના મળી</div>`; return; }
-    el.innerHTML = list.map(p=>{
-      const showPhoto = p.photoVisible !== false && p.photoURL; // field ના હોય (જૂના profiles) તો Visible ગણવું
-      return `
-      <div class="card" data-open="${p.id}">
-        <div class="card-photo" style="background:${p.photoColor||'#1C93C9'};${showPhoto?`background-image:url('${p.photoURL}');background-size:cover;background-position:center;`:''}">${showPhoto?'':(p.photoEmoji||'👤')}<div class="verified-tag">✓ VERIFIED</div></div>
-        <div class="card-body">
-          <div class="card-name">${p.name}</div>
-          <div class="card-sub">${p.age} વર્ષ · ${p.education} · ${p.city}</div>
-          ${p.matchScore!=null ? `<div class="stars">${"★".repeat(Math.round(p.matchScore))}${"☆".repeat(5-Math.round(p.matchScore))} <b>${p.matchScore}/5 Match</b></div>` : `<div class="stars" style="color:var(--text-mid);font-size:10px;">પ્રોફાઇલ બનાવો, Match Score જુઓ</div>`}
+
+    if(list.length === 0){
+      el.innerHTML = `
+        <div class="bg-white rounded-3xl p-8 text-center border border-soft-sky shadow-ambient my-8">
+          <div class="w-14 h-14 mx-auto rounded-full bg-soft-sky/40 text-horizon-blue flex items-center justify-center mb-3">
+            <span class="material-symbols-outlined text-3xl">search_off</span>
+          </div>
+          <h3 class="font-display font-bold text-deep-ocean text-lg">કોઈ પ્રોફાઇલ ના મળી</h3>
+          <p class="text-xs text-on-surface-variant mt-1">તમારા સર્ચ અથવા ફિલ્ટર અનુસાર કોઈ ઉમેદવાર ઉપલબ્ધ નથી.</p>
         </div>
+      `;
+      return;
+    }
+
+    el.innerHTML = `
+      <div class="mb-3 flex items-center justify-between text-xs font-bold text-on-surface-variant px-1">
+        <span>${list.length} યોગ્ય સંબંધો ઉપલબ્ધ</span>
+        <span class="text-[11px] text-horizon-blue">પોરબંદર ખારવા સમાજ</span>
+      </div>
+      <div class="space-y-5">
+        ${list.map(p => {
+          const showPhoto = p.photoVisible !== false && p.photoURL;
+          const matchPercent = p.matchScore != null ? Math.round((p.matchScore / 5) * 100) : null;
+
+          return `
+            <article class="bg-white rounded-3xl overflow-hidden shadow-ambient border border-soft-sky/70 transition-all duration-200 hover:shadow-ambient-lg cursor-pointer group" data-open="${p.id}">
+              <!-- Photo / Banner Header -->
+              <div class="relative w-full h-64 sm:h-72 bg-gradient-to-br from-deep-ocean to-horizon-blue overflow-hidden flex items-center justify-center">
+                ${showPhoto ? `
+                  <img src="${p.photoURL}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                ` : `
+                  <div class="text-center p-6">
+                    <div class="w-20 h-20 mx-auto rounded-full bg-white/15 backdrop-blur-md flex items-center justify-center text-4xl mb-2 border border-white/20">
+                      ${p.photoEmoji || (p.gender === 'female' ? '👧' : '👦')}
+                    </div>
+                    <span class="inline-block bg-white/20 backdrop-blur-md text-white text-[11px] font-semibold px-3 py-1 rounded-full border border-white/20">
+                      🔒 ફોટો ઉમેદવારે છુપાવેલ છે
+                    </span>
+                  </div>
+                `}
+
+                <!-- Top Left Verified Badge -->
+                <div class="absolute top-3.5 left-3.5 bg-white/95 backdrop-blur-md px-3 py-1 rounded-full flex items-center gap-1 border border-soft-sky shadow-sm">
+                  <span class="material-symbols-outlined text-earth-warmth text-sm material-symbols-fill">verified</span>
+                  <span class="text-[11px] font-bold text-deep-ocean">Verified</span>
+                </div>
+
+                <!-- Top Right Match Score Badge -->
+                ${matchPercent != null ? `
+                  <div class="absolute top-3.5 right-3.5 bg-deep-ocean/90 backdrop-blur-md text-white px-3 py-1 rounded-full flex items-center gap-1 border border-white/20 shadow-sm">
+                    <span class="material-symbols-outlined text-sky-300 text-xs material-symbols-fill">favorite</span>
+                    <span class="text-[11px] font-bold">${matchPercent}% Match</span>
+                  </div>
+                ` : ''}
+
+                <!-- Bottom Wave SVG Divider -->
+                <div class="absolute bottom-0 w-full leading-none">
+                  ${waveDividerSvg("text-white")}
+                </div>
+              </div>
+
+              <!-- Card Body Content -->
+              <div class="p-5 pt-2">
+                <div class="flex items-baseline justify-between mb-1.5">
+                  <h2 class="font-display text-xl font-bold text-deep-ocean tracking-tight">
+                    ${p.name}, <span class="font-sans text-base font-medium text-on-surface-variant">${p.age} વર્ષ</span>
+                  </h2>
+                </div>
+
+                <div class="flex flex-wrap items-center gap-y-1 gap-x-3 text-xs text-on-surface-variant font-medium mb-3.5">
+                  <span class="flex items-center gap-1">
+                    <span class="material-symbols-outlined text-sm text-earth-warmth">work</span>
+                    ${p.occupation || 'Private'}
+                  </span>
+                  <span>•</span>
+                  <span class="flex items-center gap-1">
+                    <span class="material-symbols-outlined text-sm text-earth-warmth">location_on</span>
+                    ${p.city || '-'}
+                  </span>
+                </div>
+
+                <!-- Tags Row -->
+                <div class="flex flex-wrap gap-1.5 mb-4">
+                  <span class="bg-soft-sky/40 text-horizon-blue border border-soft-sky px-2.5 py-1 rounded-full text-[11px] font-semibold">
+                    ${p.education || '-'}
+                  </span>
+                  <span class="bg-soft-sky/40 text-horizon-blue border border-soft-sky px-2.5 py-1 rounded-full text-[11px] font-semibold">
+                    ${p.rashi ? `રાશી: ${p.rashi}` : 'પોરબંદર ખારવા'}
+                  </span>
+                  <span class="bg-soft-sky/40 text-horizon-blue border border-soft-sky px-2.5 py-1 rounded-full text-[11px] font-semibold">
+                    ${p.maritalStatus || 'કુંવારા'}
+                  </span>
+                </div>
+
+                <!-- Action Button -->
+                <div class="flex gap-2">
+                  <button class="flex-1 bg-surface hover:bg-soft-sky/30 border border-soft-sky text-deep-ocean font-bold py-2.5 px-4 rounded-xl text-xs transition-colors flex items-center justify-center gap-1.5">
+                    <span>સંપૂર્ણ વિગત જુઓ</span>
+                    <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                  </button>
+                  <button data-quick-int="${p.id}" class="bg-earth-warmth hover:bg-earth-dark text-white font-bold py-2.5 px-4 rounded-xl text-xs transition-colors flex items-center justify-center gap-1 shadow-sm">
+                    <span class="material-symbols-outlined text-sm material-symbols-fill">favorite</span>
+                    <span>Interest</span>
+                  </button>
+                </div>
+              </div>
+            </article>
+          `;
+        }).join("")}
       </div>
     `;
-    }).join("");
-    document.querySelectorAll("[data-open]").forEach(card=>{
-      card.addEventListener("click", ()=>{ state.openProfileId = card.getAttribute("data-open"); state.screen="detail"; render(); });
+
+    // Click Card to open detail
+    document.querySelectorAll("[data-open]").forEach(card => {
+      card.addEventListener("click", (e)=>{
+        if(e.target.closest("[data-quick-int]")) return;
+        state.openProfileId = card.getAttribute("data-open");
+        state.screen = "detail";
+        render();
+      });
+    });
+
+    // Quick Interest Action
+    document.querySelectorAll("[data-quick-int]").forEach(btn => {
+      btn.addEventListener("click", async (e)=>{
+        e.stopPropagation();
+        const cid = btn.getAttribute("data-quick-int");
+        btn.disabled = true;
+        try {
+          await dataService.sendInterest(state.user.id, cid);
+          showToast("💌 Interest વિનંતી સફળતાપૂર્વક મોકલાઈ ગઈ!");
+          btn.innerHTML = `<span class="material-symbols-outlined text-sm">check</span><span>મોકલાયું</span>`;
+          btn.classList.replace("bg-earth-warmth", "bg-success");
+        } catch(err) {
+          showToast("Error: " + err.message);
+          btn.disabled = false;
+        }
+      });
     });
   }
 
   function applyFilters(){
-    const q = document.getElementById("home-search").value.trim().toLowerCase();
+    const searchInput = document.getElementById("home-search");
+    const q = searchInput ? searchInput.value.trim().toLowerCase() : "";
+    const clearBtn = document.getElementById("search-clear");
+    if(clearBtn) clearBtn.classList.toggle("hidden", !q);
+
     let list = allProfiles;
     if(activeGender) list = list.filter(p => p.gender === activeGender);
     if(q){
@@ -843,263 +1313,574 @@ function renderHome(){
         (p.name||"").toLowerCase().includes(q) ||
         (p.city||"").toLowerCase().includes(q) ||
         (p.occupation||"").toLowerCase().includes(q) ||
-        (p.education||"").toLowerCase().includes(q)
+        (p.education||"").toLowerCase().includes(q) ||
+        (p.rashi||"").toLowerCase().includes(q)
       );
     }
     if(sortByMatch) list = [...list].sort((a,b) => (b.matchScore||0) - (a.matchScore||0));
     paintList(list);
   }
 
-  document.querySelectorAll("[data-gender]").forEach(chip=>{
+  document.querySelectorAll("[data-gender]").forEach(chip => {
     chip.addEventListener("click", ()=>{
-      document.querySelectorAll("[data-gender]").forEach(c=>c.classList.remove("active"));
-      chip.classList.add("active");
+      document.querySelectorAll("[data-gender]").forEach(c => {
+        c.classList.remove("active", "bg-deep-ocean", "text-white", "border-deep-ocean");
+        c.classList.add("bg-white", "text-deep-ocean", "border-soft-sky");
+      });
+      chip.classList.add("active", "bg-deep-ocean", "text-white", "border-deep-ocean");
+      chip.classList.remove("bg-white", "text-deep-ocean", "border-soft-sky");
       activeGender = chip.getAttribute("data-gender");
       applyFilters();
     });
   });
+
   const sortChip = document.querySelector("[data-sort='match']");
   sortChip.addEventListener("click", ()=>{
     sortByMatch = !sortByMatch;
-    sortChip.classList.toggle("active", sortByMatch);
+    if(sortByMatch){
+      sortChip.classList.add("bg-deep-ocean", "text-white", "border-deep-ocean");
+      sortChip.classList.remove("bg-white", "text-deep-ocean", "border-soft-sky");
+    } else {
+      sortChip.classList.remove("bg-deep-ocean", "text-white", "border-deep-ocean");
+      sortChip.classList.add("bg-white", "text-deep-ocean", "border-soft-sky");
+    }
     applyFilters();
   });
 
-  dataService.getProfiles(state.user?.id).then(profiles=>{
+  const searchInput = document.getElementById("home-search");
+  searchInput.addEventListener("input", applyFilters);
+  document.getElementById("search-clear").addEventListener("click", ()=>{
+    searchInput.value = "";
+    applyFilters();
+    searchInput.focus();
+  });
+
+  dataService.getProfiles(state.user?.id).then(profiles => {
     allProfiles = profiles;
     paintList(allProfiles);
-    document.getElementById("home-search").addEventListener("input", applyFilters);
-  }).catch(err=>{
+  }).catch(err => {
     const el = document.getElementById("home-content");
-    if(el) el.innerHTML = `<div class="status-banner status-err">Data load ના થયું: ${err.message}</div>`;
+    if(el) el.innerHTML = `<div class="bg-red-50 text-danger p-4 rounded-2xl border border-red-200 text-xs font-semibold text-center">ડેટા લોડ થઈ શક્યો નહીં: ${err.message}</div>`;
   });
 }
 
+// ============================================================
+// 6. SCREEN: PROFILE DETAIL VIEW
+// ============================================================
 function renderDetail(){
-  app.innerHTML = `<div class="content"><div class="loading">Load થઈ રહ્યું છે...</div></div>`;
-  dataService.getProfileById(state.openProfileId).then(p=>{
-    if(!p){ app.innerHTML = `<div class="content">Profile ના મળી</div>`; return; }
+  app.innerHTML = `
+    <div class="flex-1 flex flex-col justify-center items-center p-8 text-on-surface-variant">
+      <span class="material-symbols-outlined text-3xl animate-spin text-horizon-blue mb-2">progress_activity</span>
+      <span class="text-xs font-semibold">પ્રોફાઇલ લોડ થઈ રહ્યો છે...</span>
+    </div>
+  `;
+
+  dataService.getProfileById(state.openProfileId).then(p => {
+    if(!p){
+      app.innerHTML = `
+        <div class="p-8 text-center">
+          <p class="text-sm font-bold text-danger">પ્રોફાઇલ મળી નથી</p>
+          <button id="back-home" class="mt-4 bg-deep-ocean text-white font-bold py-2.5 px-5 rounded-xl text-xs">પાછા જાવ</button>
+        </div>
+      `;
+      document.getElementById("back-home").addEventListener("click", ()=>{ state.screen = "home"; render(); });
+      return;
+    }
+
+    const showPhoto = p.photoVisible !== false && p.photoURL;
+
     app.innerHTML = `
-      <div class="header" style="padding-bottom:20px;">
-        <div class="back-row"><div class="back-btn" id="back-btn">←</div><div class="header-title">Profile</div></div>
-        <div style="width:90px;height:90px;border-radius:22px;display:flex;align-items:center;justify-content:center;font-size:38px;margin:14px auto 0;border:3px solid rgba(255,255,255,0.4);background:${p.photoColor||'rgba(255,255,255,0.2)'};${(p.photoVisible!==false && p.photoURL)?`background-image:url('${p.photoURL}');background-size:cover;background-position:center;`:''}">${(p.photoVisible!==false && p.photoURL)?'':(p.photoEmoji||'👤')}</div>
-        <div style="text-align:center;font-size:18px;font-weight:800;margin-top:10px;">${p.name}</div>
-        <div style="text-align:center;font-size:11.5px;opacity:0.85;margin-top:3px;">${p.age} વર્ષ · ${p.education} · ${p.city}</div>
-      </div>
-      <div class="content">
-        <div style="font-size:12px;font-weight:700;color:var(--navy);margin:6px 0 8px;">👤 Basic Details</div>
-        <div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px;"><span style="color:var(--text-mid);">પિતાનું નામ</span><span style="font-weight:600;">${p.fatherName||'-'}</span></div>
-        <div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px;"><span style="color:var(--text-mid);">માતાનું નામ</span><span style="font-weight:600;">${p.motherName||'-'}</span></div>
-        <div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px;"><span style="color:var(--text-mid);">રાશી</span><span style="font-weight:600;">${p.rashi||'-'}</span></div>
-        <div style="display:flex;justify-content:space-between;padding:9px 0;font-size:13px;"><span style="color:var(--text-mid);">દરજ્જો</span><span style="font-weight:600;">${p.maritalStatus||'-'}</span></div>
-        <button class="btn btn-primary" style="margin-top:20px;" id="send-interest">💌 Interest મોકલો</button>
+      <!-- Top Fixed App Bar -->
+      <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-soft-sky/80 px-4 py-3 flex items-center justify-between">
+        <button id="detail-back" class="text-deep-ocean p-1.5 -ml-1 rounded-full hover:bg-soft-sky/40 transition-colors flex items-center gap-1 font-bold text-xs">
+          <span class="material-symbols-outlined text-xl">arrow_back</span>
+          <span>પાછા જાવ</span>
+        </button>
+        <span class="font-display font-bold text-deep-ocean text-base">ઉમેદવાર વિગત</span>
+        <div class="w-8"></div>
+      </header>
+
+      <main class="flex-1 pb-32">
+        <!-- Hero Photo Section -->
+        <div class="relative w-full h-72 sm:h-80 bg-gradient-to-br from-deep-ocean to-horizon-blue flex items-center justify-center overflow-hidden">
+          ${showPhoto ? `
+            <img src="${p.photoURL}" alt="${p.name}" class="w-full h-full object-cover">
+          ` : `
+            <div class="text-center p-6">
+              <div class="w-24 h-24 mx-auto rounded-full bg-white/15 backdrop-blur-md flex items-center justify-center text-5xl mb-3 border border-white/20">
+                ${p.photoEmoji || (p.gender === 'female' ? '👧' : '👦')}
+              </div>
+              <span class="bg-white/20 backdrop-blur-md text-white text-xs font-semibold px-3.5 py-1 rounded-full border border-white/20">
+                🔒 ફોટો પ્રાઇવેટ છે
+              </span>
+            </div>
+          `}
+
+          <!-- Verified Badge -->
+          <div class="absolute top-4 left-4 bg-white/95 backdrop-blur-md px-3 py-1 rounded-full flex items-center gap-1 border border-soft-sky shadow-sm">
+            <span class="material-symbols-outlined text-earth-warmth text-sm material-symbols-fill">verified</span>
+            <span class="text-xs font-bold text-deep-ocean">Verified Profile</span>
+          </div>
+
+          <!-- Wave Divider -->
+          <div class="absolute bottom-0 w-full leading-none">
+            ${waveDividerSvg("text-cream-base")}
+          </div>
+        </div>
+
+        <div class="px-5 -mt-2 space-y-4">
+          <!-- Title & Subtitle Card -->
+          <div class="bg-white rounded-3xl p-5 shadow-ambient border border-soft-sky/60">
+            <h1 class="font-display text-2xl font-bold text-deep-ocean tracking-tight">
+              ${p.name}
+            </h1>
+            <p class="text-xs text-on-surface-variant font-medium mt-1 flex items-center gap-2">
+              <span>${p.age} વર્ષ</span>
+              <span>•</span>
+              <span>${p.city || '-'}</span>
+              <span>•</span>
+              <span>${p.occupation || '-'}</span>
+            </p>
+          </div>
+
+          <!-- Section: Basic & Family Details -->
+          <div class="bg-white rounded-3xl p-5 shadow-ambient border border-soft-sky/60">
+            <h3 class="font-display text-base font-bold text-deep-ocean mb-3 flex items-center gap-2">
+              <span class="material-symbols-outlined text-horizon-blue text-xl">family_restroom</span>
+              <span>કૌટુંબિક અને અંગત વિગત</span>
+            </h3>
+            <div class="divide-y divide-soft-sky text-xs">
+              <div class="py-2.5 flex justify-between"><span class="text-on-surface-variant">પિતાનું પૂરું નામ</span><span class="font-bold text-deep-ocean">${p.fatherName || '-'}</span></div>
+              <div class="py-2.5 flex justify-between"><span class="text-on-surface-variant">માતાનું નામ</span><span class="font-bold text-deep-ocean">${p.motherName || '-'}</span></div>
+              <div class="py-2.5 flex justify-between"><span class="text-on-surface-variant">રાશી (Zodiac)</span><span class="font-bold text-deep-ocean">${p.rashi || '-'}</span></div>
+              <div class="py-2.5 flex justify-between"><span class="text-on-surface-variant">વૈવાહિક દરજ્જો</span><span class="font-bold text-deep-ocean">${p.maritalStatus || 'કુંવારા'}</span></div>
+              <div class="py-2.5 flex justify-between"><span class="text-on-surface-variant">ભાઈ-બહેન</span><span class="font-bold text-deep-ocean">${p.siblings || 'કોઈ વિગત નથી'}</span></div>
+            </div>
+          </div>
+
+          <!-- Section: Education & Profession -->
+          <div class="bg-white rounded-3xl p-5 shadow-ambient border border-soft-sky/60">
+            <h3 class="font-display text-base font-bold text-deep-ocean mb-3 flex items-center gap-2">
+              <span class="material-symbols-outlined text-horizon-blue text-xl">school</span>
+              <span>શિક્ષણ અને કારકિર્દી</span>
+            </h3>
+            <div class="divide-y divide-soft-sky text-xs">
+              <div class="py-2.5 flex justify-between"><span class="text-on-surface-variant">શિક્ષણ (Education)</span><span class="font-bold text-deep-ocean">${p.education || '-'}</span></div>
+              <div class="py-2.5 flex justify-between"><span class="text-on-surface-variant">વ્યવસાય (Occupation)</span><span class="font-bold text-deep-ocean">${p.occupation || '-'}</span></div>
+              <div class="py-2.5 flex justify-between"><span class="text-on-surface-variant">શહેર / ગામ</span><span class="font-bold text-deep-ocean">${p.city || '-'}</span></div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <!-- Fixed Bottom Action Bar -->
+      <div class="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-soft-sky/80 p-4 flex justify-center">
+        <div class="max-w-md w-full flex items-center gap-3">
+          <button id="send-interest" class="flex-1 bg-earth-warmth hover:bg-earth-dark text-white font-bold py-3.5 px-6 rounded-2xl text-sm shadow-ambient flex items-center justify-center gap-2 transition-all active:scale-[0.98]">
+            <span class="material-symbols-outlined text-lg material-symbols-fill">favorite</span>
+            <span>Interest મોકલો (રસ દાખવો)</span>
+          </button>
+        </div>
       </div>
     `;
-    document.getElementById("back-btn").addEventListener("click", ()=>{ state.screen="home"; render(); });
-    document.getElementById("send-interest").addEventListener("click", async ()=>{
-      try{ await dataService.sendInterest(state.user.id, p.id); showToast("💌 Interest મોકલાયું! (Firestore માં save થયું)"); }
-      catch(err){ showToast("Error: "+err.message); }
+
+    document.getElementById("detail-back").addEventListener("click", ()=>{ state.screen = "home"; render(); });
+
+    document.getElementById("send-interest").addEventListener("click", async (e)=>{
+      const btn = e.currentTarget;
+      btn.disabled = true;
+      btn.innerHTML = `<span class="material-symbols-outlined text-base animate-spin">progress_activity</span><span>મોકલાઈ રહ્યું છે...</span>`;
+      try{
+        await dataService.sendInterest(state.user.id, p.id);
+        showToast("💌 Interest વિનંતી સફળતાપૂર્વક મોકલાઈ ગઈ!");
+        btn.innerHTML = `<span class="material-symbols-outlined text-base">check</span><span>Interest મોકલાયું</span>`;
+        btn.classList.replace("bg-earth-warmth", "bg-success");
+      }catch(err){
+        showToast("Error: " + err.message);
+        btn.disabled = false;
+        btn.innerHTML = `<span class="material-symbols-outlined text-lg material-symbols-fill">favorite</span><span>Interest મોકલો</span>`;
+      }
     });
   });
 }
 
+// ============================================================
+// 7. SCREEN: INTERESTS RECEIVED
+// ============================================================
 function renderInterest(){
   app.innerHTML = `
-    <div class="header" style="position:relative;">
-      ${langToggleHtml()}
-      <div class="header-title">${t('interestsTitle')}</div>
-      <div class="header-sub">${t('interestsSub')}</div>
-    </div>
-    <div class="content" id="int-content"><div class="loading">Load થઈ રહ્યું છે...</div></div>
+    <!-- Top Header -->
+    <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-soft-sky/80 px-5 pt-4 pb-3">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="font-display font-bold text-deep-ocean text-xl">${t('interestsTitle')}</h1>
+          <p class="text-[11px] text-on-surface-variant font-medium">${t('interestsSub')}</p>
+        </div>
+        ${langToggleHtml()}
+      </div>
+    </header>
+
+    <main class="flex-1 p-5 pb-28" id="int-content">
+      <div class="py-16 text-center text-on-surface-variant flex flex-col items-center justify-center">
+        <span class="material-symbols-outlined text-3xl animate-spin text-horizon-blue mb-2">progress_activity</span>
+        <span class="text-xs font-semibold">વિનંતીઓ લોડ થઈ રહી છે...</span>
+      </div>
+    </main>
+
     ${bottomNavHtml("interest")}
   `;
-  attachLangToggle();
-  document.querySelectorAll("[data-nav]").forEach(el=>{
-    el.addEventListener("click", ()=>{
-      const k = el.getAttribute("data-nav");
-      if(k==="home"){ state.screen="home"; render(); }
-      else if(k==="profile"){ state.screen="myProfiles"; render(); }
-      else if(k==="interest") render();
-      else showToast("આ screen આગળના phase માં બનશે");
-    });
-  });
 
-  dataService.getReceivedInterests(state.user.id).then(list=>{
+  attachLangToggle();
+  attachNavEvents();
+
+  dataService.getReceivedInterests(state.user.id).then(list => {
     const el = document.getElementById("int-content");
     if(!el) return;
-    if(list.length===0){ el.innerHTML = `<div class="empty">હજુ કોઈ Interest નથી આવ્યું</div>`; return; }
-    el.innerHTML = list.map(i=>`
-      <div class="card" style="cursor:default;">
-        <div class="card-photo" style="background:linear-gradient(160deg,#7FC7E0,#1C93C9);">👤</div>
-        <div class="card-body">
-          <div class="card-name">${i.fromUserName}</div>
-          <div class="card-sub">તમારા "${i.forCandidateName}" profile માટે Interest</div>
-          <span class="status-pending" style="background:${i.status==='accepted'?'#E7F6EF':i.status==='declined'?'#FCEBEA':'#FDF1E7'};color:${i.status==='accepted'?'var(--success)':i.status==='declined'?'var(--danger)':'#B4762A'};">
-            ${i.status==='accepted'?'✓ Accepted':i.status==='declined'?'✕ Declined':'⏳ Pending'}
-          </span>
-          ${i.status==='pending' ? `
-            <div style="display:flex;gap:6px;margin-top:8px;">
-              <button class="mini-btn mini-accept" data-accept="${i.id}">✓ Accept</button>
-              <button class="mini-btn mini-decline" data-decline="${i.id}">✕ Decline</button>
-            </div>
-          ` : ""}
+
+    if(list.length === 0){
+      el.innerHTML = `
+        <div class="bg-white rounded-3xl p-8 text-center border border-soft-sky shadow-ambient my-8">
+          <div class="w-14 h-14 mx-auto rounded-full bg-soft-sky/40 text-horizon-blue flex items-center justify-center mb-3">
+            <span class="material-symbols-outlined text-3xl">mark_email_unread</span>
+          </div>
+          <h3 class="font-display font-bold text-deep-ocean text-lg">હજુ કોઈ Interest નથી</h3>
+          <p class="text-xs text-on-surface-variant mt-1.5 leading-relaxed">
+            તમારા ઉમેદવાર પ્રોફાઇલ માટે જ્યારે અન્ય સભ્યો રસ દાખવશે, ત્યારે તે તમામ વિનંતીઓ અહીં દેખાશે.
+          </p>
         </div>
+      `;
+      return;
+    }
+
+    el.innerHTML = `
+      <div class="space-y-4">
+        ${list.map(i => {
+          const isPending = i.status === 'pending';
+          const isAccepted = i.status === 'accepted';
+          const isDeclined = i.status === 'declined';
+
+          return `
+            <div class="bg-white rounded-3xl p-5 shadow-ambient border border-soft-sky/60">
+              <div class="flex items-start justify-between mb-3">
+                <div class="flex items-center gap-3">
+                  <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-deep-ocean to-horizon-blue flex items-center justify-center text-white text-xl shadow-sm">
+                    👤
+                  </div>
+                  <div>
+                    <h3 class="font-display font-bold text-deep-ocean text-base">${i.fromUserName}</h3>
+                    <p class="text-[11px] text-on-surface-variant font-medium">તમારા <b>"${i.forCandidateName}"</b> પ્રોફાઇલ માટે</p>
+                  </div>
+                </div>
+
+                <span class="px-3 py-1 rounded-full text-[11px] font-bold ${
+                  isAccepted ? 'bg-green-50 text-success border border-green-200' :
+                  isDeclined ? 'bg-red-50 text-danger border border-red-200' :
+                  'bg-amber-50 text-amber-700 border border-amber-200'
+                }">
+                  ${isAccepted ? '✓ સ્વીકારેલ (Accepted)' : isDeclined ? '✕ નકારેલ (Declined)' : '⏳ પ્રતીક્ષિત (Pending)'}
+                </span>
+              </div>
+
+              ${isPending ? `
+                <div class="flex gap-2 pt-2 border-t border-soft-sky/50 mt-3">
+                  <button data-accept="${i.id}" class="flex-1 bg-success hover:opacity-90 text-white font-bold py-2.5 rounded-xl text-xs transition-opacity flex items-center justify-center gap-1 shadow-sm">
+                    <span class="material-symbols-outlined text-sm">check</span>
+                    <span>Accept કરો</span>
+                  </button>
+                  <button data-decline="${i.id}" class="flex-1 bg-surface hover:bg-red-50 text-danger border border-red-200 font-bold py-2.5 rounded-xl text-xs transition-colors flex items-center justify-center gap-1">
+                    <span class="material-symbols-outlined text-sm">close</span>
+                    <span>Decline</span>
+                  </button>
+                </div>
+              ` : ''}
+            </div>
+          `;
+        }).join("")}
       </div>
-    `).join("");
-    document.querySelectorAll("[data-accept]").forEach(btn=>{
+    `;
+
+    document.querySelectorAll("[data-accept]").forEach(btn => {
       btn.addEventListener("click", async ()=>{
-        try{ await dataService.respondToInterest(btn.getAttribute("data-accept"), "accepted"); showToast("✓ Interest Accept થયું"); renderInterest(); }
-        catch(err){ showToast("Error: "+err.message); }
+        btn.disabled = true;
+        try{
+          await dataService.respondToInterest(btn.getAttribute("data-accept"), "accepted");
+          showToast("✓ Interest સફળતાપૂર્વક Accept થયું");
+          renderInterest();
+        }catch(err){
+          showToast("Error: " + err.message);
+          btn.disabled = false;
+        }
       });
     });
-    document.querySelectorAll("[data-decline]").forEach(btn=>{
+
+    document.querySelectorAll("[data-decline]").forEach(btn => {
       btn.addEventListener("click", async ()=>{
-        try{ await dataService.respondToInterest(btn.getAttribute("data-decline"), "declined"); showToast("Interest Decline થયું"); renderInterest(); }
-        catch(err){ showToast("Error: "+err.message); }
+        btn.disabled = true;
+        try{
+          await dataService.respondToInterest(btn.getAttribute("data-decline"), "declined");
+          showToast("Interest Decline કરવામાં આવ્યું");
+          renderInterest();
+        }catch(err){
+          showToast("Error: " + err.message);
+          btn.disabled = false;
+        }
       });
     });
-  }).catch(err=>{
-    document.getElementById("int-content").innerHTML = `<div class="status-banner status-err">Data load ના થયું: ${err.message}</div>`;
+  }).catch(err => {
+    const el = document.getElementById("int-content");
+    if(el) el.innerHTML = `<div class="bg-red-50 text-danger p-4 rounded-2xl border border-red-200 text-xs font-semibold text-center">${err.message}</div>`;
   });
 }
 
+// ============================================================
+// 8. SCREEN: MY PROFILES
+// ============================================================
 function renderMyProfiles(){
   app.innerHTML = `
-    <div class="header" style="position:relative;">
-      ${langToggleHtml()}
-      <div class="header-title">${t('myProfiles')}</div>
-      <div class="header-sub">${t('myProfilesSub')}</div>
-    </div>
-    <div class="content" id="myp-content"><div class="loading">Load થઈ રહ્યું છે...</div></div>
+    <!-- Top Header -->
+    <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-soft-sky/80 px-5 pt-4 pb-3">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="font-display font-bold text-deep-ocean text-xl">${t('myProfiles')}</h1>
+          <p class="text-[11px] text-on-surface-variant font-medium">${t('myProfilesSub')}</p>
+        </div>
+        ${langToggleHtml()}
+      </div>
+    </header>
+
+    <main class="flex-1 p-5 pb-28 space-y-4" id="myp-content">
+      <div class="py-16 text-center text-on-surface-variant flex flex-col items-center justify-center">
+        <span class="material-symbols-outlined text-3xl animate-spin text-horizon-blue mb-2">progress_activity</span>
+        <span class="text-xs font-semibold">તમારા પ્રોફાઇલ્સ લોડ થઈ રહ્યા છે...</span>
+      </div>
+    </main>
+
     ${bottomNavHtml("profile")}
   `;
-  attachLangToggle();
-  document.querySelectorAll("[data-nav]").forEach(el=>{
-    el.addEventListener("click", ()=>{
-      const k = el.getAttribute("data-nav");
-      if(k==="home"){ state.screen="home"; render(); }
-      else if(k==="profile") render();
-      else showToast("આ screen આગળના phase માં બનશે");
-    });
-  });
 
-  dataService.getMyCandidates(state.user.id).then(list=>{
+  attachLangToggle();
+  attachNavEvents();
+
+  dataService.getMyCandidates(state.user.id).then(list => {
     const el = document.getElementById("myp-content");
     if(!el) return;
-    const activeCount = list.filter(c=>!c.deactivated).length;
-    const cardsHtml = list.map(c=>`
-      <div class="card" style="cursor:default; flex-direction:column; align-items:stretch;">
-        <div style="display:flex;">
-          <div class="card-photo" style="background:${c.photoColor||'#1C93C9'};${c.photoURL?`background-image:url('${c.photoURL}');background-size:cover;background-position:center;`:''}">${c.photoURL?'':(c.photoEmoji||'👤')}</div>
-          <div class="card-body">
-            <div class="card-name">${c.name}${c.deactivated?' <span style="color:var(--text-mid);font-size:10px;font-weight:700;">(Deactivated)</span>':''}</div>
-            <div class="card-sub">${c.age} વર્ષ · ${c.education||'-'} · ${c.city||'-'}</div>
-            <span class="status-pending" style="background:${c.deactivated?'#EEF1F3':c.status==='approved'?'#E7F6EF':c.status==='rejected'?'#FCEBEA':'#FDF1E7'};color:${c.deactivated?'var(--text-mid)':c.status==='approved'?'var(--success)':c.status==='rejected'?'var(--danger)':'#B4762A'};">
-              ${c.deactivated?'👋 લગ્ન/Settled':c.status==='approved'?'✓ Approved · Live':c.status==='rejected'?'✕ Rejected':'⏳ Admin Review Pending'}
-            </span>
+
+    const activeCount = list.filter(c => !c.deactivated).length;
+    const canAddMore = activeCount < 4;
+
+    const cardsHtml = list.map(c => {
+      const showPhoto = c.photoVisible !== false && c.photoURL;
+      const isApproved = c.status === 'approved';
+      const isRejected = c.status === 'rejected';
+
+      return `
+        <div class="bg-white rounded-3xl p-5 shadow-ambient border border-soft-sky/70">
+          <div class="flex items-start gap-3.5 mb-4">
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-deep-ocean to-horizon-blue overflow-hidden flex-shrink-0 flex items-center justify-center text-2xl text-white shadow-sm border border-soft-sky">
+              ${c.photoURL ? `<img src="${c.photoURL}" class="w-full h-full object-cover">` : (c.photoEmoji || '👤')}
+            </div>
+
+            <div class="flex-1 min-w-0">
+              <div class="flex items-baseline justify-between">
+                <h3 class="font-display font-bold text-deep-ocean text-base truncate">${c.name}</h3>
+                ${c.deactivated ? `
+                  <span class="text-[10px] font-bold bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">નિષ્ક્રિય</span>
+                ` : ''}
+              </div>
+              <p class="text-xs text-on-surface-variant font-medium mt-0.5">${c.age} વર્ષ • ${c.education || '-'} • ${c.city || '-'}</p>
+
+              <div class="mt-2">
+                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold ${
+                  c.deactivated ? 'bg-gray-100 text-gray-600' :
+                  isApproved ? 'bg-green-50 text-success border border-green-200' :
+                  isRejected ? 'bg-red-50 text-danger border border-red-200' :
+                  'bg-amber-50 text-amber-700 border border-amber-200'
+                }">
+                  <span class="w-1.5 h-1.5 rounded-full ${c.deactivated ? 'bg-gray-400' : isApproved ? 'bg-success' : isRejected ? 'bg-danger' : 'bg-amber-500'}"></span>
+                  ${c.deactivated ? 'લગ્ન થઈ ગયા / Settled' : isApproved ? 'Approved · Live' : isRejected ? 'Rejected' : 'Admin Review Pending'}
+                </span>
+              </div>
+            </div>
           </div>
+
+          <!-- Profile Action Buttons -->
+          ${!c.deactivated ? `
+            <div class="space-y-2 pt-2 border-t border-soft-sky/60">
+              <div class="grid grid-cols-2 gap-2">
+                <button data-edit="${c.id}" class="bg-surface hover:bg-soft-sky/40 text-deep-ocean border border-soft-sky py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1">
+                  <span class="material-symbols-outlined text-sm text-horizon-blue">edit</span>
+                  <span>સુધારો (Edit)</span>
+                </button>
+                <button data-deactivate="${c.id}" class="bg-surface hover:bg-red-50 text-danger border border-red-200 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1">
+                  <span class="material-symbols-outlined text-sm">favorite</span>
+                  <span>લગ્ન થઈ ગયા</span>
+                </button>
+              </div>
+
+              <!-- Photo Visibility Toggle -->
+              <button data-toggle-photo="${c.id}" data-visible="${c.photoVisible!==false?'1':'0'}"
+                class="w-full py-2.5 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
+                  c.photoVisible!==false ? 'bg-green-50 text-success border border-green-200 hover:bg-green-100' : 'bg-soft-sky/40 text-horizon-blue border border-soft-sky hover:bg-soft-sky/70'
+                }">
+                <span class="material-symbols-outlined text-sm">${c.photoVisible!==false ? 'visibility' : 'visibility_off'}</span>
+                <span>${c.photoVisible!==false ? 'Photo બધાને દેખાય છે (છુપાવવા ક્લિક કરો)' : 'Photo છુપાયેલ છે (દેખાડવા ક્લિક કરો)'}</span>
+              </button>
+            </div>
+          ` : `
+            <div class="pt-2 border-t border-soft-sky/60">
+              <button data-activate="${c.id}" ${activeCount>=4 ? 'disabled' : ''}
+                class="w-full bg-surface hover:bg-soft-sky/40 text-deep-ocean border border-soft-sky py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1 disabled:opacity-50">
+                <span class="material-symbols-outlined text-sm">replay</span>
+                <span>ફરી સક્રિય કરો (Reactivate)</span>
+              </button>
+            </div>
+          `}
         </div>
-        ${!c.deactivated ? `
-          <div style="display:flex;gap:8px;padding:0 13px 8px;">
-            <button class="mini-btn" data-edit="${c.id}" style="background:var(--ice);color:var(--primary);flex:1;">✏️ Edit</button>
-            <button class="mini-btn" data-deactivate="${c.id}" style="background:#FCEBEA;color:var(--danger);flex:1;">💍 Married/Settled</button>
-          </div>
-          <div style="padding:0 13px 13px;">
-            <button class="mini-btn" data-toggle-photo="${c.id}" data-visible="${c.photoVisible!==false?'1':'0'}" style="width:100%;background:${c.photoVisible!==false?'#E7F6EF':'var(--ice)'};color:${c.photoVisible!==false?'var(--success)':'var(--primary)'};">
-              ${c.photoVisible!==false ? '👁️ Photo બીજાને દેખાય છે — છુપાવવા Tap કરો' : '🙈 Photo છુપાયેલો છે — દેખાડવા Tap કરો'}
-            </button>
-          </div>
+      `;
+    }).join("");
+
+    el.innerHTML = `
+      <div class="space-y-4">
+        ${cardsHtml}
+
+        <!-- Add Candidate Card -->
+        ${canAddMore ? `
+          <button id="add-candidate" class="w-full border-2 border-dashed border-horizon-blue/40 hover:border-horizon-blue bg-white/70 hover:bg-white rounded-3xl p-6 text-center transition-all flex flex-col items-center justify-center group shadow-sm">
+            <div class="w-12 h-12 rounded-full bg-soft-sky/60 text-horizon-blue flex items-center justify-center text-2xl group-hover:scale-110 transition-transform mb-2">
+              <span class="material-symbols-outlined text-2xl">add</span>
+            </div>
+            <div class="font-display font-bold text-deep-ocean text-base">+ નવો Candidate Profile ઉમેરો</div>
+            <div class="text-[11px] text-on-surface-variant font-medium mt-0.5">તમે હજુ ${4-activeCount} વધુ પ્રોફાઇલ બનાવી શકો છો</div>
+          </button>
         ` : `
-          <div style="padding:0 13px 13px;">
-            <button class="mini-btn" data-activate="${c.id}" ${activeCount>=4?"disabled":""} style="width:100%;background:${activeCount>=4?'#EEF1F3':'var(--ice)'};color:${activeCount>=4?'var(--text-mid)':'var(--primary)'};${activeCount>=4?'cursor:not-allowed;':''}">
-              🔄 ફરી Active કરો
-            </button>
-            ${activeCount>=4 ? `<div style="font-size:10px;color:var(--text-mid);margin-top:5px;text-align:center;">4/4 profiles વપરાયેલા — બીજો profile Deactivate કરો પછી જ Active કરી શકાશે</div>` : ""}
+          <div class="bg-amber-50 text-amber-800 text-xs font-semibold p-4 rounded-2xl border border-amber-200 text-center">
+            તમે મહત્તમ 4 ઉમેદવારો ઉમેરી લીધા છે.
           </div>
         `}
-      </div>
-    `).join("");
-    const canAddMore = activeCount < 4;
-    el.innerHTML = cardsHtml + (canAddMore ? `
-      <div class="card" id="add-candidate" style="cursor:pointer; border:2px dashed var(--sky); background:var(--ice); justify-content:center; align-items:center; padding:24px; display:flex; flex-direction:column; text-align:center;">
-        <div style="width:44px;height:44px;border-radius:50%;background:#fff;color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;">+</div>
-        <div style="font-size:12.5px;font-weight:700;color:var(--navy);margin-top:10px;">નવો Candidate Profile Add કરો</div>
-        <div style="font-size:10.5px;color:var(--text-mid);margin-top:3px;">તમે હજુ ${4-activeCount} વધુ profiles બનાવી શકો છો</div>
-      </div>
-    ` : `<div class="empty">4/4 profiles વપરાયેલા — વધુ profile બનાવવા માટે limit પૂરી થઈ છે</div>`)
-    + `
-      <div class="card" style="cursor:default; flex-direction:column; align-items:stretch; margin-top:16px;">
-        <div style="padding:14px;">
-          <div style="font-size:11.5px;color:var(--text-mid);margin-bottom:10px;">Logged in as <b style="color:var(--navy);">${state.user.name}</b> (${state.user.mobile})</div>
-          <button class="btn" id="logout-btn" style="background:#FCEBEA;color:var(--danger);width:100%;">🚪 Logout</button>
+
+        <!-- Account Info & Logout Card -->
+        <div class="bg-white rounded-3xl p-5 shadow-ambient border border-soft-sky/60 mt-6">
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-soft-sky/50 text-deep-ocean flex items-center justify-center font-bold text-sm">
+                ${state.user.name?.charAt(0) || '👤'}
+              </div>
+              <div>
+                <h4 class="font-bold text-deep-ocean text-sm">${state.user.name}</h4>
+                <p class="text-[11px] text-on-surface-variant font-medium">+91 ${state.user.mobile} • ${state.user.village || 'પોરબંદર'}</p>
+              </div>
+            </div>
+          </div>
+
+          <button id="logout-btn" class="w-full bg-red-50 hover:bg-red-100 text-danger border border-red-200 py-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5">
+            <span class="material-symbols-outlined text-base">logout</span>
+            <span>લૉગઆઉટ (Logout)</span>
+          </button>
         </div>
       </div>
     `;
+
     const addBtn = document.getElementById("add-candidate");
-    if(addBtn) addBtn.addEventListener("click", ()=>{ state.formDraft={}; state.editCandidateId=null; state.screen="formStep1"; render(); });
+    if(addBtn) {
+      addBtn.addEventListener("click", ()=>{
+        state.formDraft = {};
+        state.editCandidateId = null;
+        state.screen = "formStep1";
+        render();
+      });
+    }
+
     document.getElementById("logout-btn").addEventListener("click", async ()=>{
-      if(!confirm("શું તમે ખરેખર Logout કરવા માંગો છો?")) return;
+      if(!confirm("શું તમે ખરેખર લૉગઆઉટ કરવા માંગો છો?")) return;
       await dataService.logout();
-      state.user=null; state.screen="mobileEntry"; render();
+      state.user = null;
+      state.screen = "mobileEntry";
+      render();
     });
-    document.querySelectorAll("[data-edit]").forEach(btn=>{
+
+    document.querySelectorAll("[data-edit]").forEach(btn => {
       btn.addEventListener("click", ()=>{
-        const candidate = list.find(c=>c.id===btn.getAttribute("data-edit"));
+        const candidate = list.find(c => c.id === btn.getAttribute("data-edit"));
         state.editCandidateId = candidate.id;
         state.formDraft = { ...candidate };
-        state.screen="formStep1"; render();
+        state.screen = "formStep1";
+        render();
       });
     });
-    document.querySelectorAll("[data-toggle-photo]").forEach(btn=>{
+
+    document.querySelectorAll("[data-toggle-photo]").forEach(btn => {
       btn.addEventListener("click", async ()=>{
-        const candidateId = btn.getAttribute("data-toggle-photo");
-        const currentlyVisible = btn.getAttribute("data-visible")==="1";
+        const cid = btn.getAttribute("data-toggle-photo");
+        const isVisible = btn.getAttribute("data-visible") === "1";
         btn.disabled = true;
         try{
-          await dataService.setPhotoVisibility(candidateId, !currentlyVisible);
-          showToast(currentlyVisible ? "🙈 Photo છુપાવ્યો" : "👁️ Photo દેખાડ્યો");
+          await dataService.setPhotoVisibility(cid, !isVisible);
+          showToast(isVisible ? "🙈 Photo છુપાવ્યો" : "👁️ Photo સભ્યોને દેખાડ્યો");
           renderMyProfiles();
-        }catch(err){ showToast("Error: "+err.message); btn.disabled=false; }
+        }catch(err){
+          showToast("Error: " + err.message);
+          btn.disabled = false;
+        }
       });
     });
-    document.querySelectorAll("[data-activate]").forEach(btn=>{
+
+    document.querySelectorAll("[data-activate]").forEach(btn => {
       btn.addEventListener("click", async ()=>{
-        if(activeCount>=4){ showToast("4/4 profiles વપરાયેલા — પહેલા બીજો profile Deactivate કરો"); return; }
         btn.disabled = true;
         try{
           await dataService.activateCandidate(btn.getAttribute("data-activate"));
-          showToast("✓ Profile ફરી Active થયું");
+          showToast("✓ Profile ફરી સક્રિય થયું");
           renderMyProfiles();
-        }catch(err){ showToast("Error: "+err.message); btn.disabled=false; }
+        }catch(err){
+          showToast("Error: " + err.message);
+          btn.disabled = false;
+        }
       });
     });
-    document.querySelectorAll("[data-deactivate]").forEach(btn=>{
+
+    document.querySelectorAll("[data-deactivate]").forEach(btn => {
       btn.addEventListener("click", async ()=>{
-        if(!confirm("શું તમે ખરેખર આ profile ને 'Married/Settled' તરીકે mark કરવા માંગો છો? એ પછી profile બીજા members ને નહીં દેખાય.")) return;
+        if(!confirm("શું આ ઉમેદવારના લગ્ન થઈ ગયા છે? ડિએક્ટિવેટ કર્યા પછી આ પ્રોફાઇલ અન્ય સભ્યોને નહીં દેખાય.")) return;
         try{
           await dataService.deactivateCandidate(btn.getAttribute("data-deactivate"));
-          showToast("✓ Profile deactivate થયું");
+          showToast("✓ Profile સેટલ્ડ/ડિએક્ટિવેટ થયું");
           renderMyProfiles();
-        }catch(err){ showToast("Error: "+err.message); }
+        }catch(err){
+          showToast("Error: " + err.message);
+        }
       });
     });
-  }).catch(err=>{
-    document.getElementById("myp-content").innerHTML = `<div class="status-banner status-err">Data load ના થયું: ${err.message}</div>`;
+  }).catch(err => {
+    const el = document.getElementById("myp-content");
+    if(el) el.innerHTML = `<div class="bg-red-50 text-danger p-4 rounded-2xl border border-red-200 text-xs font-semibold text-center">${err.message}</div>`;
   });
 }
 
+// ============================================================
+// 9. ONBOARDING & CANDIDATE PROFILE FORM (Steps 1 to 4)
+// ============================================================
 function formHeaderHtml(stepNum, title){
   return `
-    <div class="header" style="padding-bottom:18px;">
-      <div class="back-row"><div class="back-btn" id="form-back">←</div><div><div class="header-title">${title}</div><div class="header-sub">Step ${stepNum} of 4</div></div></div>
-      <div style="display:flex; gap:5px; margin-top:14px;">
-        ${[1,2,3,4].map(n=>`<div style="flex:1;height:4px;border-radius:4px;background:${n<=stepNum?'#fff':'rgba(255,255,255,0.3)'};"></div>`).join("")}
+    <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-soft-sky/80 px-5 pt-4 pb-3">
+      <div class="flex items-center justify-between mb-3">
+        <button id="form-back" class="text-deep-ocean p-1.5 -ml-1.5 rounded-full hover:bg-soft-sky/40 transition-colors flex items-center gap-1 font-bold text-xs">
+          <span class="material-symbols-outlined text-lg">arrow_back</span>
+          <span>પાછા</span>
+        </button>
+        <span class="font-display font-bold text-deep-ocean text-base">${title}</span>
+        <span class="text-xs font-bold text-horizon-blue bg-soft-sky/60 px-2.5 py-0.5 rounded-full">Step ${stepNum} of 4</span>
       </div>
-    </div>
+
+      <!-- Stepper Progress Bars -->
+      <div class="grid grid-cols-4 gap-2">
+        ${[1,2,3,4].map(n => `
+          <div class="h-1.5 rounded-full transition-all duration-300 ${n <= stepNum ? 'bg-horizon-blue' : 'bg-soft-sky'}"></div>
+        `).join("")}
+      </div>
+    </header>
   `;
 }
 
-// Rashi bilingual data — Gujarati + English keywords for search
 const RASHI_DATA = [
   { gu: "મેષ",      en: "Mesh Aries" },
   { gu: "વૃષભ",     en: "Vrushabh Vrushbh Taurus" },
@@ -1124,37 +1905,70 @@ function initSelect2(id, opts){
   }, opts));
 }
 
+// --- Step 1: Personal & Family ---
 function renderFormStep1(){
   const d = state.formDraft;
   const gPh = t('genderPh');
   const rPh = t('rashiPh');
+
   app.innerHTML = `
     ${formHeaderHtml(1, t('formStep1Title'))}
-    <div class="content">
-      <div class="field"><label>${t('candidateName')}</label><div class="input-wrap"><input id="ff-name" value="${d.name||''}" placeholder="${t('candidateNamePh')}"></div></div>
-      <div class="field"><label>${t('gender')}</label>
-        <select id="ff-gender" style="width:100%" data-placeholder="${gPh}">
-          <option value=""></option>
-          <option value="male" ${d.gender==='male'?'selected':''}>👦 યુવક (Male)</option>
-          <option value="female" ${d.gender==='female'?'selected':''}>👧 યુવતી (Female)</option>
-        </select>
+
+    <main class="flex-1 p-5 pb-12 space-y-4">
+      <div class="bg-white rounded-3xl p-6 shadow-ambient border border-soft-sky/60 space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-deep-ocean mb-1.5">${t('candidateName')}</label>
+          <input id="ff-name" value="${d.name||''}" placeholder="${t('candidateNamePh')}"
+            class="w-full px-4 py-3 rounded-xl border border-soft-sky bg-surface/50 font-sans text-xs sm:text-sm text-deep-ocean input-glow transition-all">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-deep-ocean mb-1.5">${t('gender')}</label>
+          <select id="ff-gender" style="width:100%" data-placeholder="${gPh}">
+            <option value=""></option>
+            <option value="male" ${d.gender==='male'?'selected':''}>👦 યુવક (Male)</option>
+            <option value="female" ${d.gender==='female'?'selected':''}>👧 યુવતી (Female)</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-deep-ocean mb-1.5">${t('age')}</label>
+          <input id="ff-age" type="number" value="${d.age||''}" placeholder="${t('agePh')}"
+            class="w-full px-4 py-3 rounded-xl border border-soft-sky bg-surface/50 font-sans text-xs sm:text-sm text-deep-ocean input-glow transition-all">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-deep-ocean mb-1.5">${t('fatherName')}</label>
+          <input id="ff-father" value="${d.fatherName||''}" placeholder="${t('fatherNamePh')}"
+            class="w-full px-4 py-3 rounded-xl border border-soft-sky bg-surface/50 font-sans text-xs sm:text-sm text-deep-ocean input-glow transition-all">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-deep-ocean mb-1.5">${t('motherName')}</label>
+          <input id="ff-mother" value="${d.motherName||''}" placeholder="${t('motherNamePh')}"
+            class="w-full px-4 py-3 rounded-xl border border-soft-sky bg-surface/50 font-sans text-xs sm:text-sm text-deep-ocean input-glow transition-all">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-deep-ocean mb-1.5">${t('rashi')}</label>
+          <select id="ff-rashi" style="width:100%" data-placeholder="${rPh}">
+            <option value=""></option>
+            ${RASHI_DATA.map(r=>`<option value="${r.gu}" data-search="${r.en.toLowerCase()} ${r.gu}" ${d.rashi===r.gu?'selected':''}>${r.gu}</option>`).join("")}
+          </select>
+        </div>
+
+        <div id="ff-err"></div>
+
+        <button id="ff-next" class="w-full mt-2 bg-earth-warmth hover:bg-earth-dark text-white py-3.5 rounded-xl text-sm font-bold shadow-ambient transition-all flex items-center justify-center gap-2">
+          <span>${t('nextBtn')}</span>
+          <span class="material-symbols-outlined text-base">arrow_forward</span>
+        </button>
       </div>
-      <div class="field"><label>${t('age')}</label><div class="input-wrap"><input id="ff-age" type="number" value="${d.age||''}" placeholder="${t('agePh')}"></div></div>
-      <div class="field"><label>${t('fatherName')}</label><div class="input-wrap"><input id="ff-father" value="${d.fatherName||''}" placeholder="${t('fatherNamePh')}"></div></div>
-      <div class="field"><label>${t('motherName')}</label><div class="input-wrap"><input id="ff-mother" value="${d.motherName||''}" placeholder="${t('motherNamePh')}"></div></div>
-      <div class="field"><label>${t('rashi')}</label>
-        <select id="ff-rashi" style="width:100%" data-placeholder="${rPh}">
-          <option value=""></option>
-          ${RASHI_DATA.map(r=>`<option value="${r.gu}" data-search="${r.en.toLowerCase()} ${r.gu}" ${d.rashi===r.gu?'selected':''}>${r.gu}</option>`).join("")}
-        </select>
-      </div>
-      <div id="ff-err"></div>
-      <button class="btn btn-primary" id="ff-next">${t('nextBtn')}</button>
-    </div>
+    </main>
   `;
+
   initSelect2('ff-gender', { minimumResultsForSearch: Infinity, placeholder: gPh, allowClear: true });
 
-  // Rashi: bilingual search — English or Gujarati both work
   const rashiMatcher = function(params, data){
     if(!params.term || params.term.trim() === '') return data;
     if(!data.element) return null;
@@ -1163,196 +1977,298 @@ function renderFormStep1(){
     const enText  = ($(data.element).data('search') || '').toLowerCase();
     return (guText.includes(q) || enText.includes(q)) ? data : null;
   };
+
   initSelect2('ff-rashi', {
     placeholder: rPh,
     allowClear: true,
     matcher: rashiMatcher,
     templateResult: function(data){
-      if(!data.id) return data.text; // placeholder row
+      if(!data.id) return data.text;
       const entry = RASHI_DATA.find(r => r.gu === data.id);
       if(!entry) return data.text;
-      const en = entry.en.split(' ')[0]; // first English keyword shown as hint
+      const en = entry.en.split(' ')[0];
       const $el = $('<span></span>');
       $el.append($('<strong></strong>').text(entry.gu));
       $el.append($('<span style="color:#5A7A8C;font-size:11px;margin-left:8px;font-weight:400;"></span>').text(en));
       return $el;
     },
     templateSelection: function(data){
-      // Always show only Gujarati name in the selection box
-      if(!data.id) return $('<span style="color:#aabcc6;">'+rPh+'</span>');
+      if(!data.id) return $('<span style="color:#94A3B8;">'+rPh+'</span>');
       const entry = RASHI_DATA.find(r => r.gu === data.id);
       return entry ? entry.gu : data.id;
     }
   });
-  document.getElementById("form-back").addEventListener("click", ()=>{ state.screen="myProfiles"; render(); });
+
+  document.getElementById("form-back").addEventListener("click", ()=>{ state.screen = "myProfiles"; render(); });
+
   document.getElementById("ff-next").addEventListener("click", ()=>{
-    const name=document.getElementById("ff-name").value.trim();
-    const gender=(typeof $!=='undefined') ? $('#ff-gender').val() : document.getElementById("ff-gender").value;
-    const age=document.getElementById("ff-age").value;
-    const fatherName=document.getElementById("ff-father").value.trim();
-    const motherName=document.getElementById("ff-mother").value.trim();
-    const rashi=(typeof $!=='undefined') ? $('#ff-rashi').val() : document.getElementById("ff-rashi").value;
-    const errEl=document.getElementById("ff-err");
-    if(!name||!gender||!age||!fatherName||!motherName){
-      errEl.innerHTML = `<div class="err-text">${t('fillAllFields')}</div>`; return;
+    const name = document.getElementById("ff-name").value.trim();
+    const gender = (typeof $!=='undefined') ? $('#ff-gender').val() : document.getElementById("ff-gender").value;
+    const age = document.getElementById("ff-age").value;
+    const fatherName = document.getElementById("ff-father").value.trim();
+    const motherName = document.getElementById("ff-mother").value.trim();
+    const rashi = (typeof $!=='undefined') ? $('#ff-rashi').val() : document.getElementById("ff-rashi").value;
+    const errEl = document.getElementById("ff-err");
+
+    if(!name || !gender || !age || !fatherName || !motherName){
+      errEl.innerHTML = `<div class="bg-red-50 text-danger text-xs font-semibold p-2.5 rounded-xl border border-red-200">${t('fillAllFields')}</div>`;
+      return;
     }
-    Object.assign(state.formDraft, { name, gender, age:Number(age), fatherName, motherName, rashi });
-    state.screen="formStep2"; render();
+
+    Object.assign(state.formDraft, { name, gender, age: Number(age), fatherName, motherName, rashi });
+    state.screen = "formStep2";
+    render();
   });
 }
 
+// --- Step 2: Education & Address ---
 function renderFormStep2(){
   const d = state.formDraft;
   const mPh = t('maritalStatusPh');
+
   app.innerHTML = `
     ${formHeaderHtml(2, t('formStep2Title'))}
-    <div class="content">
-      <div class="field"><label>${t('education')}</label><div class="input-wrap"><input id="ff-edu" value="${d.education||''}" placeholder="${t('educationPh')}"></div></div>
-      <div class="field"><label>${t('occupation')}</label><div class="input-wrap"><input id="ff-occ" value="${d.occupation||''}" placeholder="${t('occupationPh')}"></div></div>
-      <div class="field"><label>${t('city')}</label><div class="input-wrap"><input id="ff-city" value="${d.city||''}" placeholder="${t('cityPh')}"></div></div>
-      <div class="field"><label>${t('maritalStatus')}</label>
-        <select id="ff-status" style="width:100%" data-placeholder="${mPh}">
-          <option value=""></option>
-          <option value="કુંવારા" ${d.maritalStatus==='કુંવારા'?'selected':''}>💍 કુંવારા (Unmarried)</option>
-          <option value="છૂટાછેડા" ${d.maritalStatus==='છૂટાછેડા'?'selected':''}>↩️ છૂટાછેડા (Divorced)</option>
-        </select>
+
+    <main class="flex-1 p-5 pb-12 space-y-4">
+      <div class="bg-white rounded-3xl p-6 shadow-ambient border border-soft-sky/60 space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-deep-ocean mb-1.5">${t('education')}</label>
+          <input id="ff-edu" value="${d.education||''}" placeholder="${t('educationPh')}"
+            class="w-full px-4 py-3 rounded-xl border border-soft-sky bg-surface/50 font-sans text-xs sm:text-sm text-deep-ocean input-glow transition-all">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-deep-ocean mb-1.5">${t('occupation')}</label>
+          <input id="ff-occ" value="${d.occupation||''}" placeholder="${t('occupationPh')}"
+            class="w-full px-4 py-3 rounded-xl border border-soft-sky bg-surface/50 font-sans text-xs sm:text-sm text-deep-ocean input-glow transition-all">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-deep-ocean mb-1.5">${t('city')}</label>
+          <input id="ff-city" value="${d.city||''}" placeholder="${t('cityPh')}"
+            class="w-full px-4 py-3 rounded-xl border border-soft-sky bg-surface/50 font-sans text-xs sm:text-sm text-deep-ocean input-glow transition-all">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-deep-ocean mb-1.5">${t('maritalStatus')}</label>
+          <select id="ff-status" style="width:100%" data-placeholder="${mPh}">
+            <option value=""></option>
+            <option value="કુંવારા" ${d.maritalStatus==='કુંવારા'?'selected':''}>💍 કુંવારા (Unmarried)</option>
+            <option value="છૂટાછેડા" ${d.maritalStatus==='છૂટાછેડા'?'selected':''}>↩️ છૂટાછેડા (Divorced)</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-deep-ocean mb-1.5">${t('siblings')}</label>
+          <input id="ff-sib" value="${d.siblings||''}" placeholder="${t('siblingsPh')}"
+            class="w-full px-4 py-3 rounded-xl border border-soft-sky bg-surface/50 font-sans text-xs sm:text-sm text-deep-ocean input-glow transition-all">
+        </div>
+
+        <div id="ff2-err"></div>
+
+        <button id="ff2-next" class="w-full mt-2 bg-earth-warmth hover:bg-earth-dark text-white py-3.5 rounded-xl text-sm font-bold shadow-ambient transition-all flex items-center justify-center gap-2">
+          <span>${t('nextBtn')}</span>
+          <span class="material-symbols-outlined text-base">arrow_forward</span>
+        </button>
       </div>
-      <div class="field"><label>${t('siblings')}</label><div class="input-wrap"><input id="ff-sib" value="${d.siblings||''}" placeholder="${t('siblingsPh')}"></div></div>
-      <div id="ff2-err"></div>
-      <button class="btn btn-primary" id="ff2-next">${t('nextBtn')}</button>
-    </div>
+    </main>
   `;
+
   initSelect2('ff-status', { minimumResultsForSearch: Infinity, placeholder: mPh, allowClear: true });
-  document.getElementById("form-back").addEventListener("click", ()=>{ state.screen="formStep1"; render(); });
+  document.getElementById("form-back").addEventListener("click", ()=>{ state.screen = "formStep1"; render(); });
+
   document.getElementById("ff2-next").addEventListener("click", ()=>{
-    const education=document.getElementById("ff-edu").value.trim();
-    const occupation=document.getElementById("ff-occ").value.trim();
-    const city=document.getElementById("ff-city").value.trim();
-    const maritalStatus=(typeof $!=='undefined') ? $('#ff-status').val() : document.getElementById("ff-status").value;
-    const siblings=document.getElementById("ff-sib").value.trim();
-    const errEl=document.getElementById("ff2-err");
-    if(!education||!city){ errEl.innerHTML = `<div class="err-text">${t('eduCityRequired')}</div>`; return; }
-    Object.assign(state.formDraft, { education, occupation, city, maritalStatus, siblings: siblings||null });
-    state.screen="formReview"; render();
+    const education = document.getElementById("ff-edu").value.trim();
+    const occupation = document.getElementById("ff-occ").value.trim();
+    const city = document.getElementById("ff-city").value.trim();
+    const maritalStatus = (typeof $!=='undefined') ? $('#ff-status').val() : document.getElementById("ff-status").value;
+    const siblings = document.getElementById("ff-sib").value.trim();
+    const errEl = document.getElementById("ff2-err");
+
+    if(!education || !city){
+      errEl.innerHTML = `<div class="bg-red-50 text-danger text-xs font-semibold p-2.5 rounded-xl border border-red-200">${t('eduCityRequired')}</div>`;
+      return;
+    }
+
+    Object.assign(state.formDraft, { education, occupation, city, maritalStatus, siblings: siblings || null });
+    state.screen = "formReview";
+    render();
   });
 }
 
+// --- Step 3: Review & Submit ---
 function renderFormReview(){
   const d = state.formDraft;
   const isEdit = !!state.editCandidateId;
+
   app.innerHTML = `
     ${formHeaderHtml(3, isEdit ? t('reviewEditTitle') : t('reviewTitle'))}
-    <div class="content">
-      <div style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:10px;">${t('reviewCheck')}</div>
-      <div class="detail-row"><span class="k">${t('candidateName')}</span><span class="v">${d.name}</span></div>
-      <div class="detail-row"><span class="k">${t('gender')}</span><span class="v">${d.gender}</span></div>
-      <div class="detail-row"><span class="k">${t('age')}</span><span class="v">${d.age}</span></div>
-      <div class="detail-row"><span class="k">${t('fatherName')}</span><span class="v">${d.fatherName}</span></div>
-      <div class="detail-row"><span class="k">${t('motherName')}</span><span class="v">${d.motherName}</span></div>
-      <div class="detail-row"><span class="k">${t('rashi')}</span><span class="v">${d.rashi||'-'}</span></div>
-      <div class="detail-row"><span class="k">${t('education')}</span><span class="v">${d.education}</span></div>
-      <div class="detail-row"><span class="k">${t('occupation')}</span><span class="v">${d.occupation||'-'}</span></div>
-      <div class="detail-row"><span class="k">${t('city')}</span><span class="v">${d.city}</span></div>
-      <div class="detail-row"><span class="k">${t('maritalStatus')}</span><span class="v">${d.maritalStatus}</span></div>
-      <div class="declaration" style="margin-top:16px;">
-        <span style="font-size:16px;">🔒</span>
-        <p>${isEdit ? t('reviewEditNote') : t('reviewNote')}</p>
+
+    <main class="flex-1 p-5 pb-12 space-y-4">
+      <div class="bg-white rounded-3xl p-6 shadow-ambient border border-soft-sky/60 space-y-4">
+        <div>
+          <h2 class="font-display text-lg font-bold text-deep-ocean mb-1">${t('reviewCheck')}</h2>
+          <p class="text-xs text-on-surface-variant font-medium">બધી વિગતો ચકાસીને કન્ફર્મ કરો</p>
+        </div>
+
+        <div class="divide-y divide-soft-sky text-xs">
+          <div class="py-2.5 flex justify-between"><span class="text-on-surface-variant">${t('candidateName')}</span><span class="font-bold text-deep-ocean">${d.name}</span></div>
+          <div class="py-2.5 flex justify-between"><span class="text-on-surface-variant">${t('gender')}</span><span class="font-bold text-deep-ocean">${d.gender === 'female' ? '👧 યુવતી' : '👦 યુવક'}</span></div>
+          <div class="py-2.5 flex justify-between"><span class="text-on-surface-variant">${t('age')}</span><span class="font-bold text-deep-ocean">${d.age} વર્ષ</span></div>
+          <div class="py-2.5 flex justify-between"><span class="text-on-surface-variant">${t('fatherName')}</span><span class="font-bold text-deep-ocean">${d.fatherName}</span></div>
+          <div class="py-2.5 flex justify-between"><span class="text-on-surface-variant">${t('motherName')}</span><span class="font-bold text-deep-ocean">${d.motherName}</span></div>
+          <div class="py-2.5 flex justify-between"><span class="text-on-surface-variant">${t('rashi')}</span><span class="font-bold text-deep-ocean">${d.rashi || '-'}</span></div>
+          <div class="py-2.5 flex justify-between"><span class="text-on-surface-variant">${t('education')}</span><span class="font-bold text-deep-ocean">${d.education}</span></div>
+          <div class="py-2.5 flex justify-between"><span class="text-on-surface-variant">${t('occupation')}</span><span class="font-bold text-deep-ocean">${d.occupation || '-'}</span></div>
+          <div class="py-2.5 flex justify-between"><span class="text-on-surface-variant">${t('city')}</span><span class="font-bold text-deep-ocean">${d.city}</span></div>
+          <div class="py-2.5 flex justify-between"><span class="text-on-surface-variant">${t('maritalStatus')}</span><span class="font-bold text-deep-ocean">${d.maritalStatus || 'કુંવારા'}</span></div>
+        </div>
+
+        <div class="bg-soft-sky/40 border border-soft-sky p-3.5 rounded-2xl flex items-start gap-2.5 text-xs text-deep-ocean leading-relaxed font-medium">
+          <span class="material-symbols-outlined text-horizon-blue text-base mt-0.5">verified_user</span>
+          <p>${isEdit ? t('reviewEditNote') : t('reviewNote')}</p>
+        </div>
+
+        <div id="ff3-err"></div>
+
+        <button id="ff3-submit" class="w-full bg-earth-warmth hover:bg-earth-dark text-white py-3.5 rounded-xl text-sm font-bold shadow-ambient transition-all flex items-center justify-center gap-2">
+          <span>${isEdit ? t('updateBtn') : t('submitBtn')}</span>
+          <span class="material-symbols-outlined text-base">check</span>
+        </button>
       </div>
-      <div id="ff3-err"></div>
-      <button class="btn btn-primary" id="ff3-submit">${isEdit ? t('updateBtn') : t('submitBtn')}</button>
-    </div>
+    </main>
   `;
-  document.getElementById("form-back").addEventListener("click", ()=>{ state.screen="formStep2"; render(); });
+
+  document.getElementById("form-back").addEventListener("click", ()=>{ state.screen = "formStep2"; render(); });
+
   document.getElementById("ff3-submit").addEventListener("click", async (e)=>{
-    e.target.disabled=true; e.target.textContent = isEdit ? t('updating') : t('submitting');
+    const btn = e.currentTarget;
+    btn.disabled = true;
+    btn.innerHTML = `<span class="material-symbols-outlined text-base animate-spin">progress_activity</span><span>${isEdit ? t('updating') : t('submitting')}</span>`;
     try{
       if(isEdit){
         await dataService.updateCandidate(state.editCandidateId, state.formDraft);
         showToast(t('updateSuccess'));
-        state.formDraft={}; state.editCandidateId=null;
-        state.screen="myProfiles"; render();
+        state.formDraft = {};
+        state.editCandidateId = null;
+        state.screen = "myProfiles";
+        render();
       } else {
         const result = await dataService.createCandidate(state.user.id, state.formDraft);
-        state.formDraft={};
+        state.formDraft = {};
         state.uploadCandidateId = result.id;
-        showToast("✓ Basic details save થયા! હવે Photo/Documents ઉમેરો");
-        state.screen="formDocs"; render();
+        showToast("✓ વિગતો સાચવાઈ ગઈ! હવે Photo ઉમેરો");
+        state.screen = "formDocs";
+        render();
       }
     }catch(err){
-      e.target.disabled=false; e.target.textContent = isEdit ? "Update કરો ✓" : "Submit કરો ✓";
-      document.getElementById("ff3-err").innerHTML = `<div class="err-text">${err.message}</div>`;
+      btn.disabled = false;
+      btn.innerHTML = `<span>${isEdit ? t('updateBtn') : t('submitBtn')}</span><span class="material-symbols-outlined text-base">check</span>`;
+      document.getElementById("ff3-err").innerHTML = `<div class="bg-red-50 text-danger text-xs font-semibold p-2.5 rounded-xl border border-red-200">${err.message}</div>`;
     }
   });
 }
 
+// --- Step 4: Photo & Documents Upload ---
 function renderFormDocs(){
   const candidateId = state.uploadCandidateId;
+
   app.innerHTML = `
     ${formHeaderHtml(4, t('docsTitle'))}
-    <div class="content">
-      <div style="border:2px dashed var(--sky); border-radius:16px; background:var(--ice); padding:20px; text-align:center; margin-bottom:16px;">
-        <div style="width:70px;height:70px;border-radius:50%;background:#fff;border:3px solid var(--primary-light);display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 10px;">📷</div>
-        <div style="font-size:12.5px;font-weight:700;color:var(--navy);">Latest Color Photo</div>
-        <div style="font-size:10.5px;color:var(--text-mid);margin-top:3px;">${t('photoPh')}</div>
-        <input type="file" accept="image/*" id="photo-input" style="margin-top:10px;font-size:11px;">
-        <div id="photo-status" style="font-size:10.5px;color:var(--success);margin-top:6px;font-weight:600;"></div>
-        <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:12px;">
-          <input type="checkbox" id="photo-visible-toggle" style="accent-color:var(--navy);width:15px;height:15px;">
-          <label for="photo-visible-toggle" style="font-size:11px;color:var(--text-dark);font-weight:600;">મારો Photo બીજા members ને દેખાડો</label>
+
+    <main class="flex-1 p-5 pb-12 space-y-4">
+      <!-- Photo Upload Box -->
+      <div class="bg-white rounded-3xl p-6 shadow-ambient border border-soft-sky/60 text-center">
+        <div class="w-16 h-16 mx-auto rounded-full bg-soft-sky/50 text-horizon-blue flex items-center justify-center mb-3">
+          <span class="material-symbols-outlined text-3xl">add_a_photo</span>
         </div>
-        <div style="font-size:10px;color:var(--text-mid);margin-top:3px;">Default: છુપાયેલો — ગમે ત્યારે My Profiles માંથી બદલી શકાય</div>
+        <h3 class="font-display font-bold text-deep-ocean text-base">Latest Color Photo</h3>
+        <p class="text-[11px] text-on-surface-variant font-medium mt-1 mb-4">${t('photoPh')}</p>
+
+        <div class="max-w-xs mx-auto">
+          <input type="file" accept="image/*" id="photo-input" class="w-full text-xs text-on-surface-variant file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-horizon-blue file:text-white hover:file:bg-deep-ocean cursor-pointer">
+          <div id="photo-status" class="text-xs font-bold text-success mt-2"></div>
+        </div>
+
+        <div class="flex items-center justify-center gap-2 mt-5 pt-4 border-t border-soft-sky">
+          <input type="checkbox" id="photo-visible-toggle" class="accent-deep-ocean w-4 h-4 rounded cursor-pointer">
+          <label for="photo-visible-toggle" class="text-xs font-bold text-deep-ocean cursor-pointer">મારો Photo બીજા સભ્યોને દેખાડો</label>
+        </div>
+        <p class="text-[10px] text-on-surface-variant mt-1">${t('photoDefault')}</p>
       </div>
 
-      <div style="font-size:12px;font-weight:700;color:var(--navy);margin:6px 0 10px;">જરૂરી Documents</div>
-      ${["aadhar","education","lc"].map(key=>`
-        <div style="border:1.5px solid var(--border);border-radius:14px;padding:13px;margin-bottom:10px;background:#fff;">
-          <div style="font-size:12.5px;font-weight:700;color:var(--navy);margin-bottom:6px;">
-            ${key==='aadhar'?'🪪 Aadhar Card':key==='education'?'🎓 શિક્ષણ પ્રમાણપત્ર':'📄 જન્મ તારીખ દાખલો / LC'}
+      <!-- Verification Docs Upload -->
+      <div class="bg-white rounded-3xl p-6 shadow-ambient border border-soft-sky/60 space-y-3">
+        <h3 class="font-display font-bold text-deep-ocean text-base mb-1">${t('docsRequired')}</h3>
+        <p class="text-[11px] text-on-surface-variant font-medium mb-3">${t('docsNote')}</p>
+
+        ${["aadhar","education","lc"].map(key => `
+          <div class="border border-soft-sky rounded-2xl p-3.5 bg-surface/40">
+            <div class="font-bold text-xs text-deep-ocean mb-1.5 flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-sm text-horizon-blue">
+                ${key === 'aadhar' ? 'badge' : key === 'education' ? 'school' : 'description'}
+              </span>
+              <span>${key === 'aadhar' ? 'Aadhar Card' : key === 'education' ? 'શિક્ષણ પ્રમાણપત્ર (Degree / Marksheet)' : 'જન્મ તારીખ દાખલો / LC'}</span>
+            </div>
+            <input type="file" accept="image/*,.pdf" data-doc="${key}" class="w-full text-[11px] text-on-surface-variant file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-soft-sky file:text-deep-ocean cursor-pointer">
+            <div id="doc-status-${key}" class="text-[11px] font-bold text-success mt-1"></div>
           </div>
-          <input type="file" accept="image/*,.pdf" data-doc="${key}" style="font-size:11px;">
-          <div id="doc-status-${key}" style="font-size:10.5px;color:var(--success);margin-top:6px;font-weight:600;"></div>
-        </div>
-      `).join("")}
+        `).join("")}
 
-      <div class="declaration" style="margin-top:10px;">
-        <span style="font-size:16px;">🔒</span>
-        <p>Documents ફક્ત Admin verification માટે વપરાશે. Approve થયા પછી server પરથી delete થઈ જશે — ફક્ત Photo રહેશે.</p>
+        <button id="docs-done" class="w-full mt-4 bg-earth-warmth hover:bg-earth-dark text-white py-3.5 rounded-xl text-sm font-bold shadow-ambient transition-all flex items-center justify-center gap-2">
+          <span>${t('doneBtn')}</span>
+          <span class="material-symbols-outlined text-base">check_circle</span>
+        </button>
       </div>
-      <button class="btn btn-primary" style="margin-top:16px;" id="docs-done">Done — My Profiles પર જાવ →</button>
-    </div>
+    </main>
   `;
-  document.getElementById("form-back").addEventListener("click", ()=>{ state.screen="myProfiles"; render(); });
+
+  document.getElementById("form-back").addEventListener("click", ()=>{ state.screen = "myProfiles"; render(); });
 
   document.getElementById("photo-visible-toggle").addEventListener("change", async (e)=>{
     try{ await dataService.setPhotoVisibility(candidateId, e.target.checked); }
-    catch(err){ showToast("Error: "+err.message); e.target.checked = !e.target.checked; }
+    catch(err){ showToast("Error: " + err.message); e.target.checked = !e.target.checked; }
   });
 
   document.getElementById("photo-input").addEventListener("change", async (e)=>{
     const file = e.target.files[0]; if(!file) return;
     const statusEl = document.getElementById("photo-status");
-    statusEl.textContent = "Upload થઈ રહ્યું છે...";
-    try{ await dataService.uploadPhoto(candidateId, file); statusEl.textContent = "✓ Photo uploaded"; }
-    catch(err){ statusEl.style.color="var(--danger)"; statusEl.textContent = "Error: "+err.message; }
+    statusEl.innerHTML = `<span class="animate-pulse">Upload થઈ રહ્યું છે...</span>`;
+    try{
+      await dataService.uploadPhoto(candidateId, file);
+      statusEl.textContent = "✓ Photo Upload થઈ ગયો";
+      statusEl.className = "text-xs font-bold text-success mt-2";
+    }catch(err){
+      statusEl.className = "text-xs font-bold text-danger mt-2";
+      statusEl.textContent = "Error: " + err.message;
+    }
   });
 
-  document.querySelectorAll("[data-doc]").forEach(input=>{
+  document.querySelectorAll("[data-doc]").forEach(input => {
     input.addEventListener("change", async (e)=>{
       const key = input.getAttribute("data-doc");
       const file = e.target.files[0]; if(!file) return;
-      const statusEl = document.getElementById("doc-status-"+key);
-      statusEl.textContent = "Upload થઈ રહ્યું છે...";
-      try{ await dataService.uploadDocument(candidateId, key, file); statusEl.textContent = "✓ Uploaded"; }
-      catch(err){ statusEl.style.color="var(--danger)"; statusEl.textContent = "Error: "+err.message; }
+      const statusEl = document.getElementById("doc-status-" + key);
+      statusEl.innerHTML = `<span class="animate-pulse">Upload થઈ રહ્યું છે...</span>`;
+      try{
+        await dataService.uploadDocument(candidateId, key, file);
+        statusEl.textContent = "✓ Document Upload થઈ ગયું";
+        statusEl.className = "text-[11px] font-bold text-success mt-1";
+      }catch(err){
+        statusEl.className = "text-[11px] font-bold text-danger mt-1";
+        statusEl.textContent = "Error: " + err.message;
+      }
     });
   });
 
   document.getElementById("docs-done").addEventListener("click", ()=>{
     state.uploadCandidateId = null;
-    state.screen="myProfiles"; render();
+    state.screen = "myProfiles";
+    render();
   });
 }
 
+// Initial Kickoff
 render();
 </script>
 </body>
