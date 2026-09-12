@@ -1,0 +1,220 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>SagarSambandh.in - Profile Ready</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400..700&amp;family=Inter:wght@400..700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#2d6482",
+                        "surface-tint": "#2d6482",
+                        "on-primary-fixed-variant": "#0a4c69",
+                        "on-tertiary-fixed-variant": "#004c6e",
+                        "inverse-primary": "#99cdf0",
+                        "deep-ocean": "#0C2A46",
+                        "surface-bright": "#fbf9f4",
+                        "primary-fixed": "#c6e7ff",
+                        "tertiary": "#21648a",
+                        "on-primary-container": "#004562",
+                        "primary-fixed-dim": "#99cdf0",
+                        "primary-container": "#7fb3d5",
+                        "on-primary-fixed": "#001e2d",
+                        "surface": "#fbf9f4",
+                        "soft-sky": "#DCEBF2",
+                        "on-secondary": "#ffffff",
+                        "outline-variant": "#c1c7ce",
+                        "outline": "#71787e",
+                        "on-error-container": "#93000a",
+                        "surface-container-highest": "#e4e2dd",
+                        "on-secondary-container": "#702900",
+                        "on-secondary-fixed": "#351000",
+                        "on-tertiary-fixed": "#001e2f",
+                        "surface-variant": "#e4e2dd",
+                        "on-surface": "#1b1c19",
+                        "secondary-container": "#fe8d56",
+                        "premium-blue": "#7FB3D5",
+                        "on-surface-variant": "#41484d",
+                        "background": "#fbf9f4",
+                        "tertiary-fixed-dim": "#92cdf9",
+                        "on-error": "#ffffff",
+                        "secondary": "#9d4311",
+                        "earth-warmth": "#CC6633",
+                        "on-secondary-fixed-variant": "#7c2e00",
+                        "secondary-fixed": "#ffdbcc",
+                        "error": "#ba1a1a",
+                        "secondary-fixed-dim": "#ffb595",
+                        "inverse-surface": "#30312e",
+                        "on-primary": "#ffffff",
+                        "cream-base": "#F9F7F2",
+                        "surface-container": "#f0eee9",
+                        "surface-container-lowest": "#ffffff",
+                        "horizon-blue": "#145C82",
+                        "on-tertiary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "surface-container-low": "#f5f3ee",
+                        "on-tertiary-container": "#004565",
+                        "tertiary-container": "#78b3dd",
+                        "surface-dim": "#dbdad5",
+                        "tertiary-fixed": "#c9e6ff",
+                        "on-background": "#1b1c19",
+                        "surface-container-high": "#eae8e3",
+                        "inverse-on-surface": "#f2f1ec"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "base": "8px",
+                        "margin-mobile": "20px",
+                        "section-gap": "80px",
+                        "gutter": "24px",
+                        "margin-desktop": "64px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["Inter"],
+                        "headline-lg": ["Playfair Display"],
+                        "body-lg": ["Inter"],
+                        "headline-lg-mobile": ["Playfair Display"],
+                        "title-md": ["Playfair Display"],
+                        "label-md": ["Inter"],
+                        "display-lg": ["Playfair Display"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "600" }],
+                        "title-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #7FB3D5;
+            opacity: 0;
+            animation: fall linear infinite;
+        }
+        @keyframes fall {
+            0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body class="bg-cream-base text-on-surface min-h-screen flex flex-col font-body-md overflow-x-hidden relative">
+<!-- Confetti Container -->
+<div class="absolute inset-0 pointer-events-none overflow-hidden z-0" id="confetti-container"><div class="confetti" style="left: 30.056vw; background-color: rgb(127, 179, 213); animation-duration: 2.30858s; animation-delay: 4.24567s;"></div><div class="confetti" style="left: 42.167vw; background-color: rgb(204, 102, 51); animation-duration: 4.54962s; animation-delay: 3.21245s;"></div><div class="confetti" style="left: 2.35199vw; background-color: rgb(220, 235, 242); animation-duration: 3.18456s; animation-delay: 2.49914s; border-radius: 50%;"></div><div class="confetti" style="left: 91.0417vw; background-color: rgb(220, 235, 242); animation-duration: 2.02951s; animation-delay: 1.49014s;"></div><div class="confetti" style="left: 27.2958vw; background-color: rgb(220, 235, 242); animation-duration: 3.70917s; animation-delay: 2.8568s;"></div><div class="confetti" style="left: 49.1946vw; background-color: rgb(204, 102, 51); animation-duration: 4.7809s; animation-delay: 2.42754s; border-radius: 50%;"></div><div class="confetti" style="left: 47.5471vw; background-color: rgb(204, 102, 51); animation-duration: 3.57991s; animation-delay: 3.50389s; border-radius: 50%;"></div><div class="confetti" style="left: 29.7532vw; background-color: rgb(220, 235, 242); animation-duration: 2.86913s; animation-delay: 1.76132s; border-radius: 50%;"></div><div class="confetti" style="left: 4.14963vw; background-color: rgb(204, 102, 51); animation-duration: 4.66834s; animation-delay: 1.60065s; border-radius: 50%;"></div><div class="confetti" style="left: 80.5834vw; background-color: rgb(220, 235, 242); animation-duration: 3.42719s; animation-delay: 3.16826s;"></div><div class="confetti" style="left: 76.0743vw; background-color: rgb(220, 235, 242); animation-duration: 4.60454s; animation-delay: 1.27066s;"></div><div class="confetti" style="left: 14.1267vw; background-color: rgb(198, 231, 255); animation-duration: 3.55483s; animation-delay: 3.76769s; border-radius: 50%;"></div><div class="confetti" style="left: 12.6437vw; background-color: rgb(198, 231, 255); animation-duration: 2.61776s; animation-delay: 2.71596s; border-radius: 50%;"></div><div class="confetti" style="left: 86.0771vw; background-color: rgb(198, 231, 255); animation-duration: 2.83196s; animation-delay: 0.68893s; border-radius: 50%;"></div><div class="confetti" style="left: 2.30011vw; background-color: rgb(127, 179, 213); animation-duration: 4.37473s; animation-delay: 4.82062s;"></div><div class="confetti" style="left: 82.9236vw; background-color: rgb(198, 231, 255); animation-duration: 3.72881s; animation-delay: 4.15553s;"></div><div class="confetti" style="left: 47.579vw; background-color: rgb(127, 179, 213); animation-duration: 2.68393s; animation-delay: 1.60124s; border-radius: 50%;"></div><div class="confetti" style="left: 4.75171vw; background-color: rgb(220, 235, 242); animation-duration: 2.36644s; animation-delay: 4.68616s;"></div><div class="confetti" style="left: 2.69396vw; background-color: rgb(127, 179, 213); animation-duration: 4.89988s; animation-delay: 3.08644s; border-radius: 50%;"></div><div class="confetti" style="left: 23.9005vw; background-color: rgb(127, 179, 213); animation-duration: 2.10543s; animation-delay: 3.35753s;"></div><div class="confetti" style="left: 66.0626vw; background-color: rgb(204, 102, 51); animation-duration: 3.2411s; animation-delay: 1.51625s; border-radius: 50%;"></div><div class="confetti" style="left: 47.94vw; background-color: rgb(220, 235, 242); animation-duration: 3.36324s; animation-delay: 3.09528s; border-radius: 50%;"></div><div class="confetti" style="left: 62.1869vw; background-color: rgb(204, 102, 51); animation-duration: 4.70477s; animation-delay: 0.343406s; border-radius: 50%;"></div><div class="confetti" style="left: 29.6563vw; background-color: rgb(204, 102, 51); animation-duration: 4.02511s; animation-delay: 0.951196s;"></div><div class="confetti" style="left: 46.0919vw; background-color: rgb(198, 231, 255); animation-duration: 4.29968s; animation-delay: 3.22458s;"></div><div class="confetti" style="left: 61.045vw; background-color: rgb(198, 231, 255); animation-duration: 2.06273s; animation-delay: 1.99405s; border-radius: 50%;"></div><div class="confetti" style="left: 82.6511vw; background-color: rgb(220, 235, 242); animation-duration: 3.4584s; animation-delay: 0.114165s; border-radius: 50%;"></div><div class="confetti" style="left: 36.2586vw; background-color: rgb(220, 235, 242); animation-duration: 3.30291s; animation-delay: 1.3363s;"></div><div class="confetti" style="left: 80.4507vw; background-color: rgb(220, 235, 242); animation-duration: 2.86794s; animation-delay: 0.740655s; border-radius: 50%;"></div><div class="confetti" style="left: 68.2411vw; background-color: rgb(204, 102, 51); animation-duration: 3.32876s; animation-delay: 2.21306s;"></div><div class="confetti" style="left: 84.5499vw; background-color: rgb(127, 179, 213); animation-duration: 3.22494s; animation-delay: 1.49585s;"></div><div class="confetti" style="left: 63.2372vw; background-color: rgb(220, 235, 242); animation-duration: 3.98536s; animation-delay: 2.56934s; border-radius: 50%;"></div><div class="confetti" style="left: 86.9385vw; background-color: rgb(204, 102, 51); animation-duration: 2.07848s; animation-delay: 4.52194s;"></div><div class="confetti" style="left: 90.1148vw; background-color: rgb(198, 231, 255); animation-duration: 2.97463s; animation-delay: 1.34295s;"></div><div class="confetti" style="left: 17.9516vw; background-color: rgb(198, 231, 255); animation-duration: 2.64784s; animation-delay: 0.838781s; border-radius: 50%;"></div><div class="confetti" style="left: 68.0843vw; background-color: rgb(198, 231, 255); animation-duration: 3.65337s; animation-delay: 2.97335s; border-radius: 50%;"></div><div class="confetti" style="left: 19.0779vw; background-color: rgb(127, 179, 213); animation-duration: 2.03255s; animation-delay: 3.02214s;"></div><div class="confetti" style="left: 2.64497vw; background-color: rgb(127, 179, 213); animation-duration: 4.13306s; animation-delay: 1.66376s; border-radius: 50%;"></div><div class="confetti" style="left: 95.3384vw; background-color: rgb(220, 235, 242); animation-duration: 3.30896s; animation-delay: 0.752953s;"></div><div class="confetti" style="left: 26.4445vw; background-color: rgb(220, 235, 242); animation-duration: 2.11512s; animation-delay: 3.65701s;"></div><div class="confetti" style="left: 37.1326vw; background-color: rgb(204, 102, 51); animation-duration: 2.19501s; animation-delay: 0.259588s; border-radius: 50%;"></div><div class="confetti" style="left: 27.6214vw; background-color: rgb(198, 231, 255); animation-duration: 4.13335s; animation-delay: 4.40308s; border-radius: 50%;"></div><div class="confetti" style="left: 58.7292vw; background-color: rgb(198, 231, 255); animation-duration: 2.31584s; animation-delay: 1.727s;"></div><div class="confetti" style="left: 41.911vw; background-color: rgb(127, 179, 213); animation-duration: 4.31994s; animation-delay: 4.70164s; border-radius: 50%;"></div><div class="confetti" style="left: 66.8672vw; background-color: rgb(127, 179, 213); animation-duration: 3.61042s; animation-delay: 4.61766s;"></div><div class="confetti" style="left: 91.3767vw; background-color: rgb(220, 235, 242); animation-duration: 2.43662s; animation-delay: 2.73719s;"></div><div class="confetti" style="left: 63.401vw; background-color: rgb(204, 102, 51); animation-duration: 3.22955s; animation-delay: 4.18458s; border-radius: 50%;"></div><div class="confetti" style="left: 34.0169vw; background-color: rgb(127, 179, 213); animation-duration: 3.31487s; animation-delay: 3.10821s; border-radius: 50%;"></div><div class="confetti" style="left: 83.5328vw; background-color: rgb(127, 179, 213); animation-duration: 2.40598s; animation-delay: 2.70996s; border-radius: 50%;"></div><div class="confetti" style="left: 53.8478vw; background-color: rgb(198, 231, 255); animation-duration: 4.33878s; animation-delay: 3.681s;"></div><div class="confetti" style="left: 77.5713vw; background-color: rgb(127, 179, 213); animation-duration: 4.77127s; animation-delay: 1.09599s;"></div><div class="confetti" style="left: 69.4371vw; background-color: rgb(127, 179, 213); animation-duration: 2.20632s; animation-delay: 3.26611s;"></div><div class="confetti" style="left: 26.7402vw; background-color: rgb(220, 235, 242); animation-duration: 3.12979s; animation-delay: 4.78342s; border-radius: 50%;"></div><div class="confetti" style="left: 91.3071vw; background-color: rgb(198, 231, 255); animation-duration: 4.95234s; animation-delay: 2.60118s;"></div><div class="confetti" style="left: 44.5831vw; background-color: rgb(204, 102, 51); animation-duration: 2.18189s; animation-delay: 1.60889s; border-radius: 50%;"></div><div class="confetti" style="left: 15.7091vw; background-color: rgb(204, 102, 51); animation-duration: 2.36033s; animation-delay: 1.22978s;"></div><div class="confetti" style="left: 25.4026vw; background-color: rgb(127, 179, 213); animation-duration: 2.9851s; animation-delay: 0.91928s;"></div><div class="confetti" style="left: 88.1882vw; background-color: rgb(204, 102, 51); animation-duration: 3.68886s; animation-delay: 1.63477s; border-radius: 50%;"></div><div class="confetti" style="left: 28.0479vw; background-color: rgb(127, 179, 213); animation-duration: 4.27276s; animation-delay: 2.52198s;"></div><div class="confetti" style="left: 30.7247vw; background-color: rgb(127, 179, 213); animation-duration: 3.49544s; animation-delay: 3.78089s; border-radius: 50%;"></div><div class="confetti" style="left: 98.6488vw; background-color: rgb(127, 179, 213); animation-duration: 3.59128s; animation-delay: 4.82522s; border-radius: 50%;"></div><div class="confetti" style="left: 59.7361vw; background-color: rgb(198, 231, 255); animation-duration: 3.91595s; animation-delay: 2.72494s;"></div><div class="confetti" style="left: 39.2201vw; background-color: rgb(198, 231, 255); animation-duration: 4.86672s; animation-delay: 2.52164s;"></div><div class="confetti" style="left: 70.7939vw; background-color: rgb(204, 102, 51); animation-duration: 4.3605s; animation-delay: 1.46703s; border-radius: 50%;"></div><div class="confetti" style="left: 18.9622vw; background-color: rgb(198, 231, 255); animation-duration: 2.95858s; animation-delay: 0.14036s;"></div><div class="confetti" style="left: 34.3474vw; background-color: rgb(127, 179, 213); animation-duration: 4.82797s; animation-delay: 3.67128s; border-radius: 50%;"></div><div class="confetti" style="left: 8.18444vw; background-color: rgb(220, 235, 242); animation-duration: 3.7577s; animation-delay: 4.07482s;"></div><div class="confetti" style="left: 48.3027vw; background-color: rgb(220, 235, 242); animation-duration: 2.17296s; animation-delay: 2.00671s;"></div><div class="confetti" style="left: 31.1557vw; background-color: rgb(204, 102, 51); animation-duration: 4.55131s; animation-delay: 2.54699s; border-radius: 50%;"></div><div class="confetti" style="left: 77.6448vw; background-color: rgb(220, 235, 242); animation-duration: 4.44707s; animation-delay: 4.51972s;"></div><div class="confetti" style="left: 78.0941vw; background-color: rgb(198, 231, 255); animation-duration: 4.33052s; animation-delay: 0.776933s; border-radius: 50%;"></div><div class="confetti" style="left: 68.5057vw; background-color: rgb(127, 179, 213); animation-duration: 2.40012s; animation-delay: 4.43965s; border-radius: 50%;"></div><div class="confetti" style="left: 25.1329vw; background-color: rgb(198, 231, 255); animation-duration: 2.84494s; animation-delay: 4.84023s; border-radius: 50%;"></div><div class="confetti" style="left: 65.5357vw; background-color: rgb(204, 102, 51); animation-duration: 2.77417s; animation-delay: 2.27696s; border-radius: 50%;"></div><div class="confetti" style="left: 21.2235vw; background-color: rgb(198, 231, 255); animation-duration: 2.42406s; animation-delay: 4.36592s;"></div><div class="confetti" style="left: 56.7921vw; background-color: rgb(204, 102, 51); animation-duration: 2.79404s; animation-delay: 1.90818s;"></div><div class="confetti" style="left: 55.1754vw; background-color: rgb(127, 179, 213); animation-duration: 3.80857s; animation-delay: 2.36447s; border-radius: 50%;"></div><div class="confetti" style="left: 44.5808vw; background-color: rgb(127, 179, 213); animation-duration: 3.28449s; animation-delay: 1.56273s; border-radius: 50%;"></div><div class="confetti" style="left: 45.4381vw; background-color: rgb(204, 102, 51); animation-duration: 2.99734s; animation-delay: 2.81826s; border-radius: 50%;"></div><div class="confetti" style="left: 62.9174vw; background-color: rgb(198, 231, 255); animation-duration: 3.11901s; animation-delay: 0.142051s; border-radius: 50%;"></div><div class="confetti" style="left: 39.4337vw; background-color: rgb(204, 102, 51); animation-duration: 3.55046s; animation-delay: 2.92106s; border-radius: 50%;"></div><div class="confetti" style="left: 95.9886vw; background-color: rgb(220, 235, 242); animation-duration: 2.96995s; animation-delay: 0.36141s;"></div><div class="confetti" style="left: 98.6623vw; background-color: rgb(220, 235, 242); animation-duration: 3.04198s; animation-delay: 0.551733s; border-radius: 50%;"></div><div class="confetti" style="left: 63.4473vw; background-color: rgb(204, 102, 51); animation-duration: 4.26638s; animation-delay: 0.29841s; border-radius: 50%;"></div><div class="confetti" style="left: 50.1431vw; background-color: rgb(127, 179, 213); animation-duration: 4.53485s; animation-delay: 0.205415s; border-radius: 50%;"></div><div class="confetti" style="left: 21.5999vw; background-color: rgb(198, 231, 255); animation-duration: 3.33865s; animation-delay: 0.0769879s; border-radius: 50%;"></div><div class="confetti" style="left: 1.02517vw; background-color: rgb(127, 179, 213); animation-duration: 4.63731s; animation-delay: 3.30783s;"></div><div class="confetti" style="left: 14.8977vw; background-color: rgb(127, 179, 213); animation-duration: 4.25209s; animation-delay: 2.04017s; border-radius: 50%;"></div><div class="confetti" style="left: 34.3079vw; background-color: rgb(204, 102, 51); animation-duration: 3.053s; animation-delay: 1.97384s;"></div><div class="confetti" style="left: 29.1218vw; background-color: rgb(127, 179, 213); animation-duration: 2.03088s; animation-delay: 1.43793s;"></div><div class="confetti" style="left: 11.6583vw; background-color: rgb(198, 231, 255); animation-duration: 3.74503s; animation-delay: 3.50863s; border-radius: 50%;"></div><div class="confetti" style="left: 30.613vw; background-color: rgb(127, 179, 213); animation-duration: 3.16175s; animation-delay: 1.69336s; border-radius: 50%;"></div><div class="confetti" style="left: 71.5052vw; background-color: rgb(220, 235, 242); animation-duration: 2.2347s; animation-delay: 2.28449s;"></div><div class="confetti" style="left: 46.1667vw; background-color: rgb(220, 235, 242); animation-duration: 2.98602s; animation-delay: 2.05204s; border-radius: 50%;"></div><div class="confetti" style="left: 12.9172vw; background-color: rgb(127, 179, 213); animation-duration: 4.27843s; animation-delay: 2.32269s; border-radius: 50%;"></div><div class="confetti" style="left: 86.6464vw; background-color: rgb(127, 179, 213); animation-duration: 4.71325s; animation-delay: 0.0746183s;"></div><div class="confetti" style="left: 35.9082vw; background-color: rgb(220, 235, 242); animation-duration: 4.82457s; animation-delay: 1.78271s;"></div><div class="confetti" style="left: 92.2007vw; background-color: rgb(204, 102, 51); animation-duration: 4.27183s; animation-delay: 2.14399s; border-radius: 50%;"></div><div class="confetti" style="left: 73.2284vw; background-color: rgb(204, 102, 51); animation-duration: 2.58194s; animation-delay: 0.867047s;"></div><div class="confetti" style="left: 10.7775vw; background-color: rgb(198, 231, 255); animation-duration: 3.68804s; animation-delay: 0.572917s;"></div></div>
+<!-- Main Content Area (No Nav/Shell as per rules for Transactional/Success screens) -->
+<main class="flex-grow flex flex-col items-center justify-center px-margin-mobile md:px-margin-desktop py-section-gap relative z-10 w-full max-w-[1200px] mx-auto">
+<div class="bg-surface-container-lowest rounded-xl p-8 md:p-12 text-center max-w-2xl w-full shadow-[0px_10px_30px_rgba(127,179,213,0.1)] border border-soft-sky flex flex-col items-center relative overflow-hidden">
+<!-- Decorative background elements inside card -->
+<div class="absolute -top-24 -right-24 w-48 h-48 bg-primary-fixed rounded-full blur-3xl opacity-30"></div>
+<div class="absolute -bottom-24 -left-24 w-48 h-48 bg-soft-sky rounded-full blur-3xl opacity-40"></div>
+<!-- Success Icon (Animated Heart/Wave hybrid feel) -->
+<div class="w-32 h-32 mb-8 relative flex items-center justify-center">
+<div class="absolute inset-0 bg-primary-container rounded-full opacity-20 animate-pulse"></div>
+<div class="absolute inset-4 bg-soft-sky rounded-full opacity-50"></div>
+<span class="material-symbols-outlined text-[64px] text-primary relative z-10" style="font-variation-settings: 'FILL' 1;">
+                    favorite
+                </span>
+</div>
+<h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-primary mb-4 relative z-10">
+                All Set! Your Profile is Ready
+            </h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-12 max-w-md mx-auto relative z-10">
+                We've found <strong class="text-horizon-blue">24 potential matches</strong> for you based on your preferences.
+            </p>
+<!-- Matches Preview (Bento-style hint) -->
+<div class="grid grid-cols-3 gap-4 mb-12 w-full max-w-md relative z-10">
+<div class="aspect-square rounded-lg bg-surface-container overflow-hidden shadow-sm border border-soft-sky/50 relative">
+<img class="w-full h-full object-cover opacity-80" data-alt="A close-up, high-quality professional portrait of a smiling Indian person in modern professional attire, shot in a bright, light-mode environment with soft studio lighting and a subtle light blue aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA_gWAU45h1BfCwqpWn74J26GKWcRnHfWSQD3FKqgzR5XxAVMmwpgTvapwVXUC8RQqHGDKrBCa_XrVw4b0RQB1ZdSTXvi-myGecLqMXyH85UB9LRUMKKcBqBqTVK_C_Q8NoIGgOal66o_DUElNj6erUYDqTmuaJooyBg0eUqvA_G0R5JzbmzaTGwSy98tQHSiaF9vSSj3FAd_OUC9Icr_NikLNiYcRFdKxdRz7uJW_mdJgSRC_NG4S4lQ">
+<div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+</div>
+<div class="aspect-square rounded-lg bg-surface-container overflow-hidden shadow-sm border border-soft-sky/50 relative -translate-y-2">
+<img class="w-full h-full object-cover opacity-90" data-alt="A bright, cheerful portrait of an individual in elegant traditional Indian clothing, standing outdoors in natural sunlight. The image has a serene, soft minimalist feel with light blue overarching tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDe6NayfM0R3erb5hh6Rk3DP8Eiso964-oU5M7OJPkEnBNK1NEpOknMXDqOHhFy-8P3N6NT8wIw00i_isbt5i49XkectIbNs860y5Tb61FVi8PI5bDO7ALj4Qhz983DINBOe0MFW8H8e4zaqKWDmH2iHjR58QIgnbZAQCrHN-IvzIbd6ipAoKmnTmJxX_GwEdB3qm2DD8Lr-B0Nl87vbX9u34XoCS4yzhtY3EZOraGBFlmDu_OcY-O6rQ">
+<div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+<div class="absolute inset-0 border-2 border-primary-container rounded-lg"></div>
+</div>
+<div class="aspect-square rounded-lg bg-surface-container overflow-hidden shadow-sm border border-soft-sky/50 relative">
+<img class="w-full h-full object-cover opacity-80" data-alt="A candid, beautifully lit portrait of a person in a serene indoor setting, featuring clean lines and a modern light-mode style with hints of airy white and soft blue in the background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBJuvc8QPaHoAtpQY7Tp3zxfIctzaJz_RCU70OrfWix38A9J6eIjBOiOls63dXrMgmMrz4csKyJ1HTjOhTWORVRC2ArbExbyp1p421JCxZbaGbry72Jb7vFd2CUMezdSnuWBE2IzfbyTo5YZSHUG_1fpkYRY_XTwOeapi0Dq2huNlhmuk1yTIeg1lO11ej6_08tgNkEKoO-pxhkBGideebhNFWoHWys8OlOJsxgIumfpjCKznythHSLQ">
+<div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+</div>
+</div>
+<!-- Primary CTA -->
+<button class="bg-earth-warmth hover:bg-secondary text-on-primary font-label-md text-label-md py-4 px-12 rounded-full transition-all duration-300 shadow-[0_4px_14px_0_rgba(204,102,51,0.39)] hover:shadow-[0_6px_20px_rgba(204,102,51,0.23)] hover:-translate-y-1 relative z-10">
+                View Matches
+            </button>
+<!-- Progress Indicator (100%) -->
+<div class="w-full max-w-xs mt-12 relative z-10">
+<div class="flex justify-between font-label-sm text-label-sm text-outline mb-2">
+<span class="">Setup Complete</span>
+<span class="text-primary font-semibold">100%</span>
+</div>
+<div class="h-1 w-full bg-surface-variant rounded-full overflow-hidden">
+<div class="h-full bg-primary w-full rounded-full"></div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-deep-ocean dark:bg-black w-full py-section-gap px-margin-mobile md:px-margin-desktop flex flex-col items-center text-center mt-auto">
+<div class="mb-8">
+    <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCY7NNXePguPXlsrMZBQ3mJSFqt0mFH6c0isYY7ld7jW5CAq70t_w46IK4x3r2bETkBNdKwKsLqtJjeV1Fr7OxWU3YIWxCSC_Vu9zUdEY2EFM8AbnsVK4aO77x68XAOXCgX-byLXjOMgGyW191Smyue85blCqh22uGDMBtxTCTCkIydXNOt9lGAPadnvUptxAJvbNmrB6a__3QPVNq4eH3LUm_Q-M0xZVC0tTKhWcZdMTTp16IgQD4FdA" alt="SagarSambandh.in Logo" class="h-12 mx-auto object-contain">
+</div>
+<div class="flex flex-wrap justify-center gap-6 mb-8">
+<a class="text-outline-variant opacity-80 font-label-sm text-label-sm hover:text-premium-blue transition-colors" href="#">Privacy Policy</a>
+<a class="text-outline-variant opacity-80 font-label-sm text-label-sm hover:text-premium-blue transition-colors" href="#">Terms of Service</a>
+<a class="text-outline-variant opacity-80 font-label-sm text-label-sm hover:text-premium-blue transition-colors" href="#">Help Center</a>
+<a class="text-outline-variant opacity-80 font-label-sm text-label-sm hover:text-premium-blue transition-colors" href="#">Safety Tips</a>
+</div>
+<div class="font-body-md text-body-md text-on-primary dark:text-on-primary-fixed opacity-60">
+            © 2024 SagarSambandh.in. All rights reserved.
+        </div>
+</footer>
+<script>
+        // Simple confetti effect for celebration
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('confetti-container');
+            const colors = ['#7FB3D5', '#c6e7ff', '#DCEBF2', '#CC6633'];
+            
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                
+                // Randomize properties
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                confetti.style.animationDelay = Math.random() * 5 + 's';
+                
+                // Add some variety in shapes
+                if (Math.random() > 0.5) {
+                    confetti.style.borderRadius = '50%';
+                }
+                
+                container.appendChild(confetti);
+            }
+        });
+    </script>
+
+
+
+
+</body></html>

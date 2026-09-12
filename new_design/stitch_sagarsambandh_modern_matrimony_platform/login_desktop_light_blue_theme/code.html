@@ -1,0 +1,274 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Login - SagarSambandh.in</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+                "on-surface": "#1b1c19",
+                "inverse-on-surface": "#f2f1ec",
+                "deep-ocean": "#0C2A46",
+                "surface": "#fbf9f4",
+                "surface-container-high": "#eae8e3",
+                "surface-dim": "#dbdad5",
+                "secondary": "#9d4311",
+                "on-secondary-container": "#702900",
+                "tertiary-container": "#78b3dd",
+                "on-primary-fixed": "#001e2d",
+                "horizon-blue": "#145C82",
+                "error": "#ba1a1a",
+                "on-background": "#1b1c19",
+                "on-secondary": "#ffffff",
+                "outline": "#71787e",
+                "on-error-container": "#93000a",
+                "premium-blue": "#7FB3D5",
+                "surface-tint": "#2d6482",
+                "secondary-fixed": "#ffdbcc",
+                "on-surface-variant": "#41484d",
+                "tertiary-fixed-dim": "#92cdf9",
+                "tertiary": "#21648a",
+                "primary": "#2d6482",
+                "on-tertiary-fixed": "#001e2f",
+                "surface-container-low": "#f5f3ee",
+                "inverse-surface": "#30312e",
+                "primary-container": "#7fb3d5",
+                "surface-variant": "#e4e2dd",
+                "inverse-primary": "#99cdf0",
+                "on-tertiary": "#ffffff",
+                "secondary-container": "#fe8d56",
+                "surface-bright": "#fbf9f4",
+                "surface-container-highest": "#e4e2dd",
+                "primary-fixed-dim": "#99cdf0",
+                "surface-container-lowest": "#ffffff",
+                "on-secondary-fixed": "#351000",
+                "on-secondary-fixed-variant": "#7c2e00",
+                "surface-container": "#f0eee9",
+                "on-tertiary-fixed-variant": "#004c6e",
+                "outline-variant": "#c1c7ce",
+                "secondary-fixed-dim": "#ffb595",
+                "on-primary": "#ffffff",
+                "on-primary-container": "#004562",
+                "tertiary-fixed": "#c9e6ff",
+                "earth-warmth": "#CC6633",
+                "soft-sky": "#DCEBF2",
+                "on-error": "#ffffff",
+                "error-container": "#ffdad6",
+                "primary-fixed": "#c6e7ff",
+                "cream-base": "#F9F7F2",
+                "background": "#fbf9f4",
+                "on-tertiary-container": "#004565",
+                "on-primary-fixed-variant": "#0a4c69"
+        },
+        "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+        },
+        "spacing": {
+                "section-gap": "80px",
+                "base": "8px",
+                "margin-mobile": "20px",
+                "gutter": "24px",
+                "margin-desktop": "64px"
+        },
+        "fontFamily": {
+                "display-lg": [
+                        "Playfair Display"
+                ],
+                "body-md": [
+                        "Inter"
+                ],
+                "label-sm": [
+                        "Inter"
+                ],
+                "body-lg": [
+                        "Inter"
+                ],
+                "headline-lg": [
+                        "Playfair Display"
+                ],
+                "label-md": [
+                        "Inter"
+                ],
+                "title-md": [
+                        "Playfair Display"
+                ],
+                "headline-lg-mobile": [
+                        "Playfair Display"
+                ]
+        },
+        "fontSize": {
+                "display-lg": [
+                        "48px",
+                        {
+                                "lineHeight": "56px",
+                                "letterSpacing": "-0.02em",
+                                "fontWeight": "700"
+                        }
+                ],
+                "body-md": [
+                        "16px",
+                        {
+                                "lineHeight": "24px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "label-sm": [
+                        "12px",
+                        {
+                                "lineHeight": "16px",
+                                "letterSpacing": "0.05em",
+                                "fontWeight": "600"
+                        }
+                ],
+                "body-lg": [
+                        "18px",
+                        {
+                                "lineHeight": "28px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "headline-lg": [
+                        "32px",
+                        {
+                                "lineHeight": "40px",
+                                "fontWeight": "600"
+                        }
+                ],
+                "label-md": [
+                        "14px",
+                        {
+                                "lineHeight": "20px",
+                                "letterSpacing": "0.01em",
+                                "fontWeight": "500"
+                        }
+                ],
+                "title-md": [
+                        "20px",
+                        {
+                                "lineHeight": "28px",
+                                "fontWeight": "600"
+                        }
+                ],
+                "headline-lg-mobile": [
+                        "28px",
+                        {
+                                "lineHeight": "36px",
+                                "fontWeight": "600"
+                        }
+                ]
+        }
+},
+    },
+  }
+</script>
+<style>
+          .wave-divider {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%23CC6633' fill-opacity='0.1' d='M0,192L48,197.3C96,203,192,213,288,229.3C384,245,480,267,576,250.7C672,235,768,181,864,165.3C960,149,1056,171,1152,192C1248,213,1344,235,1392,245.3L1440,256L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center bottom;
+          }
+      </style>
+</head>
+<body class="bg-cream-base min-h-screen flex items-center justify-center font-body-md text-on-surface">
+<div class="w-full max-w-[1440px] min-h-screen flex flex-col md:flex-row bg-surface-container-lowest md:rounded-xl overflow-hidden shadow-[0px_4px_20px_rgba(12,42,70,0.04)] m-0 md:m-margin-mobile lg:m-margin-desktop">
+<!-- Left Side: Image -->
+<div class="hidden md:block md:w-1/2 relative bg-surface-container">
+<div class="absolute inset-0 bg-cover bg-center w-full h-full" data-alt="A warm, high-quality photograph of a sophisticated Indian couple dressed in elegant, subtle traditional attire, sharing a joyful moment in a beautifully lit, modern architectural space. Soft, natural sunlight filters through, creating a calm, premium light-mode aesthetic with cream and warm earthy undertones." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAm5CCtcqmNcEWXFyDD7q4K7sG9S2oS7yT8MelBOFxMAvyhPkZTV5_EDX-y2JbWxN8084QTRSsDh0qC2_02ueO3kpuSqwI0mvlCDr_9zjz88webMIuv8uyUMzxoTz0sWhYXnENguW8F40CX1UgpEGV1-qcMaCa-rN1Io7ky_nMm_x-sDSde39OFoIJhGsTeogeLipJKE4DexxHO235Dc9EEtAWRtjY_Z8ZQpCSRwTAgB62igZXxROr24g')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-deep-ocean/60 to-transparent"></div>
+<div class="absolute bottom-12 left-12 right-12 text-on-primary">
+<h2 class="font-headline-lg text-headline-lg mb-4">Find your forever connection.</h2>
+<p class="font-body-lg text-body-lg opacity-90">Join thousands who have found meaningful, lifelong companionship through our trusted platform.</p>
+</div>
+<!-- Decorative wave -->
+<div class="absolute bottom-0 w-full h-32 wave-divider"></div>
+</div>
+<!-- Right Side: Login Form -->
+<div class="w-full md:w-1/2 flex flex-col justify-center px-margin-mobile py-12 md:px-16 lg:px-24">
+<div class="max-w-md w-full mx-auto">
+<!-- Logo -->
+<div class="mb-12 text-center md:text-left">
+<img alt="SagarSambandh.in Logo" class="h-16 w-auto mx-auto md:mx-0 object-contain rounded-md" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCY7NNXePguPXlsrMZBQ3mJSFqt0mFH6c0isYY7ld7jW5CAq70t_w46IK4x3r2bETkBNdKwKsLqtJjeV1Fr7OxWU3YIWxCSC_Vu9zUdEY2EFM8AbnsVK4aO77x68XAOXCgX-byLXjOMgGyW191Smyue85blCqh22uGDMBtxTCTCkIydXNOt9lGAPadnvUptxAJvbNmrB6a__3QPVNq4eH3LUm_Q-M0xZVC0tTKhWcZdMTTp16IgQD4FdA">
+</div>
+<!-- Welcome Text -->
+<div class="mb-8 text-center md:text-left">
+<h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg mb-2" style="color: rgb(127, 179, 213);">Welcome Back</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Please enter your details to access your account.</p>
+</div>
+<!-- Form -->
+<form class="space-y-6">
+<div>
+<label class="block font-label-md text-label-md text-on-surface-variant mb-2" for="identifier">Email or Phone Number</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">person</span>
+<input class="w-full pl-10 pr-4 py-3 bg-surface-container-lowest border border-soft-sky rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all placeholder:text-outline-variant" id="identifier" name="identifier" placeholder="Enter email or phone" type="text">
+</div>
+</div>
+<div>
+<div class="flex justify-between items-center mb-2">
+<label class="block font-label-md text-label-md text-on-surface-variant" for="password">Password</label>
+<a class="font-label-md text-label-md text-primary hover:text-earth-warmth transition-colors" href="#" style="color: rgb(127, 179, 213);">Forgot Password?</a>
+</div>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">lock</span>
+<input class="w-full pl-10 pr-12 py-3 bg-surface-container-lowest border border-soft-sky rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all placeholder:text-outline-variant" id="password" name="password" placeholder="Enter your password" type="password">
+<button class="absolute right-3 top-1/2 -translate-y-1/2 text-outline hover:text-on-surface transition-colors focus:outline-none" type="button">
+<span class="material-symbols-outlined">visibility_off</span>
+</button>
+</div>
+</div>
+<div class="flex items-center">
+<input class="h-4 w-4 rounded border-outline-variant text-primary focus:ring-primary/20 bg-surface-container-lowest cursor-pointer" id="remember-me" name="remember-me" type="checkbox">
+<label class="ml-2 block font-body-md text-body-md text-on-surface-variant cursor-pointer" for="remember-me">
+                            Keep me logged in
+                        </label>
+</div>
+<button class="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-[12px] shadow-sm font-label-md text-label-md text-on-primary bg-earth-warmth hover:bg-earth-warmth/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-earth-warmth transition-colors" type="submit">
+                        Login
+                    </button>
+<div class="relative flex items-center py-2">
+<div class="flex-grow border-t border-soft-sky"></div>
+<span class="flex-shrink-0 mx-4 font-label-sm text-label-sm text-outline-variant">OR</span>
+<div class="flex-grow border-t border-soft-sky"></div>
+</div>
+<button class="w-full flex justify-center items-center py-3 px-4 border border-primary rounded-[12px] shadow-sm font-label-md text-label-md text-primary bg-transparent hover:bg-surface-container focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors" type="button" style="border-color: rgb(127, 179, 213); color: rgb(127, 179, 213);">
+<span class="material-symbols-outlined mr-2 text-primary" style="font-variation-settings: &quot;FILL&quot; 1;">sms</span>
+                        Login with OTP
+                    </button>
+</form>
+<!-- Sign Up Link -->
+<div class="mt-8 text-center">
+<p class="font-body-md text-body-md text-on-surface-variant">
+                        New to SagarSambandh? 
+                        <a class="font-label-md text-label-md text-earth-warmth hover:text-primary transition-colors underline underline-offset-4" href="#" style="color: rgb(127, 179, 213);">Sign Up</a>
+</p>
+</div>
+</div>
+<!-- Footer links minimal -->
+<div class="mt-auto pt-12 flex justify-center md:justify-start space-x-6 font-label-sm text-label-sm text-outline-variant">
+<a class="hover:text-primary transition-colors" href="#">Privacy</a>
+<a class="hover:text-primary transition-colors" href="#">Terms</a>
+<a class="hover:text-primary transition-colors" href="#">Help</a>
+</div>
+</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+</body></html>

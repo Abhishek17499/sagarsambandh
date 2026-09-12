@@ -1,0 +1,331 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Profile Detail - SagarSambandh.in</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Playfair+Display:wght@600;700&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container": "#f0eee9",
+                        "on-background": "#1b1c19",
+                        "on-primary": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-container": "#ffc8ad",
+                        "tertiary": "#6a3516",
+                        "on-tertiary": "#ffffff",
+                        "outline": "#6f7979",
+                        "on-surface": "#1b1c19",
+                        "background": "#fbf9f4",
+                        "error-container": "#ffdad6",
+                        "on-error": "#ffffff",
+                        "primary-container": "#006666",
+                        "secondary-fixed-dim": "#ffb595",
+                        "on-secondary-fixed-variant": "#7c2e00",
+                        "on-secondary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "tertiary-container": "#874c2b",
+                        "tertiary-fixed-dim": "#ffb690",
+                        "surface-variant": "#e4e2dd",
+                        "surface-container-low": "#f5f3ee",
+                        "on-primary-fixed-variant": "#004f4f",
+                        "secondary-container": "#fe8d56",
+                        "on-tertiary-fixed-variant": "#6e3819",
+                        "inverse-primary": "#86d4d3",
+                        "outline-variant": "#bec9c8",
+                        "on-tertiary-fixed": "#341100",
+                        "surface-bright": "#fbf9f4",
+                        "primary": "#004c4c",
+                        "inverse-surface": "#30312e",
+                        "on-secondary-container": "#702900",
+                        "on-primary-container": "#93e1e0",
+                        "on-primary-fixed": "#002020",
+                        "tertiary-fixed": "#ffdbcb",
+                        "secondary-fixed": "#ffdbcc",
+                        "on-surface-variant": "#3f4948",
+                        "secondary": "#9d4311",
+                        "earth-warmth": "#CC6633",
+                        "surface-tint": "#096969",
+                        "primary-fixed-dim": "#86d4d3",
+                        "on-secondary-fixed": "#351000",
+                        "error": "#ba1a1a",
+                        "cream-base": "#F9F7F2",
+                        "horizon-blue": "#145C82",
+                        "soft-sky": "#DCEBF2",
+                        "surface-dim": "#dbdad5",
+                        "surface": "#fbf9f4",
+                        "deep-ocean": "#0C2A46",
+                        "primary-fixed": "#a2f0ef",
+                        "inverse-on-surface": "#f2f1ec",
+                        "surface-container-highest": "#e4e2dd",
+                        "surface-container-high": "#eae8e3",
+                        "theme-blue": "#7fb3d5"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px",
+                        "card": "16px",
+                        "button": "12px",
+                        "chip": "32px"
+                    },
+                    "spacing": {
+                        "section-gap": "80px",
+                        "base": "8px",
+                        "margin-desktop": "64px",
+                        "gutter": "24px",
+                        "margin-mobile": "20px"
+                    },
+                    "fontFamily": {
+                        "headline-lg-mobile": ["Playfair Display"],
+                        "label-sm": ["Inter"],
+                        "label-md": ["Inter"],
+                        "display-lg": ["Playfair Display"],
+                        "headline-lg": ["Playfair Display"],
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "title-md": ["Playfair Display"]
+                    },
+                    "fontSize": {
+                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "title-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}]
+                    },
+                    "boxShadow": {
+                        "card": "0px 4px 20px rgba(12, 42, 70, 0.04)",
+                        "modal": "0px 10px 30px rgba(12, 42, 70, 0.08)"
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: #F9F7F2; /* cream-base */
+        }
+        .wave-divider {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%23DCEBF2' fill-opacity='0.5' d='M0,160L48,144C96,128,192,96,288,106.7C384,117,480,171,576,170.7C672,171,768,117,864,112C960,107,1056,149,1152,170.7C1248,192,1344,192,1392,192L1440,192L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center bottom;
+        }
+    </style>
+</head>
+<body class="font-body-md text-on-surface antialiased bg-cream-base">
+<!-- TopNavBar -->
+<nav class="w-full h-20 shadow-sm dark:shadow-none bg-background dark:bg-inverse-surface border-b border-soft-sky/30 sticky top-0 z-50">
+<div class="flex justify-between items-center px-margin-mobile md:px-margin-desktop max-w-[1200px] mx-auto h-full">
+<a class="h-12" href="#">
+<img alt="SagarSambandh.in Logo" class="h-full w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1WE5ahoB1pdfSyoyVif2Z7Kbv3eqR1rRPDTA-Fm-EthV_kjfCTjkwh70BTGZU9s-ipVGCFHRxZrkl58MmXVJ1zJSGWybB8EZxNBXffAgFBdCT72GIApS9mYboXMnBJOWpXAsvY4TBiqsF-APUEv6wvASPeEkTDr7aMqYsWSWXjXiVWWYT140r-3IFQtImkbX3AnXzfMjwCCoXeMOdcSH4-Eqr1MEhQaDlHnPTFvT3ZRb3ujLwLKpziqAMPw">
+</a>
+<div class="hidden md:flex items-center space-x-gutter">
+<a class="text-on-surface-variant dark:text-surface-variant font-body-md text-body-md hover:text-theme-blue dark:hover:text-theme-blue transition-colors duration-200" href="#">Browse</a>
+<a class="text-theme-blue dark:text-theme-blue font-bold border-b-2 border-theme-blue pb-1 font-body-md text-body-md hover:text-theme-blue dark:hover:text-theme-blue transition-colors duration-200" href="#">Matches</a>
+<a class="text-on-surface-variant dark:text-surface-variant font-body-md text-body-md hover:text-theme-blue dark:hover:text-theme-blue transition-colors duration-200" href="#">Profile</a>
+</div>
+<button class="hidden md:block bg-theme-blue text-white font-label-md text-label-md px-6 py-2 rounded-button scale-95 duration-150 hover:opacity-90">Find My Partner</button>
+<button class="md:hidden text-theme-blue">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</div>
+</nav>
+<main class="max-w-[1200px] mx-auto px-margin-mobile md:px-margin-desktop py-gutter md:py-section-gap">
+<!-- Hero Section: Profile Image & Actions -->
+<section class="grid grid-cols-1 md:grid-cols-12 gap-gutter mb-section-gap">
+<div class="md:col-span-5 relative">
+<div class="rounded-card overflow-hidden shadow-card bg-surface-container-lowest border border-soft-sky h-[400px] md:h-[600px] relative">
+<img class="w-full h-full object-cover" data-alt="A highly detailed, professional portrait of a beautiful Indian woman in her late 20s, wearing an elegant pastel silk saree. She has a warm, dignified smile and is positioned in a sunlit, high-end, softly blurred indoor setting. The lighting is high-key and flattering, emphasizing a premium, sophisticated modern matrimonial aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBjUaXjbTMxm5drPxI5QIeJKYrh2l7JzWqRkPDQRkzDStT7skl7Kc8tsnrGGq1kVLez2glLwdK9qkheKu79g31um4CqgpxmiT9JzOB16Q9Xe1KKnCCtU7Gp6kp6yIfiOJYuzX42lnjkuOILSlw6wkMc6tLIlTlwiYrTfZgBP7mc1rn9MrxJft_yJSr8qUxmkLErcwsrnuw6tFRi78Et52xI3YZFQC01zpPak7Ntuu9omAxbx7N7_RDBQA">
+<div class="absolute bottom-0 left-0 w-full wave-divider h-24 opacity-60"></div>
+</div>
+</div>
+<div class="md:col-span-7 flex flex-col justify-center space-y-6 md:pl-8">
+<div>
+<h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-deep-ocean mb-2">Priya Sharma, 28</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant flex items-center">
+<span class="material-symbols-outlined text-theme-blue mr-2" style="font-variation-settings: 'FILL' 1;">location_on</span>
+                        Mumbai, Maharashtra
+                    </p>
+</div>
+<div class="flex flex-wrap gap-3">
+<span class="bg-surface-container py-1 px-4 rounded-chip text-on-surface-variant font-label-sm text-label-sm border border-soft-sky">Verified</span>
+<span class="bg-surface-container py-1 px-4 rounded-chip text-on-surface-variant font-label-sm text-label-sm border border-soft-sky">Premium Member</span>
+<span class="bg-surface-container py-1 px-4 rounded-chip text-on-surface-variant font-label-sm text-label-sm border border-soft-sky">Vegetarian</span>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-card shadow-card border border-soft-sky w-full max-w-sm mt-4">
+<div class="flex justify-between items-center mb-2">
+<span class="font-title-md text-title-md text-deep-ocean">Compatibility</span>
+<span class="font-title-md text-title-md text-theme-blue">85%</span>
+</div>
+<div class="w-full bg-surface-variant rounded-full h-2 mb-2">
+<div class="bg-theme-blue h-2 rounded-full" style="width: 85%"></div>
+</div>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Based on education, lifestyle, and values.</p>
+</div>
+<div class="flex space-x-4 pt-4">
+<button class="bg-theme-blue text-white font-label-md text-label-md px-8 py-3 rounded-button hover:opacity-90 transition-opacity flex items-center">
+<span class="material-symbols-outlined mr-2">favorite</span>
+                        Connect
+                    </button>
+<button class="bg-transparent border border-deep-ocean text-deep-ocean font-label-md text-label-md px-8 py-3 rounded-button hover:bg-soft-sky/30 transition-colors flex items-center">
+<span class="material-symbols-outlined mr-2">bookmark</span>
+                        Shortlist
+                    </button>
+</div>
+</div>
+</section>
+<!-- Bento Grid Layout for Details -->
+<section class="grid grid-cols-1 md:grid-cols-12 gap-gutter mb-section-gap">
+<!-- Left Column (Larger) -->
+<div class="md:col-span-8 space-y-gutter">
+<!-- About Me -->
+<div class="bg-surface-container-lowest p-8 rounded-card shadow-card border border-soft-sky">
+<h2 class="font-title-md text-title-md text-deep-ocean mb-4 border-b border-soft-sky pb-2">About Me</h2>
+<p class="font-body-md text-body-md text-on-surface leading-relaxed">
+                        I am a grounded and ambitious individual who values family traditions while embracing a modern outlook on life. After completing my Master's in Design, I've been working as a UX Lead in a reputed tech firm. I believe in mutual respect, open communication, and supporting each other's growth in a relationship. In my free time, I enjoy reading, exploring new cuisines, and occasional weekend getaways.
+                    </p>
+</div>
+<!-- Education & Career -->
+<div class="bg-surface-container-lowest p-8 rounded-card shadow-card border border-soft-sky">
+<h2 class="font-title-md text-title-md text-deep-ocean mb-4 border-b border-soft-sky pb-2">Education &amp; Career</h2>
+<ul class="space-y-4">
+<li class="flex items-start">
+<span class="material-symbols-outlined text-theme-blue mr-4 mt-1">school</span>
+<div>
+<p class="font-label-md text-label-md text-deep-ocean">Highest Education</p>
+<p class="font-body-md text-body-md text-on-surface">M.Des (Master of Design), NID Ahmedabad</p>
+</div>
+</li>
+<li class="flex items-start">
+<span class="material-symbols-outlined text-theme-blue mr-4 mt-1">work</span>
+<div>
+<p class="font-label-md text-label-md text-deep-ocean">Occupation</p>
+<p class="font-body-md text-body-md text-on-surface">UX Design Lead at Tech Solutions Inc.</p>
+</div>
+</li>
+<li class="flex items-start">
+<span class="material-symbols-outlined text-theme-blue mr-4 mt-1">payments</span>
+<div>
+<p class="font-label-md text-label-md text-deep-ocean">Annual Income</p>
+<p class="font-body-md text-body-md text-on-surface">Prefer not to specify</p>
+</div>
+</li>
+</ul>
+</div>
+<!-- Photo Gallery -->
+<div class="bg-surface-container-lowest p-8 rounded-card shadow-card border border-soft-sky">
+<h2 class="font-title-md text-title-md text-deep-ocean mb-4 border-b border-soft-sky pb-2">Photo Gallery</h2>
+<div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+<div class="aspect-square rounded-lg overflow-hidden relative">
+<img class="w-full h-full object-cover" data-alt="A highly detailed candid photo of the Indian woman at a cafe, laughing naturally. Soft afternoon light, premium modern aesthetic, shallow depth of field." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAQflZAJXkdMOxKAifp00jWCZ9GaW8oG2qbZSwwfsNz_8dkQTY55nW81Py3HhKb__soy-MM9aD_1BM_t4wSXwcpqWEZB5V-eFheqEsF_oXpd64axV9WD5q1OW4YLOodwUm8K-XbrvNyHkVEzSMhmKCTYoTDgi34PvfNjVViqIPqDwTYs4-Lhan37dEBBHQcCzNBNriSPT65F_lGtxwRKJXXHUmQTlOqZhzUZjVXUbO75z4QXxTbEo8s2w">
+</div>
+<div class="aspect-square rounded-lg overflow-hidden relative">
+<img class="w-full h-full object-cover" data-alt="A highly detailed photo of the Indian woman dressed in formal office wear, standing in a sleek, modern corporate office environment. Bright, professional lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKBPaPjhiZBzw7iGDFRP58JN2M6H2899UiWKH_K8D1DC_YMIYclBRvKKoEM9OmSTn7LUhaA4mT_T3sYJ1FFsaKdV6MPgKfzQtD7yfItkW9EbSq34QX32dqV_qRrTn0BDPI69B9jahXpmkmRL-LH84yhIE_kK26YcVszKeFprjCO3LbmWaLjsG4j1Q2NJUUmRxEk5AcawZAuZcu4BbV0t89y9FTYuFTMEkiVzZzktSgwneVqpxiglk97g">
+</div>
+<div class="aspect-square rounded-lg overflow-hidden relative hidden md:block">
+<img class="w-full h-full object-cover" data-alt="A highly detailed photo of the Indian woman in traditional attire during a festive occasion, warm ambient lighting, rich colors, elegant and dignified." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAyH5--xsBQrpASfKvJteRXWYyWW54WicTbZ3101P9_DT_qO8FBVO0ymhYfv5yrrMIMEbfTCFm4bIuLlNTO4koYN0q5iELSdX-NIRVwNDsym5gJ5FQTAjhv28o3pJkrEGN8oISKj6F8_tA_ggI5Vv6DaWmFdt668WzDQapj0DX7QZhLvFDEGdMY2S52aOYIRRk8ubxkegwyh2NNen5eANkLVXhooi7pKk4xdhw2gocc-Dq1dj0LKPmvCg">
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column (Smaller) -->
+<div class="md:col-span-4 space-y-gutter">
+<!-- Family Background -->
+<div class="bg-surface-container-lowest p-8 rounded-card shadow-card border border-soft-sky">
+<h2 class="font-title-md text-title-md text-deep-ocean mb-4 border-b border-soft-sky pb-2">Family Background</h2>
+<ul class="space-y-4">
+<li class="flex items-start">
+<span class="material-symbols-outlined text-theme-blue mr-3 mt-1">family_restroom</span>
+<div>
+<p class="font-label-md text-label-md text-deep-ocean">Family Type</p>
+<p class="font-body-md text-body-md text-on-surface">Nuclear Family</p>
+</div>
+</li>
+<li class="flex items-start">
+<span class="material-symbols-outlined text-theme-blue mr-3 mt-1">home</span>
+<div>
+<p class="font-label-md text-label-md text-deep-ocean">Father's Status</p>
+<p class="font-body-md text-body-md text-on-surface">Retired Bank Manager</p>
+</div>
+</li>
+<li class="flex items-start">
+<span class="material-symbols-outlined text-theme-blue mr-3 mt-1">home</span>
+<div>
+<p class="font-label-md text-label-md text-deep-ocean">Mother's Status</p>
+<p class="font-body-md text-body-md text-on-surface">Homemaker</p>
+</div>
+</li>
+<li class="flex items-start">
+<span class="material-symbols-outlined text-theme-blue mr-3 mt-1">group</span>
+<div>
+<p class="font-label-md text-label-md text-deep-ocean">Siblings</p>
+<p class="font-body-md text-body-md text-on-surface">1 Younger Brother</p>
+</div>
+</li>
+</ul>
+</div>
+<!-- Life Style -->
+<div class="bg-surface-container-lowest p-8 rounded-card shadow-card border border-soft-sky">
+<h2 class="font-title-md text-title-md text-deep-ocean mb-4 border-b border-soft-sky pb-2">Lifestyle</h2>
+<ul class="space-y-4">
+<li class="flex items-center justify-between">
+<span class="font-body-md text-body-md text-on-surface">Diet</span>
+<span class="font-label-md text-label-md text-deep-ocean">Vegetarian</span>
+</li>
+<li class="flex items-center justify-between">
+<span class="font-body-md text-body-md text-on-surface">Drinking</span>
+<span class="font-label-md text-label-md text-deep-ocean">Never</span>
+</li>
+<li class="flex items-center justify-between">
+<span class="font-body-md text-body-md text-on-surface">Smoking</span>
+<span class="font-label-md text-label-md text-deep-ocean">Never</span>
+</li>
+<li class="flex items-center justify-between">
+<span class="font-body-md text-body-md text-on-surface">Fitness</span>
+<span class="font-label-md text-label-md text-deep-ocean">Yoga, Occasional Gym</span>
+</li>
+</ul>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full py-section-gap bg-deep-ocean dark:bg-surface-container-lowest">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter px-margin-desktop max-w-[1200px] mx-auto">
+<div class="md:col-span-1 mb-8 md:mb-0">
+<img alt="SagarSambandh.in Logo" class="h-10 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1WE5ahoB1pdfSyoyVif2Z7Kbv3eqR1rRPDTA-Fm-EthV_kjfCTjkwh70BTGZU9s-ipVGCFHRxZrkl58MmXVJ1zJSGWybB8EZxNBXffAgFBdCT72GIApS9mYboXMnBJOWpXAsvY4TBiqsF-APUEv6wvASPeEkTDr7aMqYsWSWXjXiVWWYT140r-3IFQtImkbX3AnXzfMjwCCoXeMOdcSH4-Eqr1MEhQaDlHnPTFvT3ZRb3ujLwLKpziqAMPw">
+<p class="text-cream-base/80 font-label-md mt-4">© 2024 SagarSambandh.in. All rights reserved.</p>
+</div>
+<div class="md:col-span-3 grid grid-cols-2 md:grid-cols-3 gap-8">
+<div>
+<h4 class="font-label-md text-label-md text-on-primary dark:text-on-surface mb-4">Company</h4>
+<ul class="space-y-2">
+<li class=""><a class="font-label-md text-label-md text-cream-base/80 dark:text-on-surface-variant hover:text-theme-blue dark:hover:text-theme-blue transition-colors duration-200 opacity-80 hover:opacity-100" href="#">About Us</a></li>
+<li class=""><a class="font-label-md text-label-md text-cream-base/80 dark:text-on-surface-variant hover:text-theme-blue dark:hover:text-theme-blue transition-colors duration-200 opacity-80 hover:opacity-100" href="#">Success Stories</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-label-md text-label-md text-on-primary dark:text-on-surface mb-4">Legal</h4>
+<ul class="space-y-2">
+<li class=""><a class="font-label-md text-label-md text-cream-base/80 dark:text-on-surface-variant hover:text-theme-blue dark:hover:text-theme-blue transition-colors duration-200 opacity-80 hover:opacity-100" href="#">Privacy</a></li>
+<li class=""><a class="font-label-md text-label-md text-cream-base/80 dark:text-on-surface-variant hover:text-theme-blue dark:hover:text-theme-blue transition-colors duration-200 opacity-80 hover:opacity-100" href="#">Terms of Service</a></li>
+<li class=""><a class="font-label-md text-label-md text-cream-base/80 dark:text-on-surface-variant hover:text-theme-blue dark:hover:text-theme-blue transition-colors duration-200 opacity-80 hover:opacity-100" href="#">Safety</a></li>
+</ul>
+</div>
+</div>
+</div>
+</footer>
+
+
+</body></html>

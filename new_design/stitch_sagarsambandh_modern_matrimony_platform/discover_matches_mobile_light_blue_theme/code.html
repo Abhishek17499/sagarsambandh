@@ -1,0 +1,303 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>SagarSambandh.in - Discover Matches</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+                "surface": "#fbf9f4",
+                "surface-bright": "#fbf9f4",
+                "on-secondary-fixed-variant": "#7c2e00",
+                "on-error-container": "#93000a",
+                "primary-fixed": "#c6e7ff",
+                "on-primary": "#ffffff",
+                "outline-variant": "#c1c7ce",
+                "on-error": "#ffffff",
+                "background": "#fbf9f4",
+                "secondary-fixed-dim": "#ffb595",
+                "surface-variant": "#e4e2dd",
+                "on-secondary-container": "#702900",
+                "cream-base": "#F9F7F2",
+                "premium-blue": "#7FB3D5",
+                "surface-container-lowest": "#ffffff",
+                "soft-sky": "#DCEBF2",
+                "outline": "#71787e",
+                "surface-container-low": "#f5f3ee",
+                "tertiary-fixed-dim": "#92cdf9",
+                "on-primary-fixed": "#001e2d",
+                "surface-container": "#f0eee9",
+                "tertiary": "#21648a",
+                "on-background": "#1b1c19",
+                "tertiary-container": "#78b3dd",
+                "primary-fixed-dim": "#99cdf0",
+                "surface-container-highest": "#e4e2dd",
+                "inverse-on-surface": "#f2f1ec",
+                "secondary": "#9d4311",
+                "on-tertiary-container": "#004565",
+                "on-secondary-fixed": "#351000",
+                "on-tertiary": "#ffffff",
+                "on-surface": "#1b1c19",
+                "error-container": "#ffdad6",
+                "on-tertiary-fixed-variant": "#004c6e",
+                "surface-dim": "#dbdad5",
+                "on-primary-container": "#004562",
+                "earth-warmth": "#CC6633",
+                "on-primary-fixed-variant": "#0a4c69",
+                "secondary-fixed": "#ffdbcc",
+                "deep-ocean": "#0C2A46",
+                "tertiary-fixed": "#c9e6ff",
+                "primary": "#2d6482",
+                "inverse-primary": "#99cdf0",
+                "on-surface-variant": "#41484d",
+                "on-tertiary-fixed": "#001e2f",
+                "secondary-container": "#fe8d56",
+                "surface-container-high": "#eae8e3",
+                "inverse-surface": "#30312e",
+                "primary-container": "#7fb3d5",
+                "error": "#ba1a1a",
+                "horizon-blue": "#145C82",
+                "surface-tint": "#2d6482",
+                "on-secondary": "#ffffff"
+        },
+        "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+        },
+        "spacing": {
+                "gutter": "24px",
+                "margin-mobile": "20px",
+                "section-gap": "80px",
+                "margin-desktop": "64px",
+                "base": "8px"
+        },
+        "fontFamily": {
+                "display-lg": [
+                        "Playfair Display"
+                ],
+                "headline-lg": [
+                        "Playfair Display"
+                ],
+                "label-md": [
+                        "Inter"
+                ],
+                "title-md": [
+                        "Playfair Display"
+                ],
+                "label-sm": [
+                        "Inter"
+                ],
+                "body-md": [
+                        "Inter"
+                ],
+                "headline-lg-mobile": [
+                        "Playfair Display"
+                ],
+                "body-lg": [
+                        "Inter"
+                ]
+        },
+        "fontSize": {
+                "display-lg": [
+                        "48px",
+                        {
+                                "lineHeight": "56px",
+                                "letterSpacing": "-0.02em",
+                                "fontWeight": "700"
+                        }
+                ],
+                "headline-lg": [
+                        "32px",
+                        {
+                                "lineHeight": "40px",
+                                "fontWeight": "600"
+                        }
+                ],
+                "label-md": [
+                        "14px",
+                        {
+                                "lineHeight": "20px",
+                                "letterSpacing": "0.01em",
+                                "fontWeight": "500"
+                        }
+                ],
+                "title-md": [
+                        "20px",
+                        {
+                                "lineHeight": "28px",
+                                "fontWeight": "600"
+                        }
+                ],
+                "label-sm": [
+                        "12px",
+                        {
+                                "lineHeight": "16px",
+                                "letterSpacing": "0.05em",
+                                "fontWeight": "600"
+                        }
+                ],
+                "body-md": [
+                        "16px",
+                        {
+                                "lineHeight": "24px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "headline-lg-mobile": [
+                        "28px",
+                        {
+                                "lineHeight": "36px",
+                                "fontWeight": "600"
+                        }
+                ],
+                "body-lg": [
+                        "18px",
+                        {
+                                "lineHeight": "28px",
+                                "fontWeight": "400"
+                        }
+                ]
+        }
+},
+    },
+  }
+</script>
+</head>
+<body class="bg-cream-base text-on-surface font-body-md antialiased pb-24 md:pb-0">
+<!-- TopNavBar (Mobile) -->
+<header class="w-full h-20 shadow-sm bg-background border-b border-soft-sky/30 flex justify-between items-center px-margin-mobile mx-auto sticky top-0 z-50 md:hidden">
+<img alt="SagarSambandh.in Logo" class="h-10 w-auto" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMbyMd_ytIxGrTN47415mTU-m8OW-DXRTEW339qDJTQl0KpsfaYagywGvXnCrH-PXN8XB9AS7EJ-cOVXWZYR89HOl4_iMeX9CbnkHGP56bQH-0RwKblPcXhryyiDFK5jpnCIwbGsnKgULS32ENremyOa_HZcXyB4AwF8vtNy6nxjekl1G85VdL2UOOMLJme1gSII_ej4BKnkMToIV7MWLDS49iDnTulHDl_hxJKAN5hBgXpSx5vbt7OA">
+<button class="text-primary p-2 focus:outline-none">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">menu</span>
+</button>
+</header>
+<!-- TopNavBar (Desktop) -->
+<header class="hidden md:flex w-full h-20 shadow-sm bg-background border-b border-soft-sky/30 justify-between items-center px-margin-desktop max-w-[1200px] mx-auto sticky top-0 z-50">
+<img alt="SagarSambandh.in Logo" class="h-12 w-auto" src="https://lh3.googleusercontent.com/aida/AEtjO1WE5ahoB1pdfSyoyVif2Z7Kbv3eqR1rRPDTA-Fm-EthV_kjfCTjkwh70BTGZU9s-ipVGCFHRxZrkl58MmXVJ1zJSGWybB8EZxNBXffAgFBdCT72GIApS9mYboXMnBJOWpXAsvY4TBiqsF-APUEv6wvASPeEkTDr7aMqYsWSWXjXiVWWYT140r-3IFQtImkbX3AnXzfMjwCCoXeMOdcSH4-Eqr1MEhQaDlHnPTFvT3ZRb3ujLwLKpziqAMPw">
+<nav class="flex gap-6">
+<a class="text-on-surface-variant font-label-md text-label-md hover:text-primary transition-colors duration-200" href="#">Browse</a>
+<a class="text-primary font-bold border-b-2 border-earth-warmth pb-1 font-label-md text-label-md" href="#" style="border-color: rgb(127, 179, 213); color: rgb(127, 179, 213);">Matches</a>
+<a class="text-on-surface-variant font-label-md text-label-md hover:text-primary transition-colors duration-200" href="#">Messages</a>
+<a class="text-on-surface-variant font-label-md text-label-md hover:text-primary transition-colors duration-200" href="#">Profile</a>
+</nav>
+<button class="bg-primary text-on-primary px-6 py-2 rounded-xl font-label-md text-label-md scale-95 hover:scale-100 transition-transform duration-150">Find My Partner</button>
+</header>
+<main class="px-margin-mobile md:px-margin-desktop max-w-[1200px] mx-auto mt-8">
+<!-- Header & Filters -->
+<div class="flex flex-col gap-4 mb-8">
+<div>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg text-primary">Discover Matches</h1>
+<p class="text-on-surface-variant font-body-md text-body-md mt-1">Found 124 potential connections</p>
+</div>
+<button class="flex items-center justify-center gap-2 w-full py-3 border border-soft-sky rounded-lg bg-surface text-primary font-label-md text-label-md shadow-sm md:w-auto md:px-6" style="border-color: rgb(127, 179, 213);">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">tune</span>
+                Filters &amp; Sorting
+            </button>
+</div>
+<!-- Matches List -->
+<div class="flex flex-col gap-6">
+<!-- Profile Card 1 -->
+<article class="bg-surface-container-lowest rounded-[16px] overflow-hidden shadow-[0_4px_20px_rgba(12,42,70,0.04)] border border-soft-sky relative">
+<div class="w-full relative h-[450px]">
+<img class="w-full h-full object-cover" data-alt="A portrait of an elegant young Indian woman in a modern corporate setting. She has dark hair, warm skin tone, and is wearing a sophisticated blazer. The lighting is bright and modern, creating a professional yet warm and approachable mood. The color palette features deep teal accents and a soft cream background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDinaNMlQtkALsSDVC7E8S6JUKKPIJ1UY8Jed0IAhkYWhvMKF2HfQD8q5VmkNlI56KMNoQWxdhR4qcEctqogQ3d4OJ4RUpSMDJkzOJrJXkoqvnDPjq_IJfKSgj3iXBPHuZjruGaDRYpEZsx2dDI3zPeRw670se4WOpm0Cwn78rBqZl-wHhWKA7AjOIMm-31c0zc3PpZ0KcK4u3nKJtbB-hTEdsD6J9PYv0PVnQqeLGQ7AOl-aA8irDuvA">
+<!-- Verification Badge -->
+<div class="absolute top-4 left-4 bg-surface-container-lowest/90 backdrop-blur-sm px-3 py-1 rounded-full flex items-center gap-1 border border-soft-sky shadow-sm">
+<span class="material-symbols-outlined text-earth-warmth text-sm" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span class="font-label-sm text-label-sm text-primary">Verified</span>
+</div>
+<!-- Wave Divider -->
+<div class="absolute bottom-0 w-full">
+<svg class="w-full h-auto text-surface-container-lowest fill-current" preserveAspectRatio="none" viewBox="0 0 1440 120">
+<path d="M0,64L80,69.3C160,75,320,85,480,80C640,75,800,53,960,48C1120,43,1280,53,1360,58.7L1440,64L1440,120L1360,120C1280,120,1120,120,960,120C800,120,640,120,480,120C320,120,160,120,80,120L0,120Z"></path>
+</svg>
+</div>
+</div>
+<div class="p-6 pt-2">
+<div class="flex justify-between items-start mb-4">
+<div>
+<h2 class="font-title-md text-title-md text-primary">Aarti Sharma, 28</h2>
+<p class="font-body-md text-body-md text-on-surface-variant flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-earth-warmth text-sm" style="font-variation-settings: 'FILL' 0;">work</span>
+                                Software Architect
+                            </p>
+<p class="font-body-md text-body-md text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-earth-warmth text-sm" style="font-variation-settings: 'FILL' 0;">location_on</span>
+                                Bangalore, Karnataka
+                            </p>
+</div>
+<div class="bg-soft-sky/30 px-3 py-1 rounded-full border border-soft-sky flex items-center gap-1" style="border-color: rgb(127, 179, 213);">
+<span class="material-symbols-outlined text-primary text-sm" style="font-variation-settings: 'FILL' 1;">favorite</span>
+<span class="font-label-sm text-label-sm text-primary">95% Match</span>
+</div>
+</div>
+<div class="flex gap-2 flex-wrap mb-6">
+<span class="bg-surface-container px-3 py-1 rounded-full font-label-sm text-label-sm text-on-surface-variant border border-soft-sky">Hindu - Brahmin</span>
+<span class="bg-surface-container px-3 py-1 rounded-full font-label-sm text-label-sm text-on-surface-variant border border-soft-sky">Vegetarian</span>
+<span class="bg-surface-container px-3 py-1 rounded-full font-label-sm text-label-sm text-on-surface-variant border border-soft-sky">Never Married</span>
+</div>
+<div class="flex gap-4">
+<button class="flex-1 bg-primary text-on-primary py-3 rounded-[12px] font-label-md text-label-md flex items-center justify-center gap-2 hover:bg-primary-container transition-colors duration-200" style="background-color: rgb(127, 179, 213);">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">handshake</span>
+                            Connect
+                        </button>
+<button class="w-12 h-12 border border-primary text-primary rounded-[12px] flex items-center justify-center hover:bg-soft-sky/30 transition-colors duration-200">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">chat_bubble_outline</span>
+</button>
+</div>
+</div>
+</article>
+</div>
+<div class="mt-8 mb-12 flex justify-center">
+<button class="px-8 py-3 border border-primary text-primary rounded-[12px] font-label-md text-label-md hover:bg-soft-sky/30 transition-colors duration-200" style="border-color: rgb(127, 179, 213); color: rgb(127, 179, 213);">
+                Load More Matches
+            </button>
+</div>
+</main>
+<!-- BottomNavBar (Mobile) -->
+<nav class="w-full bg-surface-container-lowest border-t border-soft-sky/30 shadow-[0_-4px_20px_rgba(12,42,70,0.04)] fixed bottom-0 z-50 md:hidden flex justify-around items-center h-16 px-4">
+<a class="flex flex-col items-center gap-1 text-on-surface-variant" href="#">
+<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 0;">search</span>
+<span class="font-label-sm text-[10px]">Browse</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined text-xl text-primary" style="font-variation-settings: &quot;FILL&quot; 1;">favorite</span>
+<span class="font-label-sm text-[10px] font-bold">Matches</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-on-surface-variant" href="#">
+<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 0;">person</span>
+<span class="font-label-sm text-[10px]">Profile</span>
+</a>
+</nav>
+<!-- Footer (Desktop Only) -->
+<footer class="hidden md:block w-full py-section-gap bg-deep-ocean text-on-primary">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter px-margin-desktop max-w-[1200px] mx-auto">
+<div class="col-span-1 md:col-span-4 mb-8">
+<img alt="SagarSambandh.in Logo" class="h-12 w-auto" src="https://lh3.googleusercontent.com/aida/AEtjO1WE5ahoB1pdfSyoyVif2Z7Kbv3eqR1rRPDTA-Fm-EthV_kjfCTjkwh70BTGZU9s-ipVGCFHRxZrkl58MmXVJ1zJSGWybB8EZxNBXffAgFBdCT72GIApS9mYboXMnBJOWpXAsvY4TBiqsF-APUEv6wvASPeEkTDr7aMqYsWSWXjXiVWWYT140r-3IFQtImkbX3AnXzfMjwCCoXeMOdcSH4-Eqr1MEhQaDlHnPTFvT3ZRb3ujLwLKpziqAMPw">
+</div>
+<!-- Footer Content Placeholder -->
+<div class="text-cream-base/80 font-label-md text-label-md">© 2024 SagarSambandh.in. All rights reserved.</div>
+<div class="flex flex-col gap-2">
+<a class="text-cream-base/80 hover:text-earth-warmth transition-colors duration-200 font-label-md text-label-md" href="#">Success Stories</a>
+<a class="text-cream-base/80 hover:text-earth-warmth transition-colors duration-200 font-label-md text-label-md" href="#">Privacy</a>
+</div>
+<div class="flex flex-col gap-2">
+<a class="text-cream-base/80 hover:text-earth-warmth transition-colors duration-200 font-label-md text-label-md" href="#">Safety</a>
+<a class="text-cream-base/80 hover:text-earth-warmth transition-colors duration-200 font-label-md text-label-md" href="#">About Us</a>
+</div>
+<div class="flex flex-col gap-2">
+<a class="text-cream-base/80 hover:text-earth-warmth transition-colors duration-200 font-label-md text-label-md" href="#">Terms of Service</a>
+</div>
+</div>
+</footer>
+
+
+
+
+</body></html>
