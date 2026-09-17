@@ -29,7 +29,7 @@ service cloud.firestore {
         .hasOnly(['photoVisible', 'deactivated', 'siblingsVisible']);
     }
 
-    // USERS: Authenticated users can read basic user profile
+    // USERS
     match /users/{userId} {
       allow read: if isRealUser();
       allow create: if isRealUser() && request.auth.uid == userId;
@@ -37,14 +37,12 @@ service cloud.firestore {
         (isRealUser() && request.auth.uid == userId &&
          request.resource.data.blocked == resource.data.blocked);
 
-      // FAVORITES/SHORTLIST — per-user subcollection, owner-only
       match /favorites/{candidateId} {
         allow read, write: if isRealUser() && request.auth.uid == userId;
       }
     }
 
-    // CANDIDATES: Allow reading all candidates for logged-in real users
-    // (Frontend filters approved/deactivated profiles)
+    // CANDIDATES
     match /candidates/{candidateId} {
       allow read: if isRealUser();
       allow create: if isRealUser() &&
@@ -68,6 +66,8 @@ service cloud.firestore {
         (isRealUser() &&
          get(/databases/$(database)/documents/candidates/$(resource.data.toCandidateId))
            .data.createdByUserId == request.auth.uid);
+      allow delete: if isStaffOrSuper() ||
+        (isRealUser() && request.auth.uid == resource.data.fromUserId && resource.data.status == 'pending');
     }
 
     // ADMINS
