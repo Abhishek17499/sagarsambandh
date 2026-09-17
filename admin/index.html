@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- SAGAR SAMBANDH — ADMIN APP — v11.2 (22 Aug 2026) — Fresh Hostinger Deploy -->
+<!-- SAGAR SAMBANDH — ADMIN APP — v11.8 (16 Sep 2026) — Review screen now shows full Photos gallery (candidates.photos[] array, with photoURL fallback for old single-photo candidates), not just one image. Base: v11.7 (16 Sep 2026) — Analytics screen. -->
 <html lang="gu">
 <head>
 <meta charset="UTF-8">
@@ -11,15 +11,16 @@
 <!-- Firebase (compat SDK) -->
 <script src="https://www.gstatic.com/firebasejs/12.11.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.11.0/firebase-storage-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/12.11.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/12.11.0/firebase-app-check-compat.js"></script>
 
 <style>
   :root{
-    --navy:#0C2A46; --primary:#145C82; --primary-light:#1C93C9;
-    --sky:#7FC7E0; --ice:#D9EAF0; --accent:#E8A33D;
-    --text-dark:#0C2A46; --text-mid:#5A7A8C; --border:#E2ECF1;
-    --success:#2E9E6B; --danger:#D8544A; --bg:#F3F8FA;
+    --navy:#4A1220; --primary:#7A2438; --primary-light:#A8455C;
+    --sky:#D98FA0; --ice:#F0DAD3; --accent:#C9A227;
+    --text-dark:#2B0E14; --text-mid:#8A6B6F; --border:#E8DCD3;
+    --success:#2E9E6B; --danger:#D8544A; --bg:#FAF4EC;
   }
   *{box-sizing:border-box; margin:0; padding:0;}
   body{ font-family:'Noto Sans Gujarati','Poppins',sans-serif; background:var(--bg); min-height:100vh; }
@@ -44,7 +45,7 @@
   .input-wrap select{ border:none; outline:none; padding:13px 0; font-size:13.5px; width:100%; font-family:inherit; color:var(--text-dark); background:transparent; cursor:pointer; -webkit-appearance:none; -moz-appearance:none; appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%235A7A8C' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 0 center; background-size:16px; padding-right:24px; }
   .input-wrap select option{ color:var(--text-dark); background:#fff; font-family:inherit; }
   .btn{ font-size:13.5px; font-weight:700; padding:13px 20px; border-radius:12px; border:none; cursor:pointer; font-family:inherit; }
-  .btn-primary{ background:linear-gradient(135deg,var(--navy),var(--primary-light)); color:#fff; width:100%; box-shadow:0 10px 20px -8px rgba(12,42,70,0.5); }
+  .btn-primary{ background:linear-gradient(135deg,var(--navy),var(--primary-light)); color:#fff; width:100%; box-shadow:0 10px 20px -8px rgba(74,18,32,0.5); }
   .btn-primary:disabled{ opacity:0.45; cursor:not-allowed; }
   .btn-ghost{ background:var(--ice); color:var(--primary); width:100%; margin-top:10px; }
   .err-text{ font-size:11.5px; color:var(--danger); margin-top:6px; margin-bottom:6px; }
@@ -105,6 +106,11 @@
   .status-banner{ padding:12px 16px; border-radius:12px; font-size:12.5px; font-weight:600; margin-bottom:16px; }
   .status-err{ background:#FCEBEA; color:var(--danger); }
   .empty{ padding:30px 20px; color:var(--text-mid); font-size:13px; text-align:center; }
+  .abar-row{ margin-bottom:14px; }
+  .abar-label{ display:flex; justify-content:space-between; font-size:12.5px; font-weight:600; color:var(--navy); margin-bottom:5px; }
+  .abar-track{ height:11px; background:var(--ice); border-radius:6px; overflow:hidden; }
+  .abar-fill{ height:100%; border-radius:6px; background:linear-gradient(90deg,var(--primary-light),var(--navy)); }
+  .analytics-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:16px; }
   @media (max-width: 860px){ .sidebar{ display:none; } .main{ padding:16px 16px 50px; } }
   @media (max-width: 720px){ .review-grid{ grid-template-columns:1fr; } }
 </style>
@@ -124,11 +130,12 @@ const firebaseConfig = {
   messagingSenderId: "822553770547",
   appId: "1:822553770547:web:ffb69be461f4a38d5d8146",
 };
-let db = null, auth = null, firebaseReady = false, firebaseError = null;
+let db = null, auth = null, storage = null, firebaseReady = false, firebaseError = null;
 try {
   firebase.initializeApp(firebaseConfig);
   db = firebase.firestore();
   auth = firebase.auth();
+  storage = firebase.storage();
   firebaseReady = true;
 } catch (e) { firebaseError = e.message; }
 
@@ -181,11 +188,18 @@ async function sha256(text){
 // Collections used: admins, candidates (status: pending/approved/rejected), users
 // ============================================================
 const PHOTO_STYLES = [
-  {color:"linear-gradient(160deg,#7FC7E0,#1C93C9)", emoji:"👩"},
-  {color:"linear-gradient(160deg,#1C93C9,#0C2A46)", emoji:"👨"},
-  {color:"linear-gradient(160deg,#7FC7E0,#145C82)", emoji:"👩"},
+  {color:"linear-gradient(160deg,#D98FA0,#A8455C)", emoji:"👩"},
+  {color:"linear-gradient(160deg,#A8455C,#4A1220)", emoji:"👨"},
+  {color:"linear-gradient(160deg,#D98FA0,#7A2438)", emoji:"👩"},
 ];
 function styleFor(i){ return PHOTO_STYLES[i % PHOTO_STYLES.length]; }
+
+// Multiple Photos migration helper — જૂના candidates ને ફક્ત `photoURL` (single-photo
+// જમાનાનું) હોય, નવા ને `photos` array — બંને કિસ્સામાં cover photo ની URL આપે.
+function primaryPhotoURL(c){
+  if (c.photos && c.photos.length > 0) return c.photos[0].url;
+  return c.photoURL || null;
+}
 
 const adminService = {
   // Firebase Auth requires a real email *format*. To keep the memorable
@@ -336,15 +350,39 @@ const adminService = {
     }).sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
   },
 
-  async approveCandidate(id) {
+  // Approve થતાં જ sensitive documents (Aadhar/Education/LC) Storage માંથી auto-delete
+  // થાય છે — Photo delete નથી થતો (એ member ને કાયમ દેખાડવાનો છે).
+  // docsMap = candidate.docs (Review screen પાસે cached data already છે, extra read ટાળવા).
+  async approveCandidate(id, docsMap) {
     if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
-    await db.collection("candidates").doc(id).update({ status: "approved" });
+    const docKeys = ["aadhar", "education", "lc"];
+    for (const key of docKeys) {
+      if (docsMap && docsMap[key]) {
+        try { await storage.ref().child(`candidates/${id}/docs/${key}`).delete(); }
+        catch (e) { /* file કદાચ પહેલેથી delete થયેલી હોય — approval ને block ના કરો */ }
+      }
+    }
+    await db.collection("candidates").doc(id).update({
+      status: "approved",
+      docs: firebase.firestore.FieldValue.delete(),
+      documentsDeletedAt: firebase.firestore.FieldValue.serverTimestamp(),
+    });
     return { success: true };
   },
 
   async rejectCandidate(id) {
     if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
     await db.collection("candidates").doc(id).update({ status: "rejected" });
+    return { success: true };
+  },
+
+  // Admin Edit — corrects candidate data directly (typos, wrong details).
+  // Deliberately does NOT touch `status` — Admin is the approving authority,
+  // so an Admin-made edit doesn't need to go back through re-approval like a
+  // candidate's own self-edit does.
+  async updateCandidateByAdmin(id, payload) {
+    if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
+    await db.collection("candidates").doc(id).update(payload);
     return { success: true };
   },
 
@@ -360,11 +398,51 @@ const adminService = {
     await db.collection("users").doc(userId).update({ blocked });
     return { success: true };
   },
+
+  // Analytics — બધું client-side aggregate થાય છે, existing read-access જ વાપરે છે,
+  // કોઈ નવો Rules change જરૂરી નથી.
+  async getAnalyticsData() {
+    if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
+    const [candSnap, interestSnap] = await Promise.all([
+      db.collection("candidates").get(),
+      db.collection("interests").get(),
+    ]);
+    const candidates = candSnap.docs.map(d => d.data());
+    const interests = interestSnap.docs.map(d => d.data());
+
+    const statusBreakdown = { pending: 0, approved: 0, rejected: 0 };
+    candidates.forEach(c => { if (statusBreakdown[c.status] !== undefined) statusBreakdown[c.status]++; });
+
+    // Gender/Age/City — "live marketplace" ને represent કરે એટલે ફક્ત
+    // approved & deactivated-not-થયેલા candidates ગણ્યા.
+    const live = candidates.filter(c => c.status === "approved" && !c.deactivated);
+    const genderSplit = { male: 0, female: 0 };
+    live.forEach(c => { if (genderSplit[c.gender] !== undefined) genderSplit[c.gender]++; });
+
+    const ageBuckets = { "18-25": 0, "26-30": 0, "31-35": 0, "36-40": 0, "41+": 0 };
+    live.forEach(c => {
+      const age = Number(c.age) || 0;
+      if (age <= 25) ageBuckets["18-25"]++;
+      else if (age <= 30) ageBuckets["26-30"]++;
+      else if (age <= 35) ageBuckets["31-35"]++;
+      else if (age <= 40) ageBuckets["36-40"]++;
+      else if (age > 40) ageBuckets["41+"]++;
+    });
+
+    const cityCounts = {};
+    live.forEach(c => { const city = (c.city||"").trim(); if (city) cityCounts[city] = (cityCounts[city]||0) + 1; });
+    const topCities = Object.entries(cityCounts).sort((a,b) => b[1]-a[1]).slice(0, 5);
+
+    const interestStats = { total: interests.length, pending: 0, accepted: 0, declined: 0 };
+    interests.forEach(i => { if (interestStats[i.status] !== undefined) interestStats[i.status]++; });
+
+    return { statusBreakdown, genderSplit, ageBuckets, topCities, interestStats, liveCount: live.length };
+  },
 };
 // ============================================================
 
 const root = document.getElementById("root");
-let state = { loggedIn:false, loginStep:1, adminName:"", adminEmail:"", adminRole:"super", view:"dashboard", reviewId:null, pendingCache:[], candidatesFilter:"" };
+let state = { loggedIn:false, loginStep:1, adminName:"", adminEmail:"", adminRole:"super", view:"dashboard", reviewId:null, pendingCache:[], candidatesFilter:"", editCandidateData:null, editReturnView:"allCandidates" };
 
 // ---- Session restore: relies on Firebase Auth's own persisted session,
 // then re-checks the admins collection (server-verified, cannot be forged
@@ -428,7 +506,7 @@ function renderLogin(){
 }
 
 function sidebarHtml(active, pendingCount){
-  const items=[["dashboard","📊","Dashboard",0],["pending","⏳","Pending Approvals",pendingCount],["allCandidates","📋","All Candidates",0],["members","👥","All Members",0],["reported","🚩","Reported/Blocked",0]];
+  const items=[["dashboard","📊","Dashboard",0],["pending","⏳","Pending Approvals",pendingCount],["allCandidates","📋","All Candidates",0],["members","👥","All Members",0],["reported","🚩","Reported/Blocked",0],["analytics","📈","Analytics",0]];
   if(state.adminRole==="super") items.push(["manageAdmins","🛡️","Manage Admins",0]);
   if(state.adminRole!=="viewer") items.push(["export","📤","Export Data",0]);
   items.push(["activityLog","📜","Activity Log",0]);
@@ -462,7 +540,7 @@ function attachSidebar(){
 }
 
 function renderShell(){
-  const active = state.view==="review" ? "pending" : state.view;
+  const active = state.view==="review" ? "pending" : (state.view==="editCandidate" ? state.editReturnView : state.view);
   const pendingCount = state.pendingCache.filter(c=>c.status==="pending").length;
   root.innerHTML = `<div class="app-shell">${sidebarHtml(active,pendingCount)}<div class="main" id="main"></div></div>`;
   attachSidebar();
@@ -471,8 +549,10 @@ function renderShell(){
   else if(state.view==="review") renderReview(main);
   else if(state.view==="pending"){ state.candidatesFilter="pending"; renderAllCandidates(main, "pending"); }
   else if(state.view==="allCandidates") renderAllCandidates(main);
+  else if(state.view==="editCandidate") renderEditCandidate(main);
   else if(state.view==="members") renderMembers(main);
   else if(state.view==="reported") renderReported(main);
+  else if(state.view==="analytics") renderAnalytics(main);
   else if(state.view==="manageAdmins") renderManageAdmins(main);
   else if(state.view==="export") renderExport(main);
   else if(state.view==="activityLog") renderActivityLog(main);
@@ -559,14 +639,19 @@ function renderReview(main){
             <div class="detail-row"><span class="k">માતાનું નામ</span><span class="v">${c.motherName||'-'}</span></div>
             <div class="detail-row"><span class="k">રાશી</span><span class="v">${c.rashi||'-'}</span></div>
             <div class="detail-row"><span class="k">દરજ્જો</span><span class="v">${c.maritalStatus||'-'}</span></div>
+            <div class="detail-row"><span class="k">ભાઈ-બહેન</span><span class="v">${c.siblings||'-'}${c.siblings?(c.siblingsVisible?' <span style="color:var(--success);font-size:9.5px;">(👁️ Visible to members)</span>':' <span style="color:var(--text-mid);font-size:9.5px;">(🙈 Hidden)</span>'):''}</span></div>
             <div class="detail-row"><span class="k">શિક્ષણ</span><span class="v">${c.education||'-'}</span></div>
             <div class="detail-row"><span class="k">Current Status</span><span class="v">${c.status}</span></div>
           </div>
         </div>
         <div>
           <div class="card">
-            <div class="section-title" style="margin-top:0;">Photo</div>
-            ${c.photoURL ? `<img src="${c.photoURL}" style="width:100%;max-width:220px;border-radius:12px;display:block;">` : `<div style="font-size:12px;color:var(--text-mid);">હજુ photo upload નથી થયું</div>`}
+            <div class="section-title" style="margin-top:0;">Photos ${c.photos && c.photos.length ? `(${c.photos.length})` : ''}</div>
+            ${(() => {
+              const photoList = (c.photos && c.photos.length) ? c.photos.map(p=>p.url) : (c.photoURL ? [c.photoURL] : []);
+              if (photoList.length === 0) return `<div style="font-size:12px;color:var(--text-mid);">હજુ photo upload નથી થયું</div>`;
+              return `<div style="display:flex;gap:8px;flex-wrap:wrap;">${photoList.map(url=>`<img src="${url}" style="width:100px;height:100px;object-fit:cover;border-radius:12px;">`).join("")}</div>`;
+            })()}
           </div>
           <div class="card">
             <div class="section-title" style="margin-top:0;">Documents</div>
@@ -574,29 +659,37 @@ function renderReview(main){
               const docKeys = [["aadhar","🪪 Aadhar Card"],["education","🎓 શિક્ષણ પ્રમાણપત્ર"],["lc","📄 જન્મ તારીખ દાખલો / LC"]];
               const rows = docKeys.map(([key,label])=>{
                 const doc = c.docs && c.docs[key];
-                if(!doc) return `<div class="doc-item" style="opacity:0.5;"><div class="doc-thumb">⏳</div><div><div class="doc-name">${label}</div><div class="doc-note">Upload બાકી છે</div></div></div>`;
-                return `<div class="doc-item"><div class="doc-thumb">✓</div><div><div class="doc-name">${label}</div><div class="doc-note">${doc.name||'file'}</div></div><a href="${doc.url}" target="_blank" class="icon-btn ib-download" style="text-decoration:none;">⬇</a></div>`;
+                if(doc) return `<div class="doc-item"><div class="doc-thumb">✓</div><div><div class="doc-name">${label}</div><div class="doc-note">${doc.name||'file'}</div></div><a href="${doc.url}" target="_blank" class="icon-btn ib-download" style="text-decoration:none;">⬇</a></div>`;
+                if(c.documentsDeletedAt) return `<div class="doc-item" style="opacity:0.6;"><div class="doc-thumb">🗑️</div><div><div class="doc-name">${label}</div><div class="doc-note">Approve પછી Auto-Delete થયું</div></div></div>`;
+                return `<div class="doc-item" style="opacity:0.5;"><div class="doc-thumb">⏳</div><div><div class="doc-name">${label}</div><div class="doc-note">Upload બાકી છે</div></div></div>`;
               }).join("");
               return rows;
             })()}
             <div style="background:#FFF6E7;border:1px solid #F2D8A0;border-radius:12px;padding:11px 13px;margin-top:12px;font-size:11px;color:#8A6116;line-height:1.6;">
-              🔒 Approve કરતાં પહેલા documents Download કરી લો. (Note: auto-delete-after-approve હજુ આગળના phase માં automate થશે — હાલ manual delete Firebase Storage Console માંથી કરવું.)
+              ${c.status==="pending" ? '🔒 Approve કરતાં પહેલા documents Download કરી લો — Approve click કરતાં જ documents Storage માંથી આપોઆપ Delete થઈ જશે (Privacy માટે).' : c.documentsDeletedAt ? '🔒 Documents Approve થયા પછી auto-delete થઈ ગયા — Privacy ના કારણે, હવે Storage માં નથી.' : ''}
             </div>
           </div>
           <div class="action-bar">
             <button class="btn btn-approve" id="r-approve" ${c.status!=="pending"||state.adminRole==='viewer'?"disabled":""}>✓ Approve</button>
             <button class="btn btn-reject" id="r-reject" ${c.status!=="pending"||state.adminRole==='viewer'?"disabled":""}>✕ Reject</button>
           </div>
+          ${state.adminRole!=='viewer' ? `<button class="mini-btn" id="r-edit" style="width:100%;margin-top:8px;background:var(--ice);color:var(--primary);">✏️ Details Edit કરો (typo/mistake fix)</button>` : ""}
           ${state.adminRole==='viewer' ? `<div style="font-size:11px;color:var(--text-mid);margin-top:8px;text-align:center;">👁️ Viewer role — ફક્ત જોઈ શકો, actions ના લઈ શકો</div>` : ""}
         </div>
       </div>
     </div>
   `;
   document.getElementById("r-back").addEventListener("click", ()=>{ state.view="dashboard"; render(); });
+  const editBtn = document.getElementById("r-edit");
+  if(editBtn) editBtn.addEventListener("click", ()=>{
+    state.editCandidateData = c;
+    state.editReturnView = "review";
+    state.view = "editCandidate"; render();
+  });
   document.getElementById("r-approve").addEventListener("click", async ()=>{
     document.getElementById("r-approve").disabled=true; document.getElementById("r-reject").disabled=true;
     try{
-      await adminService.approveCandidate(c.id);
+      await adminService.approveCandidate(c.id, c.docs);
       await adminService.logActivity(state.adminEmail, "Approved candidate", c.name);
       showToast("✓ Approved — Firestore માં save થયું");
       setTimeout(()=>{ state.view="dashboard"; render(); }, 1000);
@@ -610,6 +703,81 @@ function renderReview(main){
       showToast("✕ Rejected — Firestore માં save થયું");
       setTimeout(()=>{ state.view="dashboard"; render(); }, 1000);
     }catch(err){ showToast("Error: "+err.message); }
+  });
+}
+
+function renderEditCandidate(main){
+  const c = state.editCandidateData;
+  if(!c){ main.innerHTML=`<div class="placeholder">Candidate ના મળ્યા — પાછા જાવ</div>`; return; }
+  main.innerHTML = `
+    <div class="review-wrap">
+      <div class="back-row"><div class="back-btn" id="ec-back">←</div><div><h1 style="font-size:19px;color:var(--navy);font-weight:800;">Candidate Edit કરો</h1><div class="sub" style="font-size:11.5px;color:var(--text-mid);">Firestore ID: ${c.id}</div></div></div>
+      <div class="card">
+        <div class="field"><label>ઉમેદવારનું પૂરું નામ</label><div class="input-wrap"><input id="ec-name" value="${c.name||''}"></div></div>
+        <div class="field"><label>Gender</label><div class="input-wrap"><select id="ec-gender">
+          <option value="male" ${c.gender==='male'?'selected':''}>Male</option>
+          <option value="female" ${c.gender==='female'?'selected':''}>Female</option>
+        </select></div></div>
+        <div class="field"><label>ઉંમર</label><div class="input-wrap"><input id="ec-age" type="number" value="${c.age||''}"></div></div>
+        <div class="field"><label>પિતાનું નામ</label><div class="input-wrap"><input id="ec-father" value="${c.fatherName||''}"></div></div>
+        <div class="field"><label>માતાનું નામ</label><div class="input-wrap"><input id="ec-mother" value="${c.motherName||''}"></div></div>
+        <div class="field"><label>રાશી</label><div class="input-wrap"><select id="ec-rashi">
+          <option value="">પસંદ કરો</option>
+          ${["મેષ","વૃષભ","મિથુન","કર્ક","સિંહ","કન્યા","તુલા","વૃશ્ચિક","ધન","મકર","કુંભ","મીન"].map(r=>`<option ${c.rashi===r?'selected':''}>${r}</option>`).join("")}
+        </select></div></div>
+        <div class="field"><label>શિક્ષણ</label><div class="input-wrap"><input id="ec-edu" value="${c.education||''}"></div></div>
+        <div class="field"><label>વ્યવસાય</label><div class="input-wrap"><input id="ec-occ" value="${c.occupation||''}"></div></div>
+        <div class="field"><label>શહેર / ગામ</label><div class="input-wrap"><input id="ec-city" value="${c.city||''}"></div></div>
+        <div class="field"><label>દરજ્જો</label><div class="input-wrap"><select id="ec-status">
+          <option value="કુંવારા" ${c.maritalStatus==='કુંવારા'?'selected':''}>કુંવારા</option>
+          <option value="છૂટાછેડા" ${c.maritalStatus==='છૂટાછેડા'?'selected':''}>છૂટાછેડા</option>
+        </select></div></div>
+        <div class="field"><label>ભાઈ-બહેન ની વિગત (Optional)</label><div class="input-wrap"><input id="ec-sib" value="${c.siblings||''}"></div></div>
+        <div id="ec-err"></div>
+      </div>
+      <div style="background:#FFF6E7;border:1px solid #F2D8A0;border-radius:12px;padding:11px 13px;margin-bottom:16px;font-size:11px;color:#8A6116;line-height:1.6;">
+        ℹ️ Admin Edit કરવાથી candidate નો current Status (<b>${c.status}</b>) બદલાશે નહીં — Re-approval જરૂરી નથી.
+      </div>
+      <div class="action-bar">
+        <button class="btn btn-approve" id="ec-save" style="flex:1;">✓ Save Changes</button>
+        <button class="btn btn-reject" id="ec-cancel" style="flex:1;">Cancel</button>
+      </div>
+    </div>
+  `;
+  function goBack(){ state.editCandidateData=null; state.view = state.editReturnView || "allCandidates"; render(); }
+  document.getElementById("ec-back").addEventListener("click", goBack);
+  document.getElementById("ec-cancel").addEventListener("click", goBack);
+  document.getElementById("ec-save").addEventListener("click", async (e)=>{
+    const name=document.getElementById("ec-name").value.trim();
+    const gender=document.getElementById("ec-gender").value;
+    const age=document.getElementById("ec-age").value;
+    const fatherName=document.getElementById("ec-father").value.trim();
+    const motherName=document.getElementById("ec-mother").value.trim();
+    const rashi=document.getElementById("ec-rashi").value;
+    const education=document.getElementById("ec-edu").value.trim();
+    const occupation=document.getElementById("ec-occ").value.trim();
+    const city=document.getElementById("ec-city").value.trim();
+    const maritalStatus=document.getElementById("ec-status").value;
+    const siblings=document.getElementById("ec-sib").value.trim();
+    const errEl=document.getElementById("ec-err"); errEl.innerHTML="";
+    if(!name||!gender||!age||!fatherName||!motherName||!education||!city){
+      errEl.innerHTML = `<div class="err-text">બધા જરૂરી fields ભરો</div>`; return;
+    }
+    const payload = { name, gender, age:Number(age), fatherName, motherName, rashi, education, occupation, city, maritalStatus, siblings: siblings||null };
+    e.target.disabled=true; e.target.textContent="Save થઈ રહ્યું છે...";
+    try{
+      await adminService.updateCandidateByAdmin(c.id, payload);
+      await adminService.logActivity(state.adminEmail, "Edited candidate details", name);
+      showToast("✓ Candidate ની વિગત Update થઈ");
+      if(state.editReturnView==="review"){
+        const idx = state.pendingCache.findIndex(x=>x.id===c.id);
+        if(idx>-1) Object.assign(state.pendingCache[idx], payload);
+      }
+      goBack();
+    }catch(err){
+      e.target.disabled=false; e.target.textContent="✓ Save Changes";
+      errEl.innerHTML = `<div class="err-text">${err.message}</div>`;
+    }
   });
 }
 
@@ -647,7 +815,10 @@ function renderAllCandidates(main, initialStatus){
       <div class="approval-row">
         <div class="ar-photo" style="background:${c.photoColor}">${c.photoEmoji}</div>
         <div class="ar-info"><div class="ar-name">${c.name}${c.deactivated?' <span style="color:var(--text-mid);font-size:10px;font-weight:700;">(Deactivated)</span>':''}</div><div class="ar-meta">${c.city||'-'} · ${c.age||'-'} વર્ષ</div></div>
-        ${c.status==="pending" ? `<div class="ar-actions"><button class="btn-view" data-review="${c.id}">Review</button></div>` : ""}
+        <div class="ar-actions">
+          ${c.status==="pending" ? `<button class="btn-view" data-review="${c.id}">Review</button>` : ""}
+          ${state.adminRole!=='viewer' ? `<button class="btn-view" data-edit="${c.id}">✏️ Edit</button>` : ""}
+        </div>
         ${c.status==="approved" ? `<span class="status-badge badge-approved">✓ Approved</span>` : ""}
         ${c.status==="rejected" ? `<span class="status-badge badge-rejected">✕ Rejected</span>` : ""}
       </div>
@@ -656,6 +827,14 @@ function renderAllCandidates(main, initialStatus){
       btn.addEventListener("click", ()=>{
         state.pendingCache = allCandidates;
         state.reviewId = btn.getAttribute("data-review"); state.view="review"; render();
+      });
+    });
+    document.querySelectorAll("[data-edit]").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        const candidate = allCandidates.find(x=>x.id===btn.getAttribute("data-edit"));
+        state.editCandidateData = candidate;
+        state.editReturnView = "allCandidates";
+        state.view = "editCandidate"; render();
       });
     });
   }
@@ -699,7 +878,7 @@ function renderMembers(main){
     if(list.length===0){ el.innerHTML = `<div class="empty">કોઈ member ના મળ્યા</div>`; return; }
     el.innerHTML = list.map(u=>`
       <div class="approval-row">
-        <div class="ar-photo" style="background:linear-gradient(160deg,#7FC7E0,#1C93C9);">👤</div>
+        <div class="ar-photo" style="background:linear-gradient(160deg,#D98FA0,#A8455C);">👤</div>
         <div class="ar-info">
           <div class="ar-name">${u.name}${u.blocked?' <span style="color:var(--danger);font-size:10px;font-weight:800;">(BLOCKED)</span>':''}</div>
           <div class="ar-meta">${u.mobile} · ${u.village||'-'}</div>
@@ -762,6 +941,55 @@ function renderReported(main){
   });
 }
 
+function renderAnalytics(main){
+  main.innerHTML = `
+    <div class="topbar"><div><h1>📈 Analytics</h1><div class="sub">Community profiles ના overview stats (Live Firestore data)</div></div></div>
+    <div id="analytics-content"><div class="placeholder">Load થઈ રહ્યું છે...</div></div>
+  `;
+  function barsHtml(title, dataObj, colorKeyed){
+    const total = Object.values(dataObj).reduce((a,b)=>a+b,0) || 1;
+    return `
+      <div class="panel" style="padding:18px;">
+        <div class="panel-head" style="padding:0 0 14px;border:none;"><h2>${title}</h2></div>
+        ${Object.entries(dataObj).map(([k,v])=>`
+          <div class="abar-row">
+            <div class="abar-label"><span>${k}</span><span>${v} (${Math.round(v/total*100)}%)</span></div>
+            <div class="abar-track"><div class="abar-fill" style="width:${Math.round(v/total*100)}%;"></div></div>
+          </div>
+        `).join("")}
+      </div>
+    `;
+  }
+  adminService.getAnalyticsData().then(data=>{
+    const el = document.getElementById("analytics-content");
+    const genderLabels = { male: "યુવક (Male)", female: "યુવતી (Female)" };
+    const genderData = {}; Object.entries(data.genderSplit).forEach(([k,v])=>{ genderData[genderLabels[k]||k]=v; });
+    const statusLabels = { pending: "⏳ Pending", approved: "✓ Approved", rejected: "✕ Rejected" };
+    const statusData = {}; Object.entries(data.statusBreakdown).forEach(([k,v])=>{ statusData[statusLabels[k]||k]=v; });
+    const interestLabels = { pending: "⏳ Pending", accepted: "✓ Accepted", declined: "✕ Declined" };
+    const interestData = {}; Object.entries(data.interestStats).forEach(([k,v])=>{ if(k!=="total") interestData[interestLabels[k]||k]=v; });
+    const cityData = {}; data.topCities.forEach(([city,count])=>{ cityData[city]=count; });
+
+    el.innerHTML = `
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-icon" style="background:var(--ice);color:var(--primary);">✓</div><div class="stat-val">${data.liveCount}</div><div class="stat-label">Live Profiles</div></div>
+        <div class="stat-card"><div class="stat-icon" style="background:#FDF1E7;color:#B4762A;">⏳</div><div class="stat-val">${data.statusBreakdown.pending}</div><div class="stat-label">Pending</div></div>
+        <div class="stat-card"><div class="stat-icon" style="background:#E7F6EF;color:var(--success);">💌</div><div class="stat-val">${data.interestStats.total}</div><div class="stat-label">Total Interests</div></div>
+        <div class="stat-card"><div class="stat-icon" style="background:#E7F6EF;color:var(--success);">💞</div><div class="stat-val">${data.interestStats.accepted}</div><div class="stat-label">Interests Accepted</div></div>
+      </div>
+      <div class="analytics-grid">
+        ${barsHtml("Gender Split (Live Profiles)", genderData)}
+        ${barsHtml("Status Breakdown (બધા Candidates)", statusData)}
+        ${barsHtml("Age Group (Live Profiles)", data.ageBuckets)}
+        ${data.topCities.length>0 ? barsHtml("Top Cities (Live Profiles)", cityData) : `<div class="panel" style="padding:18px;"><div class="empty">હજુ કોઈ city data નથી</div></div>`}
+        ${barsHtml("Interest Status", interestData)}
+      </div>
+    `;
+  }).catch(err=>{
+    document.getElementById("analytics-content").innerHTML = `<div class="status-banner status-err">Data load ના થયું: ${err.message}</div>`;
+  });
+}
+
 function renderManageAdmins(main){
   main.innerHTML = `
     <div class="topbar"><div><h1>🛡️ Manage Admins</h1><div class="sub">Staff/Viewer admins add કરો — Super Admin only</div></div></div>
@@ -788,7 +1016,7 @@ function renderManageAdmins(main){
     adminService.getAdmins().then(list=>{
       document.getElementById("admins-list").innerHTML = list.map(a=>`
         <div class="approval-row">
-          <div class="ar-photo" style="background:linear-gradient(160deg,#7FC7E0,#1C93C9);">👤</div>
+          <div class="ar-photo" style="background:linear-gradient(160deg,#D98FA0,#A8455C);">👤</div>
           <div class="ar-info"><div class="ar-name">${a.name}</div><div class="ar-meta">${a.email}</div></div>
           <span class="status-badge ${a.role==='super'?'badge-approved':'badge-rejected'}" style="${a.role!=='super'?'background:var(--ice);color:var(--primary);':''}">${a.role==='super'?'Super Admin':a.role==='staff'?'Staff Admin':'Viewer Admin'}</span>
         </div>
@@ -866,7 +1094,7 @@ function renderActivityLog(main){
     if(list.length===0){ el.innerHTML = `<div class="empty">હજુ કોઈ activity નથી</div>`; return; }
     el.innerHTML = list.map(a=>`
       <div class="approval-row">
-        <div class="ar-photo" style="background:linear-gradient(160deg,#7FC7E0,#1C93C9);font-size:14px;">📝</div>
+        <div class="ar-photo" style="background:linear-gradient(160deg,#D98FA0,#A8455C);font-size:14px;">📝</div>
         <div class="ar-info"><div class="ar-name">${a.action}${a.targetName ? ' — '+a.targetName : ''}</div><div class="ar-meta">By ${a.adminEmail||'-'}</div></div>
       </div>
     `).join("");
