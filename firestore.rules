@@ -1,0 +1,92 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isRealUser() {
+      return request.auth != null &&
+        request.auth.token.firebase.sign_in_provider != 'anonymous';
+    }
+
+    function isAdmin() {
+      return isRealUser() &&
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    function adminRole() {
+      return get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.role;
+    }
+
+    function isSuperAdmin() {
+      return isAdmin() && adminRole() == 'super';
+    }
+
+    function isStaffOrSuper() {
+      return isAdmin() && adminRole() in ['super', 'staff'];
+    }
+
+    function isMetadataOnlyUpdate() {
+      return request.resource.data.diff(resource.data).affectedKeys()
+        .hasOnly(['photoVisible', 'deactivated', 'siblingsVisible']);
+    }
+
+    // USERS: Authenticated users can read basic user profile
+    match /users/{userId} {
+      allow read: if isRealUser();
+      allow create: if isRealUser() && request.auth.uid == userId;
+      allow update: if isStaffOrSuper() ||
+        (isRealUser() && request.auth.uid == userId &&
+         request.resource.data.blocked == resource.data.blocked);
+
+      // FAVORITES/SHORTLIST — per-user subcollection, owner-only
+      match /favorites/{candidateId} {
+        allow read, write: if isRealUser() && request.auth.uid == userId;
+      }
+    }
+
+    // CANDIDATES: Allow reading all candidates for logged-in real users
+    // (Frontend filters approved/deactivated profiles)
+    match /candidates/{candidateId} {
+      allow read: if isRealUser();
+      allow create: if isRealUser() &&
+        request.auth.uid == request.resource.data.createdByUserId &&
+        request.resource.data.status == 'pending';
+      allow update: if isStaffOrSuper() ||
+        (isRealUser() &&
+         request.auth.uid == resource.data.createdByUserId &&
+         request.resource.data.createdByUserId == resource.data.createdByUserId &&
+         (isMetadataOnlyUpdate() || request.resource.data.status == 'pending'));
+      allow delete: if isStaffOrSuper();
+    }
+
+    // INTERESTS
+    match /interests/{interestId} {
+      allow read: if isRealUser();
+      allow create: if isRealUser() &&
+        request.auth.uid == request.resource.data.fromUserId &&
+        request.resource.data.status == 'pending';
+      allow update: if isStaffOrSuper() ||
+        (isRealUser() &&
+         get(/databases/$(database)/documents/candidates/$(resource.data.toCandidateId))
+           .data.createdByUserId == request.auth.uid);
+    }
+
+    // ADMINS
+    match /admins/{adminId} {
+      allow read: if isRealUser();
+      allow create: if isSuperAdmin() ||
+        (request.auth.uid == adminId && request.resource.data.role == 'super');
+      allow update: if isSuperAdmin() ||
+        (request.auth.uid == adminId &&
+         request.resource.data.role == resource.data.role &&
+         request.resource.data.email == resource.data.email);
+      allow delete: if isSuperAdmin();
+    }
+
+    // ACTIVITY LOG
+    match /activityLog/{logId} {
+      allow read: if isAdmin();
+      allow create: if isAdmin();
+      allow update, delete: if false;
+    }
+  }
+}
