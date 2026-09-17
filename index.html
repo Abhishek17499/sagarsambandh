@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- SAGAR SAMBANDH — USER APP — v13 (16 Sep 2026) — Multiple Photos (max 5, candidate-managed): new photo gallery on Form-Docs screen + "📷 Photos" button in My Profiles for post-creation management, individual photo remove, cover-photo indicator. Data model: candidates.photos[] (replaces single photoURL, with automatic migration of old single-photo candidates). No Rules changes needed. Base: v12.3 (16 Sep 2026) — Favorites/Shortlist. -->
+<!-- SAGAR SAMBANDH — USER APP — v19 (16 Sep 2026) — English-toggle: pre-login flow completed. New first-run "Choose Language" screen (ગુજરાતી/English, 2 big buttons) shown once before Mobile Entry when no preference is stored; choice persists in localStorage (sagarSambandhLang) and now also applies whenever the in-app EN/ગુજ pill is toggled (previously reset to Gujarati on every reload). Mobile Entry, PIN Login, and Signup Details screens — entirely hardcoded Gujarati before, no toggle available at all — now fully bilingual via STRINGS/t(). Base: v18 (16 Sep 2026) — app name/search-placeholder/years-unit translation fix. -->
 <html lang="gu">
 <head>
 <meta charset="UTF-8">
@@ -126,23 +126,30 @@
   .chip.active{ background:var(--navy); color:#fff; border-color:var(--navy); }
   .card{ background:#fff; border-radius:18px; box-shadow:0 6px 18px -8px rgba(74,18,32,0.18); display:flex; overflow:hidden; margin-bottom:14px; border:1px solid #F0E4DC; cursor:pointer; }
   .card-photo{ width:100px; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:32px; color:#fff; position:relative; }
-  .fav-btn{ position:absolute; top:6px; right:6px; width:26px; height:26px; border-radius:50%; background:rgba(255,255,255,0.9); display:flex; align-items:center; justify-content:center; font-size:14px; cursor:pointer; z-index:2; box-shadow:0 2px 6px rgba(74,18,32,0.25); }
+  .fav-btn{ position:absolute; top:0; right:0; width:44px; height:44px; display:flex; align-items:center; justify-content:center; cursor:pointer; z-index:2; }
+  .fav-btn-visual{ width:26px; height:26px; border-radius:50%; background:rgba(255,255,255,0.9); display:flex; align-items:center; justify-content:center; font-size:14px; box-shadow:0 2px 6px rgba(74,18,32,0.25); }
   .verified-tag{ position:absolute; bottom:6px; left:6px; right:6px; background:rgba(74,18,32,0.75); color:#fff; font-size:8px; font-weight:700; text-align:center; padding:3px 0; border-radius:6px; }
   .card-body{ padding:12px 13px; flex:1; }
   .card-name{ font-size:14px; font-weight:700; color:var(--navy); }
   .card-sub{ font-size:11px; color:var(--text-mid); margin-top:2px; }
   .loading{ text-align:center; padding:60px 20px; color:var(--text-mid); font-size:13px; }
   .empty{ text-align:center; padding:60px 20px; color:var(--text-mid); font-size:12.5px; }
-  .bottom-nav{ position:fixed; bottom:0; left:0; right:0; background:#fff; border-top:1px solid var(--border); display:flex; justify-content:center; gap:0; padding:10px 6px calc(10px + env(safe-area-inset-bottom)); flex-shrink:0; z-index:50; }
-  .bottom-nav-inner{ display:flex; justify-content:space-around; width:100%; max-width:480px; }
-  .nav-item{ display:flex; flex-direction:column; align-items:center; gap:3px; font-size:9.5px; color:var(--text-mid); font-weight:600; cursor:pointer; }
-  .nav-item.active{ color:var(--primary); }
-  .nav-icon{ font-size:17px; }
+  .bottom-nav{ position:fixed; bottom:0; left:0; right:0; background:#fff; border-top:1px solid var(--border); display:flex; justify-content:center; gap:0; padding:12px 14px calc(12px + env(safe-area-inset-bottom)); flex-shrink:0; z-index:50; }
+  .bottom-nav-inner{ display:flex; justify-content:space-around; gap:4px; width:100%; max-width:480px; }
+  .nav-item{ flex:1; display:flex; flex-direction:column; align-items:center; gap:5px; padding:10px 4px; border-radius:14px; font-size:10.5px; color:var(--text-mid); font-weight:600; cursor:pointer; position:relative; }
+  .nav-item.active{ background:var(--ice); color:var(--navy); font-weight:800; }
+  .nav-icon{ font-size:21px; }
+  .nav-item.active .nav-icon{ font-size:23px; }
+  .nav-badge{ position:absolute; top:2px; right:14px; width:15px; height:15px; border-radius:50%; background:var(--accent); color:var(--navy); font-size:8.5px; font-weight:800; display:flex; align-items:center; justify-content:center; }
+  .int-tab-badge{ display:inline-flex; align-items:center; justify-content:center; min-width:15px; height:15px; border-radius:8px; background:var(--accent); color:var(--navy); font-size:9px; font-weight:800; padding:0 4px; margin-left:3px; vertical-align:middle; }
   .back-row{ display:flex; align-items:center; gap:12px; }
   .back-btn{ width:30px; height:30px; border-radius:9px; background:rgba(255,255,255,0.18); display:flex; align-items:center; justify-content:center; font-size:14px; cursor:pointer; flex-shrink:0; }
   .toast{ position:fixed; bottom:90px; left:50%; transform:translateX(-50%); background:var(--navy); color:#fff; padding:12px 22px; border-radius:30px; font-size:13px; font-weight:600; z-index:999; box-shadow:0 10px 24px rgba(0,0,0,0.3); max-width:85%; text-align:center; }
   .status-banner{ padding:10px 14px; border-radius:12px; font-size:11.5px; font-weight:600; margin-bottom:14px; text-align:center; }
   .mini-btn{ font-size:10.5px; font-weight:700; padding:7px 12px; border-radius:8px; border:none; cursor:pointer; font-family:inherit; }
+  .picon-btn{ width:44px; height:44px; border-radius:50%; border:none; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; font-family:inherit; position:relative; }
+  .picon-label{ font-size:9px; color:var(--text-mid); font-weight:600; text-align:center; margin-top:5px; }
+  .picon-badge{ position:absolute; top:-3px; right:-3px; background:var(--navy); color:#fff; font-size:8px; font-weight:800; border-radius:8px; padding:1px 5px; min-width:14px; text-align:center; }
   .mini-accept{ background:var(--success); color:#fff; }
   .mini-decline{ background:#FCEBEA; color:var(--danger); }
   .status-ok{ background:#E7F6EF; color:var(--success); }
@@ -253,6 +260,31 @@ function primaryPhotoURL(c){
   return c.photoURL || null;
 }
 
+// Avatar color/emoji — gender ના આધારે હંમેશા fresh compute થાય છે, Firestore માં
+// stored જૂની value (photoColor/photoEmoji) ક્યારેય નથી વપરાતી. આનાથી future માં
+// theme બદલાય તો પણ જૂના candidates ના avatar આપોઆપ નવા રંગમાં દેખાય — કોઈ data
+// migration જરૂરી નહીં.
+function avatarStyle(c){
+  const isFemale = c.gender === "female";
+  return {
+    color: isFemale ? "linear-gradient(160deg,#D98FA0,#A8455C)" : "linear-gradient(160deg,#A8455C,#4A1220)",
+    emoji: isFemale ? "👩" : "👨",
+  };
+}
+
+// Font Size preference — device-local (localStorage), 3 levels. Rather than
+// rewriting every individual font-size value across the app, the whole
+// `.phone` wrapper is zoomed as one unit — text, spacing and icons scale
+// together proportionally, same idea as browser zoom.
+const FONT_ZOOM_LEVELS = { small: 0.9, medium: 1, large: 1.15 };
+function getFontSizePref(){
+  return localStorage.getItem("sagarSambandhFontSize") || "medium";
+}
+function applyFontZoom(){
+  const phoneEl = document.getElementById("phone");
+  if(phoneEl) phoneEl.style.zoom = FONT_ZOOM_LEVELS[getFontSizePref()] || 1;
+}
+
 const dataService = {
   // Mobile+PIN fallback — signup creates a real (non-anonymous) Firebase
   // Auth user, then a matching users/{uid} Firestore doc (doc ID = uid, to
@@ -294,6 +326,21 @@ const dataService = {
 
   async logout() {
     if (auth) await auth.signOut();
+  },
+
+  async getUserPrefs(userId) {
+    if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
+    const doc = await db.collection("users").doc(userId).get();
+    const data = doc.data() || {};
+    return data.notificationPrefs || { interest: true, approval: true, newMatches: true };
+  },
+
+  // `blocked` field untouched — Rules already allow owner-update as long as
+  // that field doesn't change, so notificationPrefs needs no Rules change.
+  async updateNotificationPrefs(userId, prefs) {
+    if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
+    await db.collection("users").doc(userId).update({ notificationPrefs: prefs });
+    return { success: true };
   },
 
   async getProfiles(userId) {
@@ -377,6 +424,47 @@ const dataService = {
       fromUserId: userId, toCandidateId: candidateId, status: "pending",
       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
     });
+    return { success: true };
+  },
+
+  async getPendingInterestCount(userId) {
+    if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
+    const myCandidates = await db.collection("candidates").where("createdByUserId", "==", userId).get();
+    const ids = myCandidates.docs.map(d => d.id);
+    if (ids.length === 0) return 0;
+    let count = 0;
+    for (const cid of ids) {
+      const snap = await db.collection("interests").where("toCandidateId", "==", cid).where("status", "==", "pending").get();
+      count += snap.size;
+    }
+    return count;
+  },
+
+  // SENT interests — જે તમે (fromUserId) બીજા candidates ને મોકલ્યા છે.
+  async getSentInterests(userId) {
+    if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
+    const snap = await db.collection("interests").where("fromUserId", "==", userId).get();
+    const results = [];
+    for (const d of snap.docs) {
+      const data = d.data();
+      let toCandidateName = "-", toCandidateCity = "", toCandidateAge = "";
+      try {
+        const candDoc = await db.collection("candidates").doc(data.toCandidateId).get();
+        if (candDoc.exists) {
+          const cd = candDoc.data();
+          toCandidateName = cd.name; toCandidateCity = cd.city||""; toCandidateAge = cd.age||"";
+        }
+      } catch(e){}
+      results.push({ id: d.id, ...data, toCandidateName, toCandidateCity, toCandidateAge });
+    }
+    return results.sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
+  },
+
+  // Pending sent interest પાછું ખેંચવું — doc delete કરે છે (Rules: fromUserId ના
+  // owner જ પોતાનો pending interest delete કરી શકે).
+  async cancelInterest(interestId) {
+    if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
+    await db.collection("interests").doc(interestId).delete();
     return { success: true };
   },
 
@@ -527,7 +615,11 @@ const dataService = {
 // ============================================================
 
 const app = document.getElementById("app");
-let state = { screen: "checking", user: null, openProfileId: null, formDraft: {}, uploadCandidateId: null, uploadCandidatePhotos: [], uploadCandidatePhotoVisible: false, editCandidateId: null, lang: "gu" };
+// Language preference — device-local (localStorage), same pattern as Font Size.
+function getLangPref(){ return localStorage.getItem("sagarSambandhLang"); }
+function setLangPref(lang){ localStorage.setItem("sagarSambandhLang", lang); }
+
+let state = { screen: getLangPref() ? "checking" : "chooseLanguage", user: null, openProfileId: null, formDraft: {}, uploadCandidateId: null, uploadCandidatePhotos: [], uploadCandidatePhotoVisible: false, editCandidateId: null, lang: getLangPref() || "gu" };
 
 // Note: session persistence is now handled natively by Firebase Auth
 // (auth.currentUser survives refresh automatically) — see renderChecking().
@@ -538,7 +630,7 @@ let state = { screen: "checking", user: null, openProfileId: null, formDraft: {}
 // ============================================================
 const STRINGS = {
   gu: {
-    welcome: "નમસ્તે 🙏", home: "Home", search: "Search", interest: "Interest", profile: "Profile",
+    welcome: "નમસ્તે 🙏", home: "હોમ", search: "સર્ચ", interest: "ઈન્ટરેસ્ટ", profile: "પ્રોફાઇલ",
     myProfiles: "📁 My Profiles", myProfilesSub: "તમે બનાવેલા candidate profiles (max 4)",
     interestsTitle: "💌 Interests", interestsSub: "તમારા candidates ને મળેલા Interest requests",
     browseSub: "Community profiles browse કરો (Live Firestore data)",
@@ -557,6 +649,7 @@ const STRINGS = {
     rashi: "રાશી",
     rashiPh: "રાશી પસંદ કરો",
     fillAllFields: "કૃપા કરીને બધા fields ભરો",
+    ageInvalid: "ઉંમર 18 થી 70 વર્ષ ની વચ્ચે જ હોવી જોઈએ",
     nextBtn: "આગળ વધો →",
     // Form Step 2
     formStep2Title: "શિક્ષણ અને સરનામું",
@@ -591,6 +684,85 @@ const STRINGS = {
     docsNote: "Documents ફક્ત Admin verification માટે વપરાશે. Approve થયા પછી server પરથી delete થઈ જશે — ફક્ત Photo રહશે.",
     doneBtn: "Done — My Profiles પર જાવ →",
     photoPh: "Passport size, સ્પષ્ટ, તાજેતરની",
+    // Detail Screen
+    basicDetails: "👤 મૂળભૂત વિગતો",
+    fatherNameLbl: "પિતાનું નામ",
+    motherNameLbl: "માતાનું નામ",
+    rashiLbl: "રાશી",
+    maritalStatusLbl: "દરજ્જો",
+    siblingsLbl: "ભાઈ-બહેન",
+    sendInterestBtn: "💌 ઈન્ટરેસ્ટ મોકલો",
+    interestSentToast: "💌 ઈન્ટરેસ્ટ મોકલાયું! (Firestore માં save થયું)",
+    profileNotFound: "પ્રોફાઇલ ના મળી",
+    // My Profiles actions/status
+    editBtn: "એડિટ",
+    photosBtn: "ફોટા",
+    photoIconLbl: "ફોટો",
+    siblingsIconLbl: "ભાઈ-બહેન",
+    marriedSettledBtn: "💍 લગ્ન / સ્થાયી તરીકે માર્ક કરો",
+    statusPending: "⏳ એડમિન સમીક્ષા બાકી",
+    statusApproved: "✓ એપ્રુવ્ડ · લાઈવ",
+    statusRejected: "✕ રિજેક્ટેડ",
+    statusDeactivated: "👋 લગ્ન/સ્થાયી",
+    deactivatedTag: "(ડિએક્ટિવેટેડ)",
+    reactivateBtn: "🔄 ફરી એક્ટિવ કરો",
+    addCandidateBtn: "નવો કેન્ડિડેટ પ્રોફાઇલ ઉમેરો",
+    moreProfilesMsg: "તમે હજુ {n} વધુ પ્રોફાઇલ બનાવી શકો છો",
+    limitFullMsg: "4/4 પ્રોફાઇલ વપરાયેલા — વધુ પ્રોફાઇલ બનાવવા માટે લિમિટ પૂરી થઈ છે",
+    limitReachedMsg: "4/4 profiles વપરાયેલા — બીજો પ્રોફાઇલ ડિએક્ટિવેટ કરો પછી જ એક્ટિવ કરી શકાશે",
+    loggedInAs: "લોગ ઈન છો",
+    logoutBtn: "🚪 લોગઆઉટ",
+    loadingText: "લોડ થઈ રહ્યું છે...",
+    settingsNav: "સેટિંગ્સ",
+    navMyProfiles: "મારા પ્રોફાઇલ",
+    appName: "સાગર સંબંધ",
+    searchPlaceholder: "નામ, શહેર, વ્યવસાય શોધો...",
+    yearsUnit: "વર્ષ",
+    // Pre-login screens
+    chooseLangTitle: "તમારી ભાષા પસંદ કરો",
+    chooseLangSub: "Choose your language",
+    mobileEntryTitle: "નમસ્તે 🙏 ચાલો શરૂ કરીએ",
+    mobileEntrySub: "Mobile Number નાખો",
+    mobileNumberLbl: "મોબાઈલ નંબર",
+    loginBtnExisting: "લોગિન કરો (પહેલેથી Account છે) →",
+    signupBtnNew: "નવું Account બનાવો →",
+    otpTestNote: "(Testing phase: Mobile + PIN — Real SMS OTP હાલ કામચલાઉ બંધ છે)",
+    mobileInvalid: "10-અંકનો સાચો મોબાઈલ નંબર નાખો",
+    pinLoginTitle: "🔐 PIN નાખો",
+    pinLoginSub: "+91 {mobile} માટે તમારો 4-અંકનો PIN",
+    pinLoginBtn: "લોગિન કરો →",
+    pinLoggingIn: "લોગિન થઈ રહ્યા છીએ...",
+    changeNumberBtn: "← નંબર બદલો",
+    signupTitle: "🙏 નવું ખાતું",
+    signupSub: "+91 {mobile} — તમારી થોડી માહિતી અને 4-અંકનો PIN સેટ કરો",
+    fullNameLbl: "પૂરું નામ",
+    fullNamePh: "દા.ત. રમેશ સોલંકી",
+    villageLbl: "ગામ / શહેર",
+    villagePh: "દા.ત. પોરબંદર",
+    pinSetLbl: "4-અંકનો PIN સેટ કરો (daily login માટે)",
+    pinReenterLbl: "PIN ફરીથી નાખો",
+    declarationText: "હું પુષ્ટિ કરું છું કે હું <b>પોરબંદર ખારવા સમાજ</b> નો સભ્ય છું અને આપેલી માહિતી સાચી છે.",
+    createAccountBtn: "ખાતું બનાવો →",
+    creatingAccountText: "ખાતું બની રહ્યું છે...",
+    fillAllFieldsSimple: "બધા fields ભરો",
+    pinMustBe4: "PIN બરાબર 4 અંકનો હોવો જોઈએ",
+    pinsDontMatch: "બંને PIN સરખા નથી",
+    noInterestsMsg: "હજુ કોઈ ઈન્ટરેસ્ટ નથી આવ્યું",
+    interestForProfile: "તમારા \"{name}\" પ્રોફાઇલ માટે ઈન્ટરેસ્ટ",
+    statusAccepted: "✓ સ્વીકાર્યું",
+    statusDeclined: "✕ નકાર્યું",
+    statusPendingShort: "⏳ પેન્ડિંગ",
+    acceptBtn: "✓ સ્વીકારો",
+    declineBtn: "✕ નકારો",
+    acceptedToast: "✓ ઈન્ટરેસ્ટ સ્વીકાર્યું",
+    declinedToast: "ઈન્ટરેસ્ટ નકાર્યું",
+    receivedTab: "📥 મળેલા",
+    sentTab: "📤 મોકલેલા",
+    noSentMsg: "તમે હજુ કોઈ ઈન્ટરેસ્ટ મોકલ્યું નથી",
+    sentToLbl: "{name} ને મોકલ્યું",
+    withdrawBtn: "✕ પાછું ખેંચો",
+    withdrawConfirm: "શું તમે આ Interest પાછું ખેંચવા માંગો છો?",
+    withdrawnToast: "✕ Interest પાછું ખેંચાયું",
   },
   en: {
     welcome: "Welcome 🙏", home: "Home", search: "Search", interest: "Interest", profile: "Profile",
@@ -612,6 +784,7 @@ const STRINGS = {
     rashi: "Zodiac Sign (Rashi)",
     rashiPh: "Select Zodiac Sign",
     fillAllFields: "Please fill all required fields",
+    ageInvalid: "Age must be between 18 and 70 years",
     nextBtn: "Next →",
     // Form Step 2
     formStep2Title: "Education & Address",
@@ -646,6 +819,85 @@ const STRINGS = {
     docsNote: "Documents will only be used for Admin verification. They will be deleted from server after approval — only Photo remains.",
     doneBtn: "Done — Go to My Profiles →",
     photoPh: "Passport size, clear, recent photo",
+    // Detail Screen
+    basicDetails: "👤 Basic Details",
+    fatherNameLbl: "Father's Name",
+    motherNameLbl: "Mother's Name",
+    rashiLbl: "Zodiac Sign",
+    maritalStatusLbl: "Marital Status",
+    siblingsLbl: "Siblings",
+    sendInterestBtn: "💌 Send Interest",
+    interestSentToast: "💌 Interest sent! (Saved in Firestore)",
+    profileNotFound: "Profile not found",
+    // My Profiles actions/status
+    editBtn: "Edit",
+    photosBtn: "Photos",
+    photoIconLbl: "Photo",
+    siblingsIconLbl: "Siblings",
+    marriedSettledBtn: "💍 Mark as Married / Settled",
+    statusPending: "⏳ Admin Review Pending",
+    statusApproved: "✓ Approved · Live",
+    statusRejected: "✕ Rejected",
+    statusDeactivated: "👋 Married/Settled",
+    deactivatedTag: "(Deactivated)",
+    reactivateBtn: "🔄 Re-activate",
+    addCandidateBtn: "Add New Candidate Profile",
+    moreProfilesMsg: "You can create {n} more profiles",
+    limitFullMsg: "4/4 profiles used — limit reached for creating more",
+    limitReachedMsg: "4/4 profiles used — deactivate another profile first to re-activate this one",
+    loggedInAs: "Logged in as",
+    logoutBtn: "🚪 Logout",
+    loadingText: "Loading...",
+    settingsNav: "Settings",
+    navMyProfiles: "My Profiles",
+    appName: "Sagar Sambandh",
+    searchPlaceholder: "Search by name, city, occupation...",
+    yearsUnit: "years",
+    // Pre-login screens
+    chooseLangTitle: "Choose your language",
+    chooseLangSub: "તમારી ભાષા પસંદ કરો",
+    mobileEntryTitle: "Welcome 🙏 Let's get started",
+    mobileEntrySub: "Enter Mobile Number",
+    mobileNumberLbl: "Mobile Number",
+    loginBtnExisting: "Login (already have an Account) →",
+    signupBtnNew: "Create New Account →",
+    otpTestNote: "(Testing phase: Mobile + PIN — Real SMS OTP is temporarily disabled)",
+    mobileInvalid: "Enter a valid 10-digit mobile number",
+    pinLoginTitle: "🔐 Enter PIN",
+    pinLoginSub: "Your 4-digit PIN for +91 {mobile}",
+    pinLoginBtn: "Login →",
+    pinLoggingIn: "Logging in...",
+    changeNumberBtn: "← Change Number",
+    signupTitle: "🙏 New Account",
+    signupSub: "+91 {mobile} — a few details and a 4-digit PIN",
+    fullNameLbl: "Full Name",
+    fullNamePh: "e.g. Ramesh Solanki",
+    villageLbl: "Village / City",
+    villagePh: "e.g. Porbandar",
+    pinSetLbl: "Set a 4-digit PIN (for daily login)",
+    pinReenterLbl: "Re-enter PIN",
+    declarationText: "I confirm that I am a member of the <b>Shri Porbandar Kharva Samaj</b> and the information provided is accurate.",
+    createAccountBtn: "Create Account →",
+    creatingAccountText: "Creating account...",
+    fillAllFieldsSimple: "Please fill all fields",
+    pinMustBe4: "PIN must be exactly 4 digits",
+    pinsDontMatch: "Both PINs don't match",
+    noInterestsMsg: "No interests received yet",
+    interestForProfile: "Interest for your \"{name}\" profile",
+    statusAccepted: "✓ Accepted",
+    statusDeclined: "✕ Declined",
+    statusPendingShort: "⏳ Pending",
+    acceptBtn: "✓ Accept",
+    declineBtn: "✕ Decline",
+    acceptedToast: "✓ Interest Accepted",
+    declinedToast: "Interest Declined",
+    receivedTab: "📥 Received",
+    sentTab: "📤 Sent",
+    noSentMsg: "You haven't sent any interest yet",
+    sentToLbl: "Sent to {name}",
+    withdrawBtn: "✕ Withdraw",
+    withdrawConfirm: "Do you want to withdraw this Interest?",
+    withdrawnToast: "✕ Interest withdrawn",
   },
 };
 function t(key){ return (STRINGS[state.lang] && STRINGS[state.lang][key]) || STRINGS.gu[key] || key; }
@@ -659,12 +911,13 @@ function langToggleHtml(){
 }
 function attachLangToggle(){
   document.querySelectorAll("[data-lang-btn]").forEach(el=>{
-    el.addEventListener("click", ()=>{ state.lang = el.getAttribute("data-lang-btn"); render(); });
+    el.addEventListener("click", ()=>{ state.lang = el.getAttribute("data-lang-btn"); setLangPref(state.lang); render(); });
   });
 }
 
 function render(){
-  if(state.screen==="checking") renderChecking();
+  if(state.screen==="chooseLanguage") renderChooseLanguage();
+  else if(state.screen==="checking") renderChecking();
   else if(state.screen==="mobileEntry") renderMobileEntry();
   else if(state.screen==="loginPin") renderLoginPin();
   else if(state.screen==="signupDetails") renderSignupDetails();
@@ -676,12 +929,29 @@ function render(){
   else if(state.screen==="formStep2") renderFormStep2();
   else if(state.screen==="formReview") renderFormReview();
   else if(state.screen==="formDocs") renderFormDocs();
+  else if(state.screen==="settings") renderSettings();
 }
 
 function showToast(msg){
   const t=document.createElement("div"); t.className="toast"; t.textContent=msg;
   document.body.appendChild(t);
   setTimeout(()=>t.remove(),2600);
+}
+
+function renderChooseLanguage(){
+  app.innerHTML = `
+    <div style="min-height:100vh;background:linear-gradient(160deg, var(--navy) 0%, var(--primary) 55%, var(--primary-light) 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;color:#fff;text-align:center;">
+      <div style="width:64px;height:64px;border-radius:18px;background:rgba(255,255,255,0.18);display:flex;align-items:center;justify-content:center;margin-bottom:18px;">
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="#D98FA0"><path d="M12 21s-6.7-4.35-9.3-8.1C.8 9.7 1.9 6 5.2 5c2-.6 3.9.3 4.8 2 .9-1.7 2.8-2.6 4.8-2 3.3 1 4.4 4.7 2.5 7.9C18.7 16.65 12 21 12 21z"/></svg>
+      </div>
+      <div style="font-size:19px;font-weight:800;margin-bottom:4px;">સાગર સંબંધ · Sagar Sambandh</div>
+      <div style="font-size:13px;opacity:0.85;margin-bottom:36px;">તમારી ભાષા પસંદ કરો · Choose your language</div>
+      <button id="lang-choice-gu" style="width:100%;max-width:320px;background:#fff;color:var(--navy);font-size:16px;font-weight:800;padding:16px;border:none;border-radius:14px;font-family:inherit;margin-bottom:12px;cursor:pointer;">ગુજરાતી</button>
+      <button id="lang-choice-en" style="width:100%;max-width:320px;background:rgba(255,255,255,0.15);color:#fff;font-size:16px;font-weight:800;padding:16px;border:1.5px solid rgba(255,255,255,0.5);border-radius:14px;font-family:inherit;cursor:pointer;">English</button>
+    </div>
+  `;
+  document.getElementById("lang-choice-gu").addEventListener("click", ()=>{ state.lang="gu"; setLangPref("gu"); state.screen="checking"; render(); });
+  document.getElementById("lang-choice-en").addEventListener("click", ()=>{ state.lang="en"; setLangPref("en"); state.screen="checking"; render(); });
 }
 
 function renderChecking(){
@@ -736,15 +1006,15 @@ function renderChecking(){
 function renderMobileEntry(){
   app.innerHTML = `
     <div class="header">
-      <div class="header-title">નમસ્તે 🙏 ચાલો શરૂ કરીએ</div>
-      <div class="header-sub">Mobile Number નાખો</div>
+      <div class="header-title">${t('mobileEntryTitle')}</div>
+      <div class="header-sub">${t('mobileEntrySub')}</div>
     </div>
     <div class="content">
-      <div class="field"><label>મોબાઈલ નંબર</label><div class="input-wrap"><input id="f-mobile" placeholder="98765 43210" maxlength="10"></div></div>
+      <div class="field"><label>${t('mobileNumberLbl')}</label><div class="input-wrap"><input id="f-mobile" placeholder="98765 43210" maxlength="10"></div></div>
       <div id="f-err"></div>
-      <button class="btn btn-primary" id="f-login">Login કરો (પહેલેથી Account છે) →</button>
-      <button class="btn btn-ghost" id="f-signup">નવું Account બનાવો →</button>
-      <div class="center-note" style="margin-top:12px; opacity:0.7;">(Testing phase: Mobile + PIN — Real SMS OTP હાલ કામચલાઉ બંધ છે)</div>
+      <button class="btn btn-primary" id="f-login">${t('loginBtnExisting')}</button>
+      <button class="btn btn-ghost" id="f-signup">${t('signupBtnNew')}</button>
+      <div class="center-note" style="margin-top:12px; opacity:0.7;">${t('otpTestNote')}</div>
     </div>
   `;
   document.getElementById("f-mobile").addEventListener("input", (e)=>{ e.target.value = e.target.value.replace(/\D/g,'').slice(0,10); });
@@ -752,7 +1022,7 @@ function renderMobileEntry(){
   function proceed(target){
     const mobile=document.getElementById("f-mobile").value.trim();
     const errEl=document.getElementById("f-err"); errEl.innerHTML="";
-    if(mobile.length!==10){ errEl.innerHTML = `<div class="err-text">10-અંકનો સાચો મોબાઈલ નંબર નાખો</div>`; return; }
+    if(mobile.length!==10){ errEl.innerHTML = `<div class="err-text">${t('mobileInvalid')}</div>`; return; }
     state.pendingMobile = mobile;
     state.screen = target; render();
   }
@@ -763,16 +1033,16 @@ function renderMobileEntry(){
 function renderLoginPin(){
   app.innerHTML = `
     <div class="header">
-      <div class="header-title">🔐 PIN નાખો</div>
-      <div class="header-sub">+91 ${state.pendingMobile} માટે તમારો 4-અંકનો PIN</div>
+      <div class="header-title">${t('pinLoginTitle')}</div>
+      <div class="header-sub">${t('pinLoginSub').replace('{mobile}', state.pendingMobile)}</div>
     </div>
     <div class="content">
       <div class="otp-boxes">
         ${[0,1,2,3].map(i=>`<input class="otp-box" maxlength="1" inputmode="numeric" data-pin="${i}">`).join("")}
       </div>
       <div id="pin-err"></div>
-      <button class="btn btn-primary" id="pin-submit" disabled>Login કરો →</button>
-      <div class="center-note"><b style="color:var(--primary);cursor:pointer;" id="pin-back">← નંબર બદલો</b></div>
+      <button class="btn btn-primary" id="pin-submit" disabled>${t('pinLoginBtn')}</button>
+      <div class="center-note"><b style="color:var(--primary);cursor:pointer;" id="pin-back">${t('changeNumberBtn')}</b></div>
     </div>
   `;
   const boxes = Array.from(document.querySelectorAll("[data-pin]"));
@@ -789,13 +1059,13 @@ function renderLoginPin(){
   submitBtn.addEventListener("click", async (e)=>{
     const pin = boxes.map(b=>b.value).join("");
     const errEl=document.getElementById("pin-err"); errEl.innerHTML="";
-    e.target.disabled=true; e.target.textContent="Login થઈ રહ્યા છીએ...";
+    e.target.disabled=true; e.target.textContent=t('pinLoggingIn');
     try{
       const result = await dataService.login(state.pendingMobile, pin);
       state.user = result;
       state.screen="home"; render();
     }catch(err){
-      e.target.disabled=false; e.target.textContent="Login કરો →";
+      e.target.disabled=false; e.target.textContent=t('pinLoginBtn');
       boxes.forEach(b=>b.value="");
       if(boxes[0]) boxes[0].focus();
       errEl.innerHTML = `<div class="err-text">${err.message}</div>`;
@@ -806,21 +1076,21 @@ function renderLoginPin(){
 function renderSignupDetails(){
   app.innerHTML = `
     <div class="header">
-      <div class="header-title">🙏 નવું ખાતું</div>
-      <div class="header-sub">+91 ${state.pendingMobile} — તમારી થોડી માહિતી અને 4-અંકનો PIN સેટ કરો</div>
+      <div class="header-title">${t('signupTitle')}</div>
+      <div class="header-sub">${t('signupSub').replace('{mobile}', state.pendingMobile)}</div>
     </div>
     <div class="content">
-      <div class="field"><label>પૂરું નામ</label><div class="input-wrap"><input id="cp-name" placeholder="દા.ત. રમેશ સોલંકી"></div></div>
-      <div class="field"><label>ગામ / શહેર</label><div class="input-wrap"><input id="cp-village" placeholder="દા.ત. પોરબંદર"></div></div>
-      <div class="field"><label>4-અંકનો PIN સેટ કરો (daily login માટે)</label><div class="input-wrap"><input id="cp-pin" type="password" inputmode="numeric" maxlength="4" placeholder="••••"></div></div>
-      <div class="field"><label>PIN ફરીથી નાખો</label><div class="input-wrap"><input id="cp-pin2" type="password" inputmode="numeric" maxlength="4" placeholder="••••"></div></div>
+      <div class="field"><label>${t('fullNameLbl')}</label><div class="input-wrap"><input id="cp-name" placeholder="${t('fullNamePh')}"></div></div>
+      <div class="field"><label>${t('villageLbl')}</label><div class="input-wrap"><input id="cp-village" placeholder="${t('villagePh')}"></div></div>
+      <div class="field"><label>${t('pinSetLbl')}</label><div class="input-wrap"><input id="cp-pin" type="password" inputmode="numeric" maxlength="4" placeholder="••••"></div></div>
+      <div class="field"><label>${t('pinReenterLbl')}</label><div class="input-wrap"><input id="cp-pin2" type="password" inputmode="numeric" maxlength="4" placeholder="••••"></div></div>
       <div class="declaration">
         <input type="checkbox" id="cp-agree" checked>
-        <p>હું પુષ્ટિ કરું છું કે હું <b>પોરબંદર ખારવા સમાજ</b> નો સભ્ય છું અને આપેલી માહિતી સાચી છે.</p>
+        <p>${t('declarationText')}</p>
       </div>
       <div id="cp-err"></div>
-      <button class="btn btn-primary" id="cp-submit">ખાતું બનાવો →</button>
-      <div class="center-note"><b style="color:var(--primary);cursor:pointer;" id="cp-back">← નંબર બદલો</b></div>
+      <button class="btn btn-primary" id="cp-submit">${t('createAccountBtn')}</button>
+      <div class="center-note"><b style="color:var(--primary);cursor:pointer;" id="cp-back">${t('changeNumberBtn')}</b></div>
     </div>
   `;
   document.getElementById("cp-back").addEventListener("click", ()=>{ state.screen="mobileEntry"; render(); });
@@ -834,60 +1104,136 @@ function renderSignupDetails(){
     const pin2=document.getElementById("cp-pin2").value.trim();
     const agreed=document.getElementById("cp-agree").checked;
     const errEl=document.getElementById("cp-err"); errEl.innerHTML="";
-    if(!name || !village || !agreed){ errEl.innerHTML = `<div class="err-text">બધા fields ભરો</div>`; return; }
-    if(pin.length!==4){ errEl.innerHTML = `<div class="err-text">PIN બરાબર 4 અંકનો હોવો જોઈએ</div>`; return; }
-    if(pin!==pin2){ errEl.innerHTML = `<div class="err-text">બંને PIN સરખા નથી</div>`; return; }
-    e.target.disabled=true; e.target.textContent="ખાતું બની રહ્યું છે...";
+    if(!name || !village || !agreed){ errEl.innerHTML = `<div class="err-text">${t('fillAllFieldsSimple')}</div>`; return; }
+    if(pin.length!==4){ errEl.innerHTML = `<div class="err-text">${t('pinMustBe4')}</div>`; return; }
+    if(pin!==pin2){ errEl.innerHTML = `<div class="err-text">${t('pinsDontMatch')}</div>`; return; }
+    e.target.disabled=true; e.target.textContent=t('creatingAccountText');
     try{
       const user = await dataService.signup(state.pendingMobile, pin, name, village);
       state.user = user; state.screen="home"; render();
     }catch(err){
-      e.target.disabled=false; e.target.textContent="ખાતું બનાવો →";
+      e.target.disabled=false; e.target.textContent=t('createAccountBtn');
       errEl.innerHTML = `<div class="err-text">${err.message}</div>`;
     }
   });
 }
 
 function bottomNavHtml(active){
-  const items=[["home","🏠","Home"],["search","🔍","Search"],["interest","💌","Interest"],["profile","👤","Profile"]];
+  const items=[["home","🏠",t('home')],["interest","💌",t('interest')],["profile","📁",t('navMyProfiles')],["settings","⚙️",t('settingsNav')]];
   return `<div class="bottom-nav"><div class="bottom-nav-inner">${items.map(([k,i,l])=>`
-    <div class="nav-item ${active===k?'active':''}" data-nav="${k}"><span class="nav-icon">${i}</span>${l}</div>
+    <div class="nav-item ${active===k?'active':''}" data-nav="${k}">
+      <span class="nav-icon">${i}</span>${l}
+      ${k==='interest' ? `<span class="nav-badge" id="nav-badge-interest" style="display:none;"></span>` : ""}
+    </div>
   `).join("")}</div></div>`;
+}
+function updateInterestBadge(){
+  if(!state.user) return;
+  dataService.getPendingInterestCount(state.user.id).then(n=>{
+    const badge = document.getElementById("nav-badge-interest");
+    if(!badge) return;
+    if(n>0){ badge.style.display="flex"; badge.textContent=n; } else { badge.style.display="none"; }
+  }).catch(()=>{});
 }
 
 function renderHome(){
   app.innerHTML = `
-    <div class="header" style="position:relative;">
-      ${langToggleHtml()}
-      <div class="header-title">${t('welcome')} ${state.user?.name || "સભ્ય"}</div>
-      <div class="header-sub">${t('browseSub')}</div>
-      <div class="search-bar"><span>🔍</span><input id="home-search" placeholder="નામ, શહેર, વ્યવસાય શોધો..." style="border:none;outline:none;background:transparent;font-family:inherit;font-size:13px;width:100%;color:var(--text-dark);"></div>
-      <div class="filters-row">
-        <div class="chip active" data-gender="">બધા</div>
-        <div class="chip" data-gender="male">યુવક</div>
-        <div class="chip" data-gender="female">યુવતી</div>
-        <div class="chip" data-sort="match">⭐ Best Match</div>
-        <div class="chip" data-fav-filter="1">❤️ મનપસંદ</div>
+    <div class="header" style="position:relative;padding:24px 20px 16px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="width:26px;height:26px;border-radius:8px;background:rgba(255,255,255,0.18);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="#D98FA0"><path d="M12 21s-6.7-4.35-9.3-8.1C.8 9.7 1.9 6 5.2 5c2-.6 3.9.3 4.8 2 .9-1.7 2.8-2.6 4.8-2 3.3 1 4.4 4.7 2.5 7.9C18.7 16.65 12 21 12 21z"/></svg>
+          </div>
+          <div style="font-size:15px;font-weight:800;">${t('appName')}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="display:flex;background:rgba(255,255,255,0.18);border-radius:16px;padding:2px;font-size:10px;font-weight:700;">
+            <span data-lang-btn="gu" style="padding:5px 9px;border-radius:14px;cursor:pointer;${state.lang==='gu'?'background:#fff;color:var(--navy);':'color:rgba(255,255,255,0.85);'}">ગુજ</span>
+            <span data-lang-btn="en" style="padding:5px 9px;border-radius:14px;cursor:pointer;${state.lang==='en'?'background:#fff;color:var(--navy);':'color:rgba(255,255,255,0.85);'}">EN</span>
+          </div>
+          <button id="hdr-fav-btn" style="position:relative;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.18);border:none;display:flex;align-items:center;justify-content:center;color:#fff;cursor:pointer;" aria-label="Favorites">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
+            <span id="hdr-fav-count" style="display:none;position:absolute;top:-3px;right:-3px;background:#C9A227;color:#4A1220;font-size:8px;font-weight:800;border-radius:8px;padding:1px 5px;min-width:14px;text-align:center;"></span>
+          </button>
+        </div>
+      </div>
+
+      <div style="margin-top:12px;display:flex;gap:9px;">
+        <div class="search-bar" style="flex:1;margin-top:0;"><span>🔍</span><input id="home-search" placeholder="${t('searchPlaceholder')}" style="border:none;outline:none;background:transparent;font-family:inherit;font-size:13px;width:100%;color:var(--text-dark);"></div>
+        <button id="hdr-filters-btn" style="flex-shrink:0;width:44px;height:44px;border-radius:14px;background:var(--accent);border:none;display:flex;align-items:center;justify-content:center;position:relative;cursor:pointer;" aria-label="Filters">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
+          <span id="hdr-filters-count" style="display:none;position:absolute;top:-4px;right:-4px;width:16px;height:16px;border-radius:50%;background:var(--navy);color:#fff;font-size:9px;font-weight:800;align-items:center;justify-content:center;"></span>
+        </button>
       </div>
     </div>
+
     <div class="content" id="home-content"><div class="loading">Firestore માંથી profiles load થઈ રહ્યા છે...</div></div>
     ${bottomNavHtml("home")}
+
+    <div id="filters-overlay" style="display:none;position:fixed;inset:0;background:rgba(43,14,20,0.45);z-index:100;">
+      <div style="position:absolute;bottom:0;left:0;right:0;max-width:480px;margin:0 auto;background:var(--bg);border-radius:22px 22px 0 0;padding:10px 20px 20px;max-height:82vh;overflow-y:auto;">
+        <div style="width:38px;height:4px;background:var(--border);border-radius:3px;margin:0 auto 14px;"></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+          <div style="font-size:15px;font-weight:800;color:var(--text-dark);">🔽 Filters</div>
+          <div id="filters-reset" style="font-size:11.5px;font-weight:700;color:var(--primary-light);cursor:pointer;">Reset</div>
+        </div>
+
+        <div style="font-size:11px;font-weight:700;color:var(--text-mid);margin-bottom:7px;">પ્રોફાઇલ</div>
+        <div style="display:flex;gap:6px;background:var(--ice);padding:4px;border-radius:12px;margin-bottom:18px;">
+          <div class="fp-gender seg active" data-gender="" style="flex:1;text-align:center;padding:9px 0;font-size:12px;font-weight:700;border-radius:10px;cursor:pointer;color:var(--primary);">બધા</div>
+          <div class="fp-gender seg" data-gender="male" style="flex:1;text-align:center;padding:9px 0;font-size:12px;font-weight:700;border-radius:10px;cursor:pointer;color:var(--primary);">યુવક</div>
+          <div class="fp-gender seg" data-gender="female" style="flex:1;text-align:center;padding:9px 0;font-size:12px;font-weight:700;border-radius:10px;cursor:pointer;color:var(--primary);">યુવતી</div>
+        </div>
+
+        <div style="font-size:11px;font-weight:700;color:var(--text-mid);margin-bottom:7px;">ઉંમર</div>
+        <div style="display:flex;gap:10px;align-items:center;margin-bottom:18px;">
+          <div class="input-wrap" style="flex:1;"><input id="fp-age-min" type="number" min="18" max="70" placeholder="ઓછામાં ઓછી" style="border:none;outline:none;padding:10px 0;font-size:12.5px;width:100%;font-family:inherit;color:var(--text-dark);"></div>
+          <div style="color:var(--text-mid);">–</div>
+          <div class="input-wrap" style="flex:1;"><input id="fp-age-max" type="number" min="18" max="70" placeholder="વધુમાં વધુ" style="border:none;outline:none;padding:10px 0;font-size:12.5px;width:100%;font-family:inherit;color:var(--text-dark);"></div>
+        </div>
+
+        <div style="font-size:11px;font-weight:700;color:var(--text-mid);margin-bottom:8px;">રાશી</div>
+        <div id="fp-rashi" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px;">
+          ${["મેષ","વૃષભ","મિથુન","કર્ક","સિંહ","કન્યા","તુલા","વૃશ્ચિક","ધન","મકર","કુંભ","મીન"].map(r=>`<div class="fp-rashi-chip" data-rashi="${r}" style="font-size:11px;font-weight:600;color:var(--primary);background:var(--ice);border:1px solid var(--sky);padding:7px 12px;border-radius:16px;cursor:pointer;">${r}</div>`).join("")}
+        </div>
+
+        <div style="font-size:11px;font-weight:700;color:var(--text-mid);margin-bottom:8px;">વિસ્તાર પ્રમાણે</div>
+        <div id="fp-area" style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:18px;">
+          ${["પોરબંદર","વેરાવળ","માંગરોળ","ઓખા","મુંદ્રા","રાજકોટ"].map(a=>`<div class="fp-area-chip" data-area="${a}" style="font-size:11px;font-weight:600;color:var(--primary);background:var(--ice);border:1px solid var(--sky);padding:8px 13px;border-radius:16px;cursor:pointer;">${a}</div>`).join("")}
+        </div>
+
+        <label style="display:flex;align-items:center;gap:9px;margin-bottom:20px;cursor:pointer;">
+          <input type="checkbox" id="fp-sort-match" style="width:18px;height:18px;accent-color:var(--navy);">
+          <span style="font-size:12px;color:var(--text-dark);font-weight:600;">⭐ Best Match પ્રમાણે sort કરો</span>
+        </label>
+
+        <div style="display:flex;gap:10px;">
+          <button id="filters-close" style="flex:1;background:var(--ice);color:var(--primary);font-size:13px;font-weight:700;padding:13px;border:none;border-radius:12px;font-family:inherit;">બંધ કરો</button>
+          <button id="filters-apply" style="flex:2;background:linear-gradient(135deg,var(--navy),var(--primary-light));color:#fff;font-size:13.5px;font-weight:700;padding:13px;border:none;border-radius:12px;font-family:inherit;">Filters લાગુ કરો →</button>
+        </div>
+      </div>
+    </div>
   `;
   attachLangToggle();
   document.querySelectorAll("[data-nav]").forEach(el=>{
     el.addEventListener("click", ()=>{
       const k = el.getAttribute("data-nav");
-      if(k==="home") render();
+      if(k==="home"){ state.screen="home"; render(); }
       else if(k==="profile"){ state.screen="myProfiles"; render(); }
       else if(k==="interest"){ state.screen="interest"; render(); }
+      else if(k==="settings"){ state.screen="settings"; render(); }
       else showToast("આ screen આગળના phase માં બનશે");
     });
   });
+  updateInterestBadge();
 
   let allProfiles = [];
   let activeGender = "";
   let sortByMatch = false;
   let favOnly = false;
+  let ageMin = null, ageMax = null;
+  let selectedRashis = new Set();
+  let selectedAreas = new Set();
 
   function paintList(list){
     const el = document.getElementById("home-content");
@@ -895,12 +1241,13 @@ function renderHome(){
     if(list.length===0){ el.innerHTML = `<div class="empty">કોઈ profile ના મળી</div>`; return; }
     el.innerHTML = list.map(p=>{
       const showPhoto = p.photoVisible !== false && primaryPhotoURL(p); // field ના હોય (જૂના profiles) તો Visible ગણવું
+      const av = avatarStyle(p);
       return `
       <div class="card" data-open="${p.id}">
-        <div class="card-photo" style="background:${p.photoColor||'#A8455C'};${showPhoto?`background-image:url('${primaryPhotoURL(p)}');background-size:cover;background-position:center;`:''}">${showPhoto?'':(p.photoEmoji||'👤')}<div class="verified-tag">✓ VERIFIED</div><div class="fav-btn" data-fav-toggle="${p.id}">${p.favorite?'❤️':'🤍'}</div></div>
+        <div class="card-photo" style="background:${av.color};${showPhoto?`background-image:url('${primaryPhotoURL(p)}');background-size:cover;background-position:center;`:''}">${showPhoto?'':av.emoji}<div class="verified-tag">✓ VERIFIED</div><div class="fav-btn" data-fav-toggle="${p.id}" aria-label="${p.favorite?'Remove from favorites':'Add to favorites'}"><div class="fav-btn-visual">${p.favorite?'❤️':'🤍'}</div></div></div>
         <div class="card-body">
           <div class="card-name">${p.name}</div>
-          <div class="card-sub">${p.age} વર્ષ · ${p.education} · ${p.city}</div>
+          <div class="card-sub">${p.age} ${t('yearsUnit')} · ${p.education} · ${p.city}</div>
           ${p.matchScore!=null ? `<div class="stars">${"★".repeat(Math.round(p.matchScore))}${"☆".repeat(5-Math.round(p.matchScore))} <b>${p.matchScore}/5 Match</b></div>` : `<div class="stars" style="color:var(--text-mid);font-size:10px;">પ્રોફાઇલ બનાવો, Match Score જુઓ</div>`}
         </div>
       </div>
@@ -916,13 +1263,32 @@ function renderHome(){
         const id = btn.getAttribute("data-fav-toggle");
         const p = allProfiles.find(x=>x.id===id);
         const newVal = !p.favorite;
+        const visual = btn.querySelector(".fav-btn-visual");
         p.favorite = newVal; // optimistic UI — તરત જ heart બદલાય
-        btn.textContent = newVal ? '❤️' : '🤍';
+        visual.textContent = newVal ? '❤️' : '🤍';
         try{ await dataService.toggleFavorite(state.user.id, id, newVal); }
-        catch(err){ p.favorite = !newVal; btn.textContent = !newVal ? '❤️' : '🤍'; showToast("Error: "+err.message); }
+        catch(err){ p.favorite = !newVal; visual.textContent = !newVal ? '❤️' : '🤍'; showToast("Error: "+err.message); }
+        updateFavCount();
         if(favOnly) applyFilters(); // favorites-only view માં હોય તો remove થયેલું card તરત hide થાય
       });
     });
+  }
+
+  function updateFavCount(){
+    const n = allProfiles.filter(p=>p.favorite).length;
+    const badge = document.getElementById("hdr-fav-count");
+    if(n>0){ badge.style.display="flex"; badge.textContent=n; } else { badge.style.display="none"; }
+  }
+
+  function updateFiltersCount(){
+    let n = 0;
+    if(activeGender) n++;
+    if(ageMin || ageMax) n++;
+    if(selectedRashis.size>0) n++;
+    if(selectedAreas.size>0) n++;
+    if(sortByMatch) n++;
+    const badge = document.getElementById("hdr-filters-count");
+    if(n>0){ badge.style.display="flex"; badge.textContent=n; } else { badge.style.display="none"; }
   }
 
   function applyFilters(){
@@ -930,6 +1296,10 @@ function renderHome(){
     let list = allProfiles;
     if(activeGender) list = list.filter(p => p.gender === activeGender);
     if(favOnly) list = list.filter(p => p.favorite);
+    if(ageMin) list = list.filter(p => (p.age||0) >= ageMin);
+    if(ageMax) list = list.filter(p => (p.age||0) <= ageMax);
+    if(selectedRashis.size>0) list = list.filter(p => selectedRashis.has(p.rashi));
+    if(selectedAreas.size>0) list = list.filter(p => selectedAreas.has((p.city||"").trim()));
     if(q){
       list = list.filter(p =>
         (p.name||"").toLowerCase().includes(q) ||
@@ -940,32 +1310,63 @@ function renderHome(){
     }
     if(sortByMatch) list = [...list].sort((a,b) => (b.matchScore||0) - (a.matchScore||0));
     paintList(list);
+    updateFiltersCount();
   }
 
-  document.querySelectorAll("[data-gender]").forEach(chip=>{
-    chip.addEventListener("click", ()=>{
-      document.querySelectorAll("[data-gender]").forEach(c=>c.classList.remove("active"));
-      chip.classList.add("active");
-      activeGender = chip.getAttribute("data-gender");
-      applyFilters();
-    });
-  });
-  const sortChip = document.querySelector("[data-sort='match']");
-  sortChip.addEventListener("click", ()=>{
-    sortByMatch = !sortByMatch;
-    sortChip.classList.toggle("active", sortByMatch);
+  document.getElementById("hdr-fav-btn").addEventListener("click", ()=>{
+    favOnly = !favOnly;
+    showToast(favOnly ? "❤️ ફક્ત Favorites દેખાડું છું" : "બધા profiles પાછા દેખાડું છું");
     applyFilters();
   });
-  const favChip = document.querySelector("[data-fav-filter]");
-  favChip.addEventListener("click", ()=>{
-    favOnly = !favOnly;
-    favChip.classList.toggle("active", favOnly);
+
+  const overlay = document.getElementById("filters-overlay");
+  document.getElementById("hdr-filters-btn").addEventListener("click", ()=>{ overlay.style.display="block"; });
+  document.getElementById("filters-close").addEventListener("click", ()=>{ overlay.style.display="none"; });
+  overlay.addEventListener("click", (e)=>{ if(e.target===overlay) overlay.style.display="none"; });
+
+  document.querySelectorAll(".fp-gender").forEach(seg=>{
+    seg.addEventListener("click", ()=>{
+      document.querySelectorAll(".fp-gender").forEach(s=>{ s.style.background="transparent"; s.style.color="var(--primary)"; });
+      seg.style.background="var(--navy)"; seg.style.color="#fff";
+      activeGender = seg.getAttribute("data-gender");
+    });
+  });
+  document.querySelectorAll(".fp-rashi-chip").forEach(chip=>{
+    chip.addEventListener("click", ()=>{
+      const r = chip.getAttribute("data-rashi");
+      if(selectedRashis.has(r)){ selectedRashis.delete(r); chip.style.background="var(--ice)"; chip.style.color="var(--primary)"; }
+      else{ selectedRashis.add(r); chip.style.background="var(--navy)"; chip.style.color="#fff"; }
+    });
+  });
+  document.querySelectorAll(".fp-area-chip").forEach(chip=>{
+    chip.addEventListener("click", ()=>{
+      const a = chip.getAttribute("data-area");
+      if(selectedAreas.has(a)){ selectedAreas.delete(a); chip.style.background="var(--ice)"; chip.style.color="var(--primary)"; }
+      else{ selectedAreas.add(a); chip.style.background="var(--accent)"; chip.style.color="var(--navy)"; }
+    });
+  });
+  document.getElementById("filters-reset").addEventListener("click", ()=>{
+    activeGender=""; ageMin=null; ageMax=null; selectedRashis.clear(); selectedAreas.clear(); sortByMatch=false;
+    document.querySelectorAll(".fp-gender").forEach(s=>{ s.style.background="transparent"; s.style.color="var(--primary)"; });
+    document.querySelector('.fp-gender[data-gender=""]').style.background="var(--navy)";
+    document.querySelector('.fp-gender[data-gender=""]').style.color="#fff";
+    document.getElementById("fp-age-min").value=""; document.getElementById("fp-age-max").value="";
+    document.querySelectorAll(".fp-rashi-chip").forEach(c=>{ c.style.background="var(--ice)"; c.style.color="var(--primary)"; });
+    document.querySelectorAll(".fp-area-chip").forEach(c=>{ c.style.background="var(--ice)"; c.style.color="var(--primary)"; });
+    document.getElementById("fp-sort-match").checked=false;
+  });
+  document.getElementById("filters-apply").addEventListener("click", ()=>{
+    ageMin = Number(document.getElementById("fp-age-min").value) || null;
+    ageMax = Number(document.getElementById("fp-age-max").value) || null;
+    sortByMatch = document.getElementById("fp-sort-match").checked;
+    overlay.style.display="none";
     applyFilters();
   });
 
   dataService.getProfiles(state.user?.id).then(profiles=>{
     allProfiles = profiles;
     paintList(allProfiles);
+    updateFavCount();
     document.getElementById("home-search").addEventListener("input", applyFilters);
   }).catch(err=>{
     const el = document.getElementById("home-content");
@@ -974,32 +1375,33 @@ function renderHome(){
 }
 
 function renderDetail(){
-  app.innerHTML = `<div class="content"><div class="loading">Load થઈ રહ્યું છે...</div></div>`;
+  app.innerHTML = `<div class="content"><div class="loading">${t('loadingText')||'Load થઈ રહ્યું છે...'}</div></div>`;
   Promise.all([
     dataService.getProfileById(state.openProfileId),
     state.user ? dataService.isFavorite(state.user.id, state.openProfileId) : Promise.resolve(false),
   ]).then(([p, isFav])=>{
-    if(!p){ app.innerHTML = `<div class="content">Profile ના મળી</div>`; return; }
+    if(!p){ app.innerHTML = `<div class="content">${t('profileNotFound')}</div>`; return; }
+    const av = avatarStyle(p);
     app.innerHTML = `
       <div class="header" style="padding-bottom:20px;">
-        <div class="back-row"><div class="back-btn" id="back-btn">←</div><div class="header-title">Profile</div><div class="back-btn" id="fav-toggle-btn" style="margin-left:auto;">${isFav?'❤️':'🤍'}</div></div>
-        <div style="width:90px;height:90px;border-radius:22px;display:flex;align-items:center;justify-content:center;font-size:38px;margin:14px auto 0;border:3px solid rgba(255,255,255,0.4);background:${p.photoColor||'rgba(255,255,255,0.2)'};${(p.photoVisible!==false && primaryPhotoURL(p))?`background-image:url('${primaryPhotoURL(p)}');background-size:cover;background-position:center;`:''}">${(p.photoVisible!==false && primaryPhotoURL(p))?'':(p.photoEmoji||'👤')}</div>
+        <div class="back-row"><div class="back-btn" id="back-btn">←</div><div class="header-title">${t('profile')}</div><div class="back-btn" id="fav-toggle-btn" style="margin-left:auto;">${isFav?'❤️':'🤍'}</div></div>
+        <div style="width:90px;height:90px;border-radius:22px;display:flex;align-items:center;justify-content:center;font-size:38px;margin:14px auto 0;border:3px solid rgba(255,255,255,0.4);background:${av.color};${(p.photoVisible!==false && primaryPhotoURL(p))?`background-image:url('${primaryPhotoURL(p)}');background-size:cover;background-position:center;`:''}">${(p.photoVisible!==false && primaryPhotoURL(p))?'':av.emoji}</div>
         <div style="text-align:center;font-size:18px;font-weight:800;margin-top:10px;">${p.name}</div>
-        <div style="text-align:center;font-size:11.5px;opacity:0.85;margin-top:3px;">${p.age} વર્ષ · ${p.education} · ${p.city}</div>
+        <div style="text-align:center;font-size:11.5px;opacity:0.85;margin-top:3px;">${p.age} ${t('yearsUnit')} · ${p.education} · ${p.city}</div>
       </div>
       <div class="content">
-        <div style="font-size:12px;font-weight:700;color:var(--navy);margin:6px 0 8px;">👤 Basic Details</div>
-        <div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px;"><span style="color:var(--text-mid);">પિતાનું નામ</span><span style="font-weight:600;">${p.fatherName||'-'}</span></div>
-        <div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px;"><span style="color:var(--text-mid);">માતાનું નામ</span><span style="font-weight:600;">${p.motherName||'-'}</span></div>
-        <div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px;"><span style="color:var(--text-mid);">રાશી</span><span style="font-weight:600;">${p.rashi||'-'}</span></div>
-        <div style="display:flex;justify-content:space-between;padding:9px 0;${p.siblingsVisible && p.siblings ? 'border-bottom:1px solid var(--border);':''}font-size:13px;"><span style="color:var(--text-mid);">દરજ્જો</span><span style="font-weight:600;">${p.maritalStatus||'-'}</span></div>
-        ${p.siblingsVisible && p.siblings ? `<div style="display:flex;justify-content:space-between;padding:9px 0;font-size:13px;"><span style="color:var(--text-mid);">ભાઈ-બહેન</span><span style="font-weight:600;">${p.siblings}</span></div>` : ""}
-        <button class="btn btn-primary" style="margin-top:20px;" id="send-interest">💌 Interest મોકલો</button>
+        <div style="font-size:12px;font-weight:700;color:var(--navy);margin:6px 0 8px;">${t('basicDetails')}</div>
+        <div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px;"><span style="color:var(--text-mid);">${t('fatherNameLbl')}</span><span style="font-weight:600;">${p.fatherName||'-'}</span></div>
+        <div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px;"><span style="color:var(--text-mid);">${t('motherNameLbl')}</span><span style="font-weight:600;">${p.motherName||'-'}</span></div>
+        <div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px;"><span style="color:var(--text-mid);">${t('rashiLbl')}</span><span style="font-weight:600;">${p.rashi||'-'}</span></div>
+        <div style="display:flex;justify-content:space-between;padding:9px 0;${p.siblingsVisible && p.siblings ? 'border-bottom:1px solid var(--border);':''}font-size:13px;"><span style="color:var(--text-mid);">${t('maritalStatusLbl')}</span><span style="font-weight:600;">${p.maritalStatus||'-'}</span></div>
+        ${p.siblingsVisible && p.siblings ? `<div style="display:flex;justify-content:space-between;padding:9px 0;font-size:13px;"><span style="color:var(--text-mid);">${t('siblingsLbl')}</span><span style="font-weight:600;">${p.siblings}</span></div>` : ""}
+        <button class="btn btn-primary" style="margin-top:20px;" id="send-interest">${t('sendInterestBtn')}</button>
       </div>
     `;
     document.getElementById("back-btn").addEventListener("click", ()=>{ state.screen="home"; render(); });
     document.getElementById("send-interest").addEventListener("click", async ()=>{
-      try{ await dataService.sendInterest(state.user.id, p.id); showToast("💌 Interest મોકલાયું! (Firestore માં save થયું)"); }
+      try{ await dataService.sendInterest(state.user.id, p.id); showToast(t('interestSentToast')); }
       catch(err){ showToast("Error: "+err.message); }
     });
     const favBtn = document.getElementById("fav-toggle-btn");
@@ -1021,8 +1423,12 @@ function renderInterest(){
       ${langToggleHtml()}
       <div class="header-title">${t('interestsTitle')}</div>
       <div class="header-sub">${t('interestsSub')}</div>
+      <div style="display:flex;gap:6px;background:rgba(255,255,255,0.18);padding:4px;border-radius:14px;margin-top:14px;">
+        <div class="int-tab active" data-tab="received" style="flex:1;text-align:center;padding:10px 0;font-size:12px;font-weight:700;border-radius:11px;cursor:pointer;color:#fff;">${t('receivedTab')} <span class="int-tab-badge" id="tab-badge-received" style="display:none;"></span></div>
+        <div class="int-tab" data-tab="sent" style="flex:1;text-align:center;padding:10px 0;font-size:12px;font-weight:700;border-radius:11px;cursor:pointer;color:rgba(255,255,255,0.85);">${t('sentTab')} <span class="int-tab-badge" id="tab-badge-sent" style="display:none;"></span></div>
+      </div>
     </div>
-    <div class="content" id="int-content"><div class="loading">Load થઈ રહ્યું છે...</div></div>
+    <div class="content" id="int-content"><div class="loading">${t('loadingText')}</div></div>
     ${bottomNavHtml("interest")}
   `;
   attachLangToggle();
@@ -1032,27 +1438,30 @@ function renderInterest(){
       if(k==="home"){ state.screen="home"; render(); }
       else if(k==="profile"){ state.screen="myProfiles"; render(); }
       else if(k==="interest") render();
+      else if(k==="settings"){ state.screen="settings"; render(); }
       else showToast("આ screen આગળના phase માં બનશે");
     });
   });
+  updateInterestBadge();
 
-  dataService.getReceivedInterests(state.user.id).then(list=>{
+  let receivedList = [], sentList = [];
+
+  function paintReceived(){
     const el = document.getElementById("int-content");
-    if(!el) return;
-    if(list.length===0){ el.innerHTML = `<div class="empty">હજુ કોઈ Interest નથી આવ્યું</div>`; return; }
-    el.innerHTML = list.map(i=>`
+    if(receivedList.length===0){ el.innerHTML = `<div class="empty">${t('noInterestsMsg')}</div>`; return; }
+    el.innerHTML = receivedList.map(i=>`
       <div class="card" style="cursor:default;">
         <div class="card-photo" style="background:linear-gradient(160deg,#D98FA0,#A8455C);">👤</div>
         <div class="card-body">
           <div class="card-name">${i.fromUserName}</div>
-          <div class="card-sub">તમારા "${i.forCandidateName}" profile માટે Interest</div>
+          <div class="card-sub">${t('interestForProfile').replace('{name}', i.forCandidateName)}</div>
           <span class="status-pending" style="background:${i.status==='accepted'?'#E7F6EF':i.status==='declined'?'#FCEBEA':'#FDF1E7'};color:${i.status==='accepted'?'var(--success)':i.status==='declined'?'var(--danger)':'#B4762A'};">
-            ${i.status==='accepted'?'✓ Accepted':i.status==='declined'?'✕ Declined':'⏳ Pending'}
+            ${i.status==='accepted'?t('statusAccepted'):i.status==='declined'?t('statusDeclined'):t('statusPendingShort')}
           </span>
           ${i.status==='pending' ? `
             <div style="display:flex;gap:6px;margin-top:8px;">
-              <button class="mini-btn mini-accept" data-accept="${i.id}">✓ Accept</button>
-              <button class="mini-btn mini-decline" data-decline="${i.id}">✕ Decline</button>
+              <button class="mini-btn mini-accept" data-accept="${i.id}">${t('acceptBtn')}</button>
+              <button class="mini-btn mini-decline" data-decline="${i.id}">${t('declineBtn')}</button>
             </div>
           ` : ""}
         </div>
@@ -1060,20 +1469,81 @@ function renderInterest(){
     `).join("");
     document.querySelectorAll("[data-accept]").forEach(btn=>{
       btn.addEventListener("click", async ()=>{
-        try{ await dataService.respondToInterest(btn.getAttribute("data-accept"), "accepted"); showToast("✓ Interest Accept થયું"); renderInterest(); }
+        try{ await dataService.respondToInterest(btn.getAttribute("data-accept"), "accepted"); showToast(t('acceptedToast')); loadReceived(); }
         catch(err){ showToast("Error: "+err.message); }
       });
     });
     document.querySelectorAll("[data-decline]").forEach(btn=>{
       btn.addEventListener("click", async ()=>{
-        try{ await dataService.respondToInterest(btn.getAttribute("data-decline"), "declined"); showToast("Interest Decline થયું"); renderInterest(); }
+        try{ await dataService.respondToInterest(btn.getAttribute("data-decline"), "declined"); showToast(t('declinedToast')); loadReceived(); }
         catch(err){ showToast("Error: "+err.message); }
       });
     });
-  }).catch(err=>{
-    document.getElementById("int-content").innerHTML = `<div class="status-banner status-err">Data load ના થયું: ${err.message}</div>`;
+  }
+
+  function paintSent(){
+    const el = document.getElementById("int-content");
+    if(sentList.length===0){ el.innerHTML = `<div class="empty">${t('noSentMsg')}</div>`; return; }
+    el.innerHTML = sentList.map(i=>`
+      <div class="card" style="cursor:default;">
+        <div class="card-photo" style="background:linear-gradient(160deg,#A8455C,#4A1220);">👤</div>
+        <div class="card-body">
+          <div class="card-name">${i.toCandidateName}</div>
+          <div class="card-sub">${i.toCandidateCity||'-'} · ${i.toCandidateAge||'-'} વર્ષ</div>
+          <span class="status-pending" style="background:${i.status==='accepted'?'#E7F6EF':i.status==='declined'?'#FCEBEA':'#FDF1E7'};color:${i.status==='accepted'?'var(--success)':i.status==='declined'?'var(--danger)':'#B4762A'};">
+            ${i.status==='accepted'?t('statusAccepted'):i.status==='declined'?t('statusDeclined'):t('statusPendingShort')}
+          </span>
+          ${i.status==='pending' ? `
+            <div style="margin-top:8px;">
+              <button class="mini-btn" data-withdraw="${i.id}" style="background:#fff;color:var(--danger);border:1px solid var(--danger);">${t('withdrawBtn')}</button>
+            </div>
+          ` : ""}
+        </div>
+      </div>
+    `).join("");
+    document.querySelectorAll("[data-withdraw]").forEach(btn=>{
+      btn.addEventListener("click", async ()=>{
+        if(!confirm(t('withdrawConfirm'))) return;
+        try{ await dataService.cancelInterest(btn.getAttribute("data-withdraw")); showToast(t('withdrawnToast')); loadSent(); }
+        catch(err){ showToast("Error: "+err.message); }
+      });
+    });
+  }
+
+  function updateTabBadges(){
+    const recPending = receivedList.filter(i=>i.status==='pending').length;
+    const sentPending = sentList.filter(i=>i.status==='pending').length;
+    const rb = document.getElementById("tab-badge-received"), sb = document.getElementById("tab-badge-sent");
+    if(rb){ if(recPending>0){ rb.style.display="inline-flex"; rb.textContent=recPending; } else rb.style.display="none"; }
+    if(sb){ if(sentPending>0){ sb.style.display="inline-flex"; sb.textContent=sentPending; } else sb.style.display="none"; }
+  }
+
+  function loadReceived(){
+    dataService.getReceivedInterests(state.user.id).then(list=>{
+      receivedList = list; updateTabBadges();
+      if(document.querySelector('.int-tab.active').getAttribute("data-tab")==="received") paintReceived();
+    }).catch(err=>{ document.getElementById("int-content").innerHTML = `<div class="status-banner status-err">Data load ના થયું: ${err.message}</div>`; });
+  }
+  function loadSent(){
+    dataService.getSentInterests(state.user.id).then(list=>{
+      sentList = list; updateTabBadges();
+      if(document.querySelector('.int-tab.active').getAttribute("data-tab")==="sent") paintSent();
+    }).catch(err=>{ document.getElementById("int-content").innerHTML = `<div class="status-banner status-err">Data load ના થયું: ${err.message}</div>`; });
+  }
+
+  document.querySelectorAll(".int-tab").forEach(tabEl=>{
+    tabEl.addEventListener("click", ()=>{
+      document.querySelectorAll(".int-tab").forEach(t2=>{ t2.classList.remove("active"); t2.style.color="rgba(255,255,255,0.85)"; });
+      tabEl.classList.add("active"); tabEl.style.color="#fff";
+      document.getElementById("int-content").innerHTML = `<div class="loading">${t('loadingText')}</div>`;
+      if(tabEl.getAttribute("data-tab")==="received") paintReceived(); else paintSent();
+    });
   });
+
+  loadReceived();
+  loadSent();
 }
+
 
 function renderMyProfiles(){
   app.innerHTML = `
@@ -1082,7 +1552,7 @@ function renderMyProfiles(){
       <div class="header-title">${t('myProfiles')}</div>
       <div class="header-sub">${t('myProfilesSub')}</div>
     </div>
-    <div class="content" id="myp-content"><div class="loading">Load થઈ રહ્યું છે...</div></div>
+    <div class="content" id="myp-content"><div class="loading">${t('loadingText')}</div></div>
     ${bottomNavHtml("profile")}
   `;
   attachLangToggle();
@@ -1091,9 +1561,12 @@ function renderMyProfiles(){
       const k = el.getAttribute("data-nav");
       if(k==="home"){ state.screen="home"; render(); }
       else if(k==="profile") render();
+      else if(k==="interest"){ state.screen="interest"; render(); }
+      else if(k==="settings"){ state.screen="settings"; render(); }
       else showToast("આ screen આગળના phase માં બનશે");
     });
   });
+  updateInterestBadge();
 
   dataService.getMyCandidates(state.user.id).then(list=>{
     const el = document.getElementById("myp-content");
@@ -1102,39 +1575,54 @@ function renderMyProfiles(){
     const cardsHtml = list.map(c=>`
       <div class="card" style="cursor:default; flex-direction:column; align-items:stretch;">
         <div style="display:flex;">
-          <div class="card-photo" style="background:${c.photoColor||'#A8455C'};${primaryPhotoURL(c)?`background-image:url('${primaryPhotoURL(c)}');background-size:cover;background-position:center;`:''}">${primaryPhotoURL(c)?'':(c.photoEmoji||'👤')}</div>
+          <div class="card-photo" style="background:${avatarStyle(c).color};${primaryPhotoURL(c)?`background-image:url('${primaryPhotoURL(c)}');background-size:cover;background-position:center;`:''}">${primaryPhotoURL(c)?'':avatarStyle(c).emoji}</div>
           <div class="card-body">
-            <div class="card-name">${c.name}${c.deactivated?' <span style="color:var(--text-mid);font-size:10px;font-weight:700;">(Deactivated)</span>':''}</div>
-            <div class="card-sub">${c.age} વર્ષ · ${c.education||'-'} · ${c.city||'-'}</div>
+            <div class="card-name">${c.name}${c.deactivated?` <span style="color:var(--text-mid);font-size:10px;font-weight:700;">${t('deactivatedTag')}</span>`:''}</div>
+            <div class="card-sub">${c.age} ${t('yearsUnit')} · ${c.education||'-'} · ${c.city||'-'}</div>
             <span class="status-pending" style="background:${c.deactivated?'#EEF1F3':c.status==='approved'?'#E7F6EF':c.status==='rejected'?'#FCEBEA':'#FDF1E7'};color:${c.deactivated?'var(--text-mid)':c.status==='approved'?'var(--success)':c.status==='rejected'?'var(--danger)':'#B4762A'};">
-              ${c.deactivated?'👋 લગ્ન/Settled':c.status==='approved'?'✓ Approved · Live':c.status==='rejected'?'✕ Rejected':'⏳ Admin Review Pending'}
+              ${c.deactivated?t('statusDeactivated'):c.status==='approved'?t('statusApproved'):c.status==='rejected'?t('statusRejected'):t('statusPending')}
             </span>
           </div>
         </div>
         ${!c.deactivated ? `
-          <div style="display:flex;gap:8px;padding:0 13px 8px;">
-            <button class="mini-btn" data-edit="${c.id}" style="background:var(--ice);color:var(--primary);flex:1;">✏️ Edit</button>
-            <button class="mini-btn" data-manage-photos="${c.id}" style="background:var(--ice);color:var(--primary);flex:1;">📷 Photos (${(c.photos&&c.photos.length)||(c.photoURL?1:0)}/5)</button>
-          </div>
-          <div style="display:flex;gap:8px;padding:0 13px 8px;">
-            <button class="mini-btn" data-deactivate="${c.id}" style="background:#FCEBEA;color:var(--danger);flex:1;">💍 Married/Settled</button>
-          </div>
-          <div style="padding:0 13px 13px; display:flex; flex-direction:column; gap:8px;">
-            <button class="mini-btn" data-toggle-photo="${c.id}" data-visible="${c.photoVisible!==false?'1':'0'}" style="width:100%;background:${c.photoVisible!==false?'#E7F6EF':'var(--ice)'};color:${c.photoVisible!==false?'var(--success)':'var(--primary)'};">
-              ${c.photoVisible!==false ? '👁️ Photo બીજાને દેખાય છે — છુપાવવા Tap કરો' : '🙈 Photo છુપાયેલો છે — દેખાડવા Tap કરો'}
-            </button>
+          <div style="display:flex;gap:14px;padding:16px 13px 4px;flex-wrap:wrap;">
+            <div style="display:flex;flex-direction:column;align-items:center;">
+              <button class="picon-btn" data-edit="${c.id}" style="background:var(--ice);color:var(--primary);" aria-label="Edit profile">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+              </button>
+              <div class="picon-label">${t('editBtn')}</div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;">
+              <button class="picon-btn" data-manage-photos="${c.id}" style="background:var(--ice);color:var(--primary);" aria-label="Manage photos, ${(c.photos&&c.photos.length)||(c.photoURL?1:0)} of 5 uploaded">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                <span class="picon-badge">${(c.photos&&c.photos.length)||(c.photoURL?1:0)}/5</span>
+              </button>
+              <div class="picon-label">${t('photosBtn')}</div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;">
+              <button class="picon-btn" data-toggle-photo="${c.id}" data-visible="${c.photoVisible!==false?'1':'0'}" style="background:${c.photoVisible!==false?'#E7F6EF':'var(--ice)'};color:${c.photoVisible!==false?'var(--success)':'var(--primary)'};" aria-label="${c.photoVisible!==false?'Photo visible to other members — tap to hide':'Photo hidden from other members — tap to show'}">
+                ${c.photoVisible!==false ? `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"/><circle cx="12" cy="12" r="3"/></svg>` : `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a18.5 18.5 0 0 1 5.06-5.94M9.9 4.24A10.94 10.94 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>`}
+              </button>
+              <div class="picon-label">${t('photoIconLbl')}</div>
+            </div>
             ${c.siblings ? `
-            <button class="mini-btn" data-toggle-siblings="${c.id}" data-visible="${c.siblingsVisible?'1':'0'}" style="width:100%;background:${c.siblingsVisible?'#E7F6EF':'var(--ice)'};color:${c.siblingsVisible?'var(--success)':'var(--primary)'};">
-              ${c.siblingsVisible ? '👁️ ભાઈ-બહેન ની વિગત બીજાને દેખાય છે — છુપાવવા Tap કરો' : '🙈 ભાઈ-બહેન ની વિગત છુપાયેલી છે — દેખાડવા Tap કરો'}
-            </button>
+            <div style="display:flex;flex-direction:column;align-items:center;">
+              <button class="picon-btn" data-toggle-siblings="${c.id}" data-visible="${c.siblingsVisible?'1':'0'}" style="background:${c.siblingsVisible?'#E7F6EF':'var(--ice)'};color:${c.siblingsVisible?'var(--success)':'var(--primary)'};" aria-label="${c.siblingsVisible?'Siblings info visible — tap to hide':'Siblings info hidden — tap to show'}">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              </button>
+              <div class="picon-label">${t('siblingsIconLbl')}</div>
+            </div>
             ` : ""}
+          </div>
+          <div style="padding:6px 13px 13px;text-align:center;">
+            <button data-deactivate="${c.id}" style="background:none;border:none;font-size:10.5px;font-weight:600;color:var(--text-mid);text-decoration:underline;padding:8px;font-family:inherit;cursor:pointer;">${t('marriedSettledBtn')}</button>
           </div>
         ` : `
           <div style="padding:0 13px 13px;">
             <button class="mini-btn" data-activate="${c.id}" ${activeCount>=4?"disabled":""} style="width:100%;background:${activeCount>=4?'#EEF1F3':'var(--ice)'};color:${activeCount>=4?'var(--text-mid)':'var(--primary)'};${activeCount>=4?'cursor:not-allowed;':''}">
-              🔄 ફરી Active કરો
+              ${t('reactivateBtn')}
             </button>
-            ${activeCount>=4 ? `<div style="font-size:10px;color:var(--text-mid);margin-top:5px;text-align:center;">4/4 profiles વપરાયેલા — બીજો profile Deactivate કરો પછી જ Active કરી શકાશે</div>` : ""}
+            ${activeCount>=4 ? `<div style="font-size:10px;color:var(--text-mid);margin-top:5px;text-align:center;">${t('limitReachedMsg')}</div>` : ""}
           </div>
         `}
       </div>
@@ -1143,15 +1631,15 @@ function renderMyProfiles(){
     el.innerHTML = cardsHtml + (canAddMore ? `
       <div class="card" id="add-candidate" style="cursor:pointer; border:2px dashed var(--sky); background:var(--ice); justify-content:center; align-items:center; padding:24px; display:flex; flex-direction:column; text-align:center;">
         <div style="width:44px;height:44px;border-radius:50%;background:#fff;color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;">+</div>
-        <div style="font-size:12.5px;font-weight:700;color:var(--navy);margin-top:10px;">નવો Candidate Profile Add કરો</div>
-        <div style="font-size:10.5px;color:var(--text-mid);margin-top:3px;">તમે હજુ ${4-activeCount} વધુ profiles બનાવી શકો છો</div>
+        <div style="font-size:12.5px;font-weight:700;color:var(--navy);margin-top:10px;">${t('addCandidateBtn')}</div>
+        <div style="font-size:10.5px;color:var(--text-mid);margin-top:3px;">${t('moreProfilesMsg').replace('{n}', 4-activeCount)}</div>
       </div>
-    ` : `<div class="empty">4/4 profiles વપરાયેલા — વધુ profile બનાવવા માટે limit પૂરી થઈ છે</div>`)
+    ` : `<div class="empty">${t('limitFullMsg')}</div>`)
     + `
       <div class="card" style="cursor:default; flex-direction:column; align-items:stretch; margin-top:16px;">
         <div style="padding:14px;">
-          <div style="font-size:11.5px;color:var(--text-mid);margin-bottom:10px;">Logged in as <b style="color:var(--navy);">${state.user.name}</b> (${state.user.mobile})</div>
-          <button class="btn" id="logout-btn" style="background:#FCEBEA;color:var(--danger);width:100%;">🚪 Logout</button>
+          <div style="font-size:11.5px;color:var(--text-mid);margin-bottom:10px;">${t('loggedInAs')} <b style="color:var(--navy);">${state.user.name}</b> (${state.user.mobile})</div>
+          <button class="btn" id="logout-btn" style="background:#FCEBEA;color:var(--danger);width:100%;">${t('logoutBtn')}</button>
         </div>
       </div>
     `;
@@ -1229,6 +1717,89 @@ function renderMyProfiles(){
   });
 }
 
+function renderSettings(){
+  app.innerHTML = `
+    <div class="header" style="position:relative;">
+      ${langToggleHtml()}
+      <div class="header-title">⚙️ Settings</div>
+      <div class="header-sub">App ને તમારી પસંદ પ્રમાણે ગોઠવો</div>
+    </div>
+    <div class="content">
+      <div style="background:#fff;border-radius:16px;padding:16px;margin-bottom:14px;border:1px solid var(--border);">
+        <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:3px;">🔤 Font Size</div>
+        <div style="font-size:11px;color:var(--text-mid);margin-bottom:12px;">આખા app નું text આ પ્રમાણે નાનું-મોટું થશે</div>
+        <div style="display:flex;gap:8px;background:var(--ice);padding:4px;border-radius:12px;">
+          <div class="fs-opt" data-fs="small" style="flex:1;text-align:center;padding:10px 0;font-size:12px;font-weight:700;border-radius:9px;cursor:pointer;">Small</div>
+          <div class="fs-opt" data-fs="medium" style="flex:1;text-align:center;padding:10px 0;font-size:13px;font-weight:700;border-radius:9px;cursor:pointer;">Medium</div>
+          <div class="fs-opt" data-fs="large" style="flex:1;text-align:center;padding:10px 0;font-size:14px;font-weight:700;border-radius:9px;cursor:pointer;">Large</div>
+        </div>
+      </div>
+
+      <div style="background:#fff;border-radius:16px;padding:16px;margin-bottom:14px;border:1px solid var(--border);">
+        <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:3px;">🔔 Notifications</div>
+        <div style="font-size:11px;color:var(--text-mid);margin-bottom:12px;">કયા updates જોઈએ છે એ પસંદ કરો</div>
+        <div id="notif-toggles"><div style="font-size:12px;color:var(--text-mid);">${t('loadingText')}</div></div>
+        <div style="font-size:10px;color:var(--text-mid);margin-top:10px;line-height:1.5;">📱 Push notification (ફોન પર ring/vibrate) હજુ ઉપલબ્ધ નથી — હાલ આ preference save થાય છે, future update માં actual notification મળશે.</div>
+      </div>
+    </div>
+    ${bottomNavHtml("settings")}
+  `;
+  attachLangToggle();
+  document.querySelectorAll("[data-nav]").forEach(el=>{
+    el.addEventListener("click", ()=>{
+      const k = el.getAttribute("data-nav");
+      if(k==="home"){ state.screen="home"; render(); }
+      else if(k==="profile"){ state.screen="myProfiles"; render(); }
+      else if(k==="interest"){ state.screen="interest"; render(); }
+      else if(k==="settings") render();
+      else showToast("આ screen આગળના phase માં બનશે");
+    });
+  });
+  updateInterestBadge();
+
+  function paintFontOptions(){
+    const current = getFontSizePref();
+    document.querySelectorAll(".fs-opt").forEach(el=>{
+      const active = el.getAttribute("data-fs")===current;
+      el.style.background = active ? "#4A1220" : "transparent";
+      el.style.color = active ? "#fff" : "var(--primary)";
+    });
+  }
+  paintFontOptions();
+  document.querySelectorAll(".fs-opt").forEach(el=>{
+    el.addEventListener("click", ()=>{
+      localStorage.setItem("sagarSambandhFontSize", el.getAttribute("data-fs"));
+      applyFontZoom();
+      paintFontOptions();
+    });
+  });
+
+  const notifDefs = [
+    ["interest", "💌", "નવું Interest મળે ત્યારે"],
+    ["approval", "✓", "Profile Approve/Reject થાય ત્યારે"],
+    ["newMatches", "🆕", "નવી Matching Profiles ઉમેરાય ત્યારે"],
+  ];
+  dataService.getUserPrefs(state.user.id).then(prefs=>{
+    const el = document.getElementById("notif-toggles");
+    el.innerHTML = notifDefs.map(([key,icon,label])=>`
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);">
+        <div style="flex:1;font-size:12.5px;color:var(--text-dark);">${icon} ${label}</div>
+        <input type="checkbox" data-notif="${key}" ${prefs[key]?'checked':''} style="width:20px;height:20px;accent-color:var(--navy);flex-shrink:0;">
+      </div>
+    `).join("");
+    document.querySelectorAll("[data-notif]").forEach(cb=>{
+      cb.addEventListener("change", async (e)=>{
+        const key = cb.getAttribute("data-notif");
+        const newPrefs = { ...prefs, [key]: e.target.checked };
+        try{ await dataService.updateNotificationPrefs(state.user.id, newPrefs); prefs[key]=e.target.checked; }
+        catch(err){ showToast("Error: "+err.message); e.target.checked = !e.target.checked; }
+      });
+    });
+  }).catch(err=>{
+    document.getElementById("notif-toggles").innerHTML = `<div class="status-banner status-err">Load ના થયું: ${err.message}</div>`;
+  });
+}
+
 function formHeaderHtml(stepNum, title){
   return `
     <div class="header" style="padding-bottom:18px;">
@@ -1280,7 +1851,7 @@ function renderFormStep1(){
           <option value="female" ${d.gender==='female'?'selected':''}>👧 યુવતી (Female)</option>
         </select>
       </div>
-      <div class="field"><label>${t('age')}</label><div class="input-wrap"><input id="ff-age" type="number" value="${d.age||''}" placeholder="${t('agePh')}"></div></div>
+      <div class="field"><label>${t('age')}</label><div class="input-wrap"><input id="ff-age" type="number" min="18" max="70" value="${d.age||''}" placeholder="${t('agePh')}"></div></div>
       <div class="field"><label>${t('fatherName')}</label><div class="input-wrap"><input id="ff-father" value="${d.fatherName||''}" placeholder="${t('fatherNamePh')}"></div></div>
       <div class="field"><label>${t('motherName')}</label><div class="input-wrap"><input id="ff-mother" value="${d.motherName||''}" placeholder="${t('motherNamePh')}"></div></div>
       <div class="field"><label>${t('rashi')}</label>
@@ -1336,6 +1907,9 @@ function renderFormStep1(){
     const errEl=document.getElementById("ff-err");
     if(!name||!gender||!age||!fatherName||!motherName){
       errEl.innerHTML = `<div class="err-text">${t('fillAllFields')}</div>`; return;
+    }
+    if(Number(age) < 18 || Number(age) > 70 || !Number.isInteger(Number(age))){
+      errEl.innerHTML = `<div class="err-text">${t('ageInvalid')}</div>`; return;
     }
     Object.assign(state.formDraft, { name, gender, age:Number(age), fatherName, motherName, rashi });
     state.screen="formStep2"; render();
@@ -1537,6 +2111,7 @@ function renderFormDocs(){
 }
 
 render();
+applyFontZoom();
 </script>
 </body>
 </html>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- SAGAR SAMBANDH — ADMIN APP — v11.8 (16 Sep 2026) — Review screen now shows full Photos gallery (candidates.photos[] array, with photoURL fallback for old single-photo candidates), not just one image. Base: v11.7 (16 Sep 2026) — Analytics screen. -->
+<!-- SAGAR SAMBANDH — ADMIN APP — v11.9 (16 Sep 2026) — Avatar color/emoji bug fix (gender-based, ignores stale stored photoColor/photoEmoji so old candidates pick up new theme colors automatically) + Age validation (18-70) on Candidate Edit. Base: v11.8 (16 Sep 2026) — Multiple Photos gallery in Review screen. -->
 <html lang="gu">
 <head>
 <meta charset="UTF-8">
@@ -187,12 +187,17 @@ async function sha256(text){
 // DATA SERVICE — real Firestore calls
 // Collections used: admins, candidates (status: pending/approved/rejected), users
 // ============================================================
-const PHOTO_STYLES = [
-  {color:"linear-gradient(160deg,#D98FA0,#A8455C)", emoji:"👩"},
-  {color:"linear-gradient(160deg,#A8455C,#4A1220)", emoji:"👨"},
-  {color:"linear-gradient(160deg,#D98FA0,#7A2438)", emoji:"👩"},
-];
-function styleFor(i){ return PHOTO_STYLES[i % PHOTO_STYLES.length]; }
+// Avatar color/emoji — gender ના આધારે હંમેશા fresh compute થાય છે, Firestore માં
+// stored જૂની value (photoColor/photoEmoji) ક્યારેય નથી વપરાતી. આનાથી future માં
+// theme બદલાય તો પણ જૂના candidates ના avatar આપોઆપ નવા રંગમાં દેખાય — કોઈ data
+// migration જરૂરી નહીં.
+function avatarStyle(c){
+  const isFemale = c.gender === "female";
+  return {
+    color: isFemale ? "linear-gradient(160deg,#D98FA0,#A8455C)" : "linear-gradient(160deg,#A8455C,#4A1220)",
+    emoji: isFemale ? "👩" : "👨",
+  };
+}
 
 // Multiple Photos migration helper — જૂના candidates ને ફક્ત `photoURL` (single-photo
 // જમાનાનું) હોય, નવા ને `photos` array — બંને કિસ્સામાં cover photo ની URL આપે.
@@ -333,21 +338,14 @@ const adminService = {
   async getPending() {
     if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
     const snap = await db.collection("candidates").orderBy("createdAt", "desc").limit(20).get();
-    return snap.docs.map((d, i) => {
-      const data = d.data();
-      const style = data.photoEmoji ? { color: data.photoColor, emoji: data.photoEmoji } : styleFor(i);
-      return { id: d.id, ...data, photoColor: style.color, photoEmoji: style.emoji };
-    });
+    return snap.docs.map(d => ({ id: d.id, ...d.data() }));
   },
 
   async getAllCandidates() {
     if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
     const snap = await db.collection("candidates").get();
-    return snap.docs.map((d, i) => {
-      const data = d.data();
-      const style = data.photoEmoji ? { color: data.photoColor, emoji: data.photoEmoji } : styleFor(i);
-      return { id: d.id, ...data, photoColor: style.color, photoEmoji: style.emoji };
-    }).sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
+    return snap.docs.map(d => ({ id: d.id, ...d.data() }))
+      .sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
   },
 
   // Approve થતાં જ sensitive documents (Aadhar/Education/LC) Storage માંથી auto-delete
@@ -596,7 +594,7 @@ function renderDashboard(main){
     if(list.length===0){ el.innerHTML = `<div class="empty">હજુ કોઈ candidate submit નથી થયું</div>`; return; }
     el.innerHTML = list.map(c=>`
       <div class="approval-row">
-        <div class="ar-photo" style="background:${c.photoColor}">${c.photoEmoji}</div>
+        <div class="ar-photo" style="background:${avatarStyle(c).color}">${avatarStyle(c).emoji}</div>
         <div class="ar-info"><div class="ar-name">${c.name}</div><div class="ar-meta">${c.city||'-'} · ${c.status}</div></div>
         ${c.status==="pending" ? `<div class="ar-actions"><button class="btn-view" data-review="${c.id}">Review</button></div>` : ""}
         ${c.status==="approved" ? `<span class="status-badge badge-approved">✓ Approved</span>` : ""}
@@ -629,7 +627,7 @@ function renderReview(main){
         <div>
           <div class="card">
             <div class="profile-hero">
-              <div class="hero-photo" style="background:${c.photoColor}">${c.photoEmoji}</div>
+              <div class="hero-photo" style="background:${avatarStyle(c).color}">${avatarStyle(c).emoji}</div>
               <div><div class="hero-name">${c.name}</div><div class="hero-meta">${c.city||'-'}</div></div>
             </div>
             <div class="section-title">Basic Details (Firestore data)</div>
@@ -718,7 +716,7 @@ function renderEditCandidate(main){
           <option value="male" ${c.gender==='male'?'selected':''}>Male</option>
           <option value="female" ${c.gender==='female'?'selected':''}>Female</option>
         </select></div></div>
-        <div class="field"><label>ઉંમર</label><div class="input-wrap"><input id="ec-age" type="number" value="${c.age||''}"></div></div>
+        <div class="field"><label>ઉંમર</label><div class="input-wrap"><input id="ec-age" type="number" min="18" max="70" value="${c.age||''}"></div></div>
         <div class="field"><label>પિતાનું નામ</label><div class="input-wrap"><input id="ec-father" value="${c.fatherName||''}"></div></div>
         <div class="field"><label>માતાનું નામ</label><div class="input-wrap"><input id="ec-mother" value="${c.motherName||''}"></div></div>
         <div class="field"><label>રાશી</label><div class="input-wrap"><select id="ec-rashi">
@@ -762,6 +760,9 @@ function renderEditCandidate(main){
     const errEl=document.getElementById("ec-err"); errEl.innerHTML="";
     if(!name||!gender||!age||!fatherName||!motherName||!education||!city){
       errEl.innerHTML = `<div class="err-text">બધા જરૂરી fields ભરો</div>`; return;
+    }
+    if(Number(age) < 18 || Number(age) > 70 || !Number.isInteger(Number(age))){
+      errEl.innerHTML = `<div class="err-text">ઉંમર 18 થી 70 વર્ષ ની વચ્ચે જ હોવી જોઈએ</div>`; return;
     }
     const payload = { name, gender, age:Number(age), fatherName, motherName, rashi, education, occupation, city, maritalStatus, siblings: siblings||null };
     e.target.disabled=true; e.target.textContent="Save થઈ રહ્યું છે...";
@@ -813,7 +814,7 @@ function renderAllCandidates(main, initialStatus){
     if(list.length===0){ el.innerHTML = `<div class="empty">કોઈ candidate ના મળ્યા</div>`; return; }
     el.innerHTML = list.map(c=>`
       <div class="approval-row">
-        <div class="ar-photo" style="background:${c.photoColor}">${c.photoEmoji}</div>
+        <div class="ar-photo" style="background:${avatarStyle(c).color}">${avatarStyle(c).emoji}</div>
         <div class="ar-info"><div class="ar-name">${c.name}${c.deactivated?' <span style="color:var(--text-mid);font-size:10px;font-weight:700;">(Deactivated)</span>':''}</div><div class="ar-meta">${c.city||'-'} · ${c.age||'-'} વર્ષ</div></div>
         <div class="ar-actions">
           ${c.status==="pending" ? `<button class="btn-view" data-review="${c.id}">Review</button>` : ""}
