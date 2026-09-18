@@ -72,9 +72,8 @@ service cloud.firestore {
 
     // ADMINS
     match /admins/{adminId} {
-      allow read: if isRealUser();
-      allow create: if isSuperAdmin() ||
-        (request.auth.uid == adminId && request.resource.data.role == 'super');
+      allow read: if isAdmin();
+      allow create: if isSuperAdmin();
       allow update: if isSuperAdmin() ||
         (request.auth.uid == adminId &&
          request.resource.data.role == resource.data.role &&
