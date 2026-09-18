@@ -263,6 +263,14 @@ function getRecaptchaVerifier(){
   }
   return window._recaptchaVerifier;
 }
+function resetRecaptchaVerifier(){
+  try {
+    if (window._recaptchaVerifier) {
+      window._recaptchaVerifier.clear();
+      window._recaptchaVerifier = null;
+    }
+  } catch(e) {}
+}
 
 // ============================================================
 // DATA SERVICE — real Firestore calls
@@ -311,10 +319,15 @@ const dataService = {
   // differs (collect name+PIN for a new account, vs. just set a new PIN).
   async sendOtp(mobile) {
     if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
-    const verifier = getRecaptchaVerifier();
-    const fullPhone = "+91" + mobile;
-    pendingConfirmationResult = await auth.signInWithPhoneNumber(fullPhone, verifier);
-    return { success: true };
+    try {
+      const verifier = getRecaptchaVerifier();
+      const fullPhone = "+91" + mobile;
+      pendingConfirmationResult = await auth.signInWithPhoneNumber(fullPhone, verifier);
+      return { success: true };
+    } catch(err) {
+      resetRecaptchaVerifier();
+      throw err;
+    }
   },
 
   // Step 2 — verifies the 6-digit code. On success the person now has a
@@ -851,9 +864,17 @@ const STRINGS = {
     // Pre-login screens
     chooseLangTitle: "તમારી ભાષા પસંદ કરો",
     chooseLangSub: "Choose your language",
-    mobileEntryTitle: "નમસ્તે 🙏 ચાલો શરૂ કરીએ",
-    mobileEntrySub: "મોબાઈલ નંબર નાખો",
+    mobileEntryTitle: "મોબાઈલ નંબર દાખલ કરો",
+    mobileEntrySub: "લોગિન અથવા રજીસ્ટ્રેશન માટે આગળ વધો",
     mobileNumberLbl: "મોબાઈલ નંબર",
+    continueBtn: "આગળ વધો →",
+    welcomeUser: "નમસ્તે, {name} 🙏",
+    enterPin: "4-અંકનો PIN દાખલ કરો",
+    loginWithOtpBtn: "OTP દ્વારા લોગિન કરો",
+    firstTimeDeviceNote: "પ્રથમ વખત લોગિન માટે તમારા મોબાઈલ પર SMS OTP મોકલવામાં આવશે.",
+    resendOtp: "OTP ફરી મોકલો",
+    resendIn: "{sec} સેકન્ડમાં ફરી મોકલી શકાશે",
+    loginSuccessToast: "✓ સફળતાપૂર્વક લોગિન થયું",
     loginBtnExisting: "લોગિન કરો (પહેલેથી ખાતું છે) →",
     signupBtnNew: "નવું ખાતું બનાવો →",
     mobileInvalid: "10-અંકનો સાચો મોબાઈલ નંબર નાખો",
@@ -861,12 +882,12 @@ const STRINGS = {
     pinLoginSub: "+91 {mobile} માટે તમારો 4-અંકનો PIN",
     pinLoginBtn: "લોગિન કરો →",
     pinLoggingIn: "લોગિન થઈ રહ્યા છીએ...",
-    changeNumberBtn: "← નંબર બદલો",
+    changeNumberBtn: "← બીજો નંબર વાપરો",
     forgotPinLink: "PIN ભૂલી ગયા?",
     sendingOtp: "OTP મોકલી રહ્યા છીએ...",
     otpSendFailed: "OTP મોકલી ના શકાયો — ફરી પ્રયત્ન કરો",
     otpVerifyTitle: "📱 OTP નાખો",
-    otpVerifySub: "+91 {mobile} પર 6-અંકનો code મોકલ્યો છે",
+    otpVerifySub: "+91 {mobile} પર 6-અંકનો SMS code મોકલ્યો છે",
     otpVerifyBtn: "Verify કરો →",
     otpVerifying: "Verify થઈ રહ્યું છે...",
     otpInvalid: "OTP ખોટો છે અથવા expire થયો",
@@ -1006,9 +1027,17 @@ const STRINGS = {
     // Pre-login screens
     chooseLangTitle: "Choose your language",
     chooseLangSub: "તમારી ભાષા પસંદ કરો",
-    mobileEntryTitle: "Welcome 🙏 Let's get started",
-    mobileEntrySub: "Enter Mobile Number",
+    mobileEntryTitle: "Enter Mobile Number",
+    mobileEntrySub: "Continue to Login or Register",
     mobileNumberLbl: "Mobile Number",
+    continueBtn: "Continue →",
+    welcomeUser: "Welcome, {name} 🙏",
+    enterPin: "Enter 4-Digit PIN",
+    loginWithOtpBtn: "Login with OTP",
+    firstTimeDeviceNote: "An SMS OTP will be sent to your mobile for first-time login.",
+    resendOtp: "Resend OTP",
+    resendIn: "Resend in {sec}s",
+    loginSuccessToast: "✓ Login successful",
     loginBtnExisting: "Login (already have an Account) →",
     signupBtnNew: "Create New Account →",
     mobileInvalid: "Enter a valid 10-digit mobile number",
@@ -1016,12 +1045,12 @@ const STRINGS = {
     pinLoginSub: "Your 4-digit PIN for +91 {mobile}",
     pinLoginBtn: "Login →",
     pinLoggingIn: "Logging in...",
-    changeNumberBtn: "← Change Number",
+    changeNumberBtn: "← Use different number",
     forgotPinLink: "Forgot PIN?",
     sendingOtp: "Sending OTP...",
     otpSendFailed: "Could not send OTP — please try again",
     otpVerifyTitle: "📱 Enter OTP",
-    otpVerifySub: "We sent a 6-digit code to +91 {mobile}",
+    otpVerifySub: "We sent a 6-digit SMS code to +91 {mobile}",
     otpVerifyBtn: "Verify →",
     otpVerifying: "Verifying...",
     otpInvalid: "OTP is incorrect or expired",
@@ -1219,9 +1248,6 @@ function renderChecking(){
       return;
     }
     // Session restore: relies on Firebase Auth's own persisted session
-    // (same pattern as admin.html) — a real (non-anonymous) signed-in user
-    // survives page refresh automatically. Anonymous sessions never count
-    // as "logged in" here (and Firestore Rules would block them anyway).
     const currentUser = auth.currentUser;
     if(currentUser && !currentUser.isAnonymous){
       try{
@@ -1230,11 +1256,25 @@ function renderChecking(){
           const data = userDoc.data();
           if(!data.blocked){
             state.user = { id: currentUser.uid, name: data.name, mobile: data.mobile, village: data.village };
+            localStorage.setItem("sagar_last_mobile", data.mobile);
+            localStorage.setItem("sagar_last_name", data.name || "");
+            localStorage.setItem("sagar_device_registered_" + data.mobile, "true");
             state.screen="home"; render(); return;
           }
         }
-      }catch(e){ /* fall through to mobileEntry if lookup fails */ }
+      }catch(e){ /* fall through to device check if lookup fails */ }
     }
+
+    // Angel One Style: If this device was already verified, prompt directly for 4-digit PIN!
+    const lastMobile = localStorage.getItem("sagar_last_mobile");
+    if(lastMobile && localStorage.getItem("sagar_device_registered_" + lastMobile) === "true"){
+      state.pendingMobile = lastMobile;
+      state.screen = "loginPin";
+      render();
+      return;
+    }
+
+    // First time on device -> ask for mobile number
     state.screen="mobileEntry"; render();
   }, 400);
 }
@@ -1242,64 +1282,84 @@ function renderChecking(){
 function renderMobileEntry(){
   app.innerHTML = `
     <div class="header">
+      <div style="font-size:38px;margin-bottom:8px;">📱</div>
       <div class="header-title">${t('mobileEntryTitle')}</div>
       <div class="header-sub">${t('mobileEntrySub')}</div>
     </div>
     <div class="content">
-      <div class="field"><label>${t('mobileNumberLbl')}</label><div class="input-wrap"><input id="f-mobile" placeholder="98765 43210" maxlength="10"></div></div>
+      <div class="field">
+        <label>${t('mobileNumberLbl')}</label>
+        <div class="input-wrap" style="display:flex;align-items:center;">
+          <span style="font-weight:700;padding-left:12px;color:var(--text-dark);font-size:14px;">+91</span>
+          <input id="f-mobile" placeholder="98765 43210" maxlength="10" style="padding-left:8px;" inputmode="numeric" value="${escapeHtml(state.pendingMobile||'')}">
+        </div>
+      </div>
       <div id="f-err"></div>
-      <button class="btn btn-primary" id="f-login">${t('loginBtnExisting')}</button>
-      <button class="btn btn-ghost" id="f-signup">${t('signupBtnNew')}</button>
+      <button class="btn btn-primary" id="f-continue">${t('continueBtn')}</button>
+      <div style="text-align:center;font-size:11.5px;color:var(--text-mid);margin-top:16px;line-height:1.5;">
+        ${t('firstTimeDeviceNote')}
+      </div>
     </div>
   `;
-  document.getElementById("f-mobile").addEventListener("input", (e)=>{ e.target.value = e.target.value.replace(/\D/g,'').slice(0,10); });
+  const mobileInput = document.getElementById("f-mobile");
+  mobileInput.addEventListener("input", (e)=>{ e.target.value = e.target.value.replace(/\D/g,'').slice(0,10); });
+  if(mobileInput) setTimeout(()=>mobileInput.focus(), 100);
 
   function readMobile(){
-    const mobile=document.getElementById("f-mobile").value.trim();
+    const mobile=mobileInput.value.trim();
     const errEl=document.getElementById("f-err"); errEl.innerHTML="";
     if(mobile.length!==10){ errEl.innerHTML = `<div class="err-text">${t('mobileInvalid')}</div>`; markFieldErrors(["f-mobile"]); return null; }
     clearFieldErrors(["f-mobile"]);
     return mobile;
   }
-  // Login: no OTP needed for daily use — straight to PIN entry.
-  document.getElementById("f-login").addEventListener("click", ()=>{
+
+  document.getElementById("f-continue").addEventListener("click", async (e)=>{
     const mobile = readMobile(); if(!mobile) return;
     state.pendingMobile = mobile;
-    state.screen = "loginPin"; render();
-  });
-  // Signup: must prove phone ownership with a real OTP first.
-  document.getElementById("f-signup").addEventListener("click", async (e)=>{
-    const mobile = readMobile(); if(!mobile) return;
-    const errEl=document.getElementById("f-err");
-    e.target.disabled=true; e.target.textContent=t('sendingOtp');
+    const isRegistered = localStorage.getItem("sagar_device_registered_" + mobile) === "true";
+    if(isRegistered){
+      // Known device — direct PIN entry (No OTP required)!
+      state.screen = "loginPin"; render();
+      return;
+    }
+    // First time on this device / browser — send SMS OTP
+    const btn = e.target;
+    btn.disabled = true; btn.textContent = t('sendingOtp');
+    const errEl = document.getElementById("f-err");
     try{
       await dataService.sendOtp(mobile);
-      state.pendingMobile = mobile;
-      state.otpPurpose = "signup";
+      state.otpPurpose = "loginOrSignup";
       state.screen = "otpVerify"; render();
     }catch(err){
-      e.target.disabled=false; e.target.textContent=t('signupBtnNew');
+      btn.disabled = false; btn.textContent = t('continueBtn');
+      resetRecaptchaVerifier();
       errEl.innerHTML = `<div class="err-text">${t('otpSendFailed')} (${err.message})</div>`;
     }
   });
 }
 
 function renderLoginPin(){
+  const savedName = localStorage.getItem("sagar_last_name") || "";
   app.innerHTML = `
     <div class="header">
-      <div class="header-title">${t('pinLoginTitle')}</div>
+      <div style="font-size:38px;margin-bottom:8px;">🔐</div>
+      <div class="header-title">${savedName ? t('welcomeUser').replace('{name}', escapeHtml(savedName)) : t('pinLoginTitle')}</div>
       <div class="header-sub">${t('pinLoginSub').replace('{mobile}', state.pendingMobile)}</div>
     </div>
     <div class="content">
+      <div style="text-align:center;font-size:12.5px;color:var(--text-mid);margin-bottom:12px;font-weight:600;">${t('enterPin')}</div>
       <div class="otp-boxes">
         ${[0,1,2,3].map(i=>`<input class="otp-box" type="password" maxlength="1" inputmode="numeric" data-pin="${i}">`).join("")}
       </div>
       <div id="pin-err"></div>
       <button class="btn btn-primary" id="pin-submit" disabled>${t('pinLoginBtn')}</button>
-      <div class="center-note">
+      <div class="center-note" style="display:flex;justify-content:center;gap:12px;margin-top:16px;">
+        <b style="color:var(--primary);cursor:pointer;" id="pin-otp-login">${t('loginWithOtpBtn')}</b>
+        <span style="color:var(--border);">|</span>
         <b style="color:var(--primary);cursor:pointer;" id="pin-forgot">${t('forgotPinLink')}</b>
-        &nbsp;·&nbsp;
-        <b style="color:var(--primary);cursor:pointer;" id="pin-back">${t('changeNumberBtn')}</b>
+      </div>
+      <div style="text-align:center;margin-top:16px;">
+        <b style="color:var(--text-mid);font-size:12px;cursor:pointer;text-decoration:underline;" id="pin-back">${t('changeNumberBtn')}</b>
       </div>
     </div>
   `;
@@ -1312,8 +1372,31 @@ function renderLoginPin(){
       if(b.value && boxes[i+1]) boxes[i+1].focus();
       checkFull();
     });
+    b.addEventListener("keydown", (e)=>{
+      if(e.key === "Backspace" && !b.value && boxes[i-1]){
+        boxes[i-1].focus();
+      }
+    });
   });
+  if(boxes[0]) setTimeout(()=>boxes[0].focus(), 100);
+
   document.getElementById("pin-back").addEventListener("click", ()=>{ state.screen="mobileEntry"; render(); });
+  
+  // Login with OTP fallback
+  document.getElementById("pin-otp-login").addEventListener("click", async (e)=>{
+    e.target.style.opacity=0.6; e.target.textContent=t('sendingOtp');
+    try{
+      await dataService.sendOtp(state.pendingMobile);
+      state.otpPurpose = "loginOtp";
+      state.screen = "otpVerify"; render();
+    }catch(err){
+      e.target.style.opacity=1; e.target.textContent=t('loginWithOtpBtn');
+      resetRecaptchaVerifier();
+      document.getElementById("pin-err").innerHTML = `<div class="err-text">${t('otpSendFailed')} (${err.message})</div>`;
+    }
+  });
+
+  // Forgot PIN
   document.getElementById("pin-forgot").addEventListener("click", async (e)=>{
     e.target.style.opacity=0.6; e.target.textContent=t('sendingOtp');
     try{
@@ -1322,15 +1405,20 @@ function renderLoginPin(){
       state.screen = "otpVerify"; render();
     }catch(err){
       e.target.style.opacity=1; e.target.textContent=t('forgotPinLink');
+      resetRecaptchaVerifier();
       document.getElementById("pin-err").innerHTML = `<div class="err-text">${t('otpSendFailed')} (${err.message})</div>`;
     }
   });
+
   submitBtn.addEventListener("click", async (e)=>{
     const pin = boxes.map(b=>b.value).join("");
     const errEl=document.getElementById("pin-err"); errEl.innerHTML="";
     e.target.disabled=true; e.target.textContent=t('pinLoggingIn');
     try{
       const result = await dataService.login(state.pendingMobile, pin);
+      localStorage.setItem("sagar_last_mobile", state.pendingMobile);
+      if(result.name) localStorage.setItem("sagar_last_name", result.name);
+      localStorage.setItem("sagar_device_registered_" + state.pendingMobile, "true");
       state.user = result;
       state.screen="home"; render();
     }catch(err){
@@ -1339,18 +1427,19 @@ function renderLoginPin(){
       if(boxes[0]) boxes[0].focus();
       errEl.innerHTML = `<div class="err-text">${err.message}</div>`;
       const otpWrap = document.querySelector(".otp-boxes");
-      otpWrap.classList.add("field-error");
-      const clearOtpErr = ()=>{ otpWrap.classList.remove("field-error"); boxes.forEach(b=>b.removeEventListener("input", clearOtpErr)); };
-      boxes.forEach(b=>b.addEventListener("input", clearOtpErr));
+      if(otpWrap){
+        otpWrap.classList.add("field-error");
+        const clearOtpErr = ()=>{ otpWrap.classList.remove("field-error"); boxes.forEach(b=>b.removeEventListener("input", clearOtpErr)); };
+        boxes.forEach(b=>b.addEventListener("input", clearOtpErr));
+      }
     }
   });
 }
 
-// Shared OTP-entry screen for both Signup and Forgot-PIN — which flow it's
-// for is read from state.otpPurpose, set by the screen that sent the OTP.
 function renderOtpVerify(){
   app.innerHTML = `
     <div class="header">
+      <div style="font-size:38px;margin-bottom:8px;">📱</div>
       <div class="header-title">${t('otpVerifyTitle')}</div>
       <div class="header-sub">${t('otpVerifySub').replace('{mobile}', state.pendingMobile)}</div>
     </div>
@@ -1360,7 +1449,13 @@ function renderOtpVerify(){
       </div>
       <div id="otp-err"></div>
       <button class="btn btn-primary" id="otp-submit" disabled>${t('otpVerifyBtn')}</button>
-      <div class="center-note"><b style="color:var(--primary);cursor:pointer;" id="otp-back">${t('changeNumberBtn')}</b></div>
+      <div id="resend-wrap" style="text-align:center;font-size:12px;margin-top:14px;color:var(--text-mid);">
+        <span id="resend-timer">${t('resendIn').replace('{sec}', '30')}</span>
+        <b id="resend-btn" style="display:none;color:var(--primary);cursor:pointer;">${t('resendOtp')}</b>
+      </div>
+      <div class="center-note" style="margin-top:12px;">
+        <b style="color:var(--text-mid);font-size:12px;cursor:pointer;text-decoration:underline;" id="otp-back">${t('changeNumberBtn')}</b>
+      </div>
     </div>
   `;
   const boxes = Array.from(document.querySelectorAll("[data-otp]"));
@@ -1372,29 +1467,77 @@ function renderOtpVerify(){
       if(b.value && boxes[i+1]) boxes[i+1].focus();
       checkFull();
     });
+    b.addEventListener("keydown", (e)=>{
+      if(e.key === "Backspace" && !b.value && boxes[i-1]){
+        boxes[i-1].focus();
+      }
+    });
   });
-  document.getElementById("otp-back").addEventListener("click", ()=>{ state.screen="mobileEntry"; render(); });
+  if(boxes[0]) setTimeout(()=>boxes[0].focus(), 100);
+
+  let countdown = 30;
+  const resendTimerEl = document.getElementById("resend-timer");
+  const resendBtnEl = document.getElementById("resend-btn");
+  const intervalId = setInterval(()=>{
+    countdown--;
+    if(countdown > 0){
+      if(resendTimerEl) resendTimerEl.textContent = t('resendIn').replace('{sec}', countdown);
+    } else {
+      clearInterval(intervalId);
+      if(resendTimerEl) resendTimerEl.style.display = "none";
+      if(resendBtnEl) resendBtnEl.style.display = "inline";
+    }
+  }, 1000);
+
+  if(resendBtnEl){
+    resendBtnEl.addEventListener("click", async ()=>{
+      resendBtnEl.textContent = t('sendingOtp');
+      try{
+        await dataService.sendOtp(state.pendingMobile);
+        showToast("✓ OTP ફરી મોકલવામાં આવ્યો");
+        clearInterval(intervalId);
+        state.screen = "otpVerify"; render();
+      }catch(err){
+        resetRecaptchaVerifier();
+        resendBtnEl.textContent = t('resendOtp');
+        document.getElementById("otp-err").innerHTML = `<div class="err-text">${t('otpSendFailed')} (${err.message})</div>`;
+      }
+    });
+  }
+
+  document.getElementById("otp-back").addEventListener("click", ()=>{
+    clearInterval(intervalId);
+    state.screen="mobileEntry"; render();
+  });
+
   submitBtn.addEventListener("click", async (e)=>{
+    clearInterval(intervalId);
     const code = boxes.map(b=>b.value).join("");
     const errEl=document.getElementById("otp-err"); errEl.innerHTML="";
     e.target.disabled=true; e.target.textContent=t('otpVerifying');
     try{
       const result = await dataService.confirmOtp(code);
+      // Remember this device as verified for this mobile
+      localStorage.setItem("sagar_last_mobile", state.pendingMobile);
+      if(result.name) localStorage.setItem("sagar_last_name", result.name);
+      localStorage.setItem("sagar_device_registered_" + state.pendingMobile, "true");
+
       if(state.otpPurpose === "forgotPin"){
         if(result.isNewUser){
-          // Forgot-PIN was attempted for a number with no account yet.
           throw new Error("આ Mobile Number થી કોઈ account નથી");
         }
         state.otpVerifiedProfile = { id: result.id, name: result.name, mobile: result.mobile, village: result.village };
         state.screen = "setNewPin"; render();
       } else {
-        // signup
+        // loginOrSignup or loginOtp
         if(!result.isNewUser){
-          // This number already has an account — just log them straight in.
+          // Existing user — successfully verified via OTP!
           state.user = { id: result.id, name: result.name, mobile: result.mobile, village: result.village };
           state.screen = "home"; render();
+          showToast(t('loginSuccessToast'));
           return;
         }
+        // Brand new user — collect details & set PIN
         state.otpVerifiedUid = result.id;
         state.screen = "signupDetails"; render();
       }
@@ -1402,7 +1545,13 @@ function renderOtpVerify(){
       e.target.disabled=false; e.target.textContent=t('otpVerifyBtn');
       boxes.forEach(b=>b.value="");
       if(boxes[0]) boxes[0].focus();
-      errEl.innerHTML = `<div class="err-text">${t('otpInvalid')}</div>`;
+      errEl.innerHTML = `<div class="err-text">${err.message || t('otpInvalid')}</div>`;
+      const otpWrap = document.querySelector(".otp-boxes");
+      if(otpWrap){
+        otpWrap.classList.add("field-error");
+        const clearOtpErr = ()=>{ otpWrap.classList.remove("field-error"); boxes.forEach(b=>b.removeEventListener("input", clearOtpErr)); };
+        boxes.forEach(b=>b.addEventListener("input", clearOtpErr));
+      }
     }
   });
 }
@@ -1448,6 +1597,9 @@ function renderSignupDetails(){
     e.target.disabled=true; e.target.textContent=t('creatingAccountText');
     try{
       const user = await dataService.completeSignup(state.otpVerifiedUid, state.pendingMobile, pin, name, village);
+      localStorage.setItem("sagar_last_mobile", state.pendingMobile);
+      localStorage.setItem("sagar_last_name", name);
+      localStorage.setItem("sagar_device_registered_" + state.pendingMobile, "true");
       state.user = user; state.otpVerifiedUid = null; state.screen = "home"; render();
     }catch(err){
       e.target.disabled=false; e.target.textContent=t('createAccountBtn');
@@ -1456,14 +1608,12 @@ function renderSignupDetails(){
   });
 }
 
-// Forgot-PIN's final step — OTP already verified (state.otpVerifiedProfile
-// holds the account's existing name/mobile/village), just needs a new PIN.
 function renderSetNewPin(){
   const profile = state.otpVerifiedProfile;
   app.innerHTML = `
     <div class="header">
       <div class="header-title">${t('newPinTitle')}</div>
-      <div class="header-sub">${t('newPinSub').replace('{mobile}', state.pendingMobile)}</div>
+      <div class="header-sub">${t('newPinSub').replace('{mobile}', profile.mobile)}</div>
     </div>
     <div class="content">
       <div class="field"><label>${t('pinSetLbl')}</label><div class="input-wrap"><input id="np-pin" type="password" inputmode="numeric" maxlength="4" placeholder="••••"></div></div>
@@ -1484,16 +1634,21 @@ function renderSetNewPin(){
     if(pin!==pin2){ errEl.innerHTML = `<div class="err-text">${t('pinsDontMatch')}</div>`; markFieldErrors(["np-pin","np-pin2"]); return; }
     e.target.disabled=true; e.target.textContent=t('newPinSetting');
     try{
-      await dataService.resetPin(state.pendingMobile, pin);
-      state.user = profile; state.otpVerifiedProfile = null;
-      showToast(t('newPinSuccessToast'));
+      await dataService.resetPin(profile.mobile, pin);
+      localStorage.setItem("sagar_last_mobile", profile.mobile);
+      if(profile.name) localStorage.setItem("sagar_last_name", profile.name);
+      localStorage.setItem("sagar_device_registered_" + profile.mobile, "true");
+      state.user = { id: profile.id, name: profile.name, mobile: profile.mobile, village: profile.village };
+      state.otpVerifiedProfile = null;
       state.screen = "home"; render();
+      showToast(t('newPinSuccessToast'));
     }catch(err){
       e.target.disabled=false; e.target.textContent=t('newPinSetBtn');
       errEl.innerHTML = `<div class="err-text">${err.message}</div>`;
     }
   });
 }
+
 
 function bottomNavHtml(active){
   const items=[["home","🏠",t('home')],["interest","💌",t('interest')],["profile","📁",t('navMyProfiles')],["settings","⚙️",t('settingsNav')]];
@@ -2145,7 +2300,8 @@ function renderMyProfiles(){
     document.getElementById("logout-btn").addEventListener("click", async ()=>{
       if(!confirm("શું તમે ખરેખર લોગઆઉટ કરવા માંગો છો?")) return;
       await dataService.logout();
-      state.user=null; state.screen="mobileEntry"; render();
+      state.user=null;
+      state.screen="checking"; render();
     });
     document.querySelectorAll("[data-edit]").forEach(btn=>{
       btn.addEventListener("click", ()=>{
