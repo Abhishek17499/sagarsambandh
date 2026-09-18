@@ -18,7 +18,6 @@
 <script src="https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/12.11.0/firebase-storage-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/12.11.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/12.11.0/firebase-app-check-compat.js"></script>
 
 <style>
   :root{
@@ -178,7 +177,7 @@
 // FIREBASE SETUP
 // ============================================================
 const firebaseConfig = {
-  apiKey: "AIzaSyB808kwpEQ6IXgyFBUKGKnnH9Y6Lhe74_g",
+  apiKey: "AIzaSyDeGx5aNtf8aPRviA4rYfdM0Nc65F_35is",
   authDomain: "sagar-sambandh.firebaseapp.com",
   projectId: "sagar-sambandh",
   storageBucket: "sagar-sambandh.firebasestorage.app",
@@ -202,26 +201,7 @@ try {
   firebaseError = e.message;
 }
 
-// App Check — verifies requests come from this real website, not a
-// copy-pasted config used in someone else's script/page. Registered in
-// Firebase Console (Build → App Check → Apps) with a real reCAPTCHA v3 site
-// key (18 Sep 2026) — the app is registered as "reCAPTCHA / Registered" and
-// the site key below is live on the google.com/recaptcha admin console for
-// sagarsambandh.in. Enforcement is intentionally left at "Monitor" (not
-// "Enforce") in Console for a few days first — see the App Check APIs tab —
-// so real traffic can be confirmed as verified before any request gets
-// blocked. Only after that, switch Firestore/Storage/Auth to "Enforce" one
-// at a time. (Previously throttled once, 22 Aug 2026, from activating
-// before registration — this key is the properly-registered one.)
-const RECAPTCHA_V3_SITE_KEY = "6LfIeJEtAAAAABLrVMdO-js6jnYBorm7jbKkaNZj";
-if (firebaseReady && RECAPTCHA_V3_SITE_KEY !== "REPLACE_WITH_RECAPTCHA_V3_SITE_KEY") {
-  try {
-    firebase.appCheck().activate(
-      new firebase.appCheck.ReCaptchaV3Provider(RECAPTCHA_V3_SITE_KEY),
-      true
-    );
-  } catch (e) { console.warn("App Check activation failed:", e.message); }
-}
+
 
 // Anonymous sign-in: gives every visitor a silent Firebase Auth session.
 // This lets Firestore/Storage Rules require request.auth != null, which blocks
@@ -259,7 +239,9 @@ function pinToPassword(pin){ return `sagar${pin}bandh`; } // Firebase needs 6+ c
 let pendingConfirmationResult = null;
 function getRecaptchaVerifier(){
   if (!window._recaptchaVerifier) {
-    window._recaptchaVerifier = new firebase.auth.RecaptchaVerifier("recaptcha-container", { size: "invisible" }, auth);
+    window._recaptchaVerifier = new firebase.auth.RecaptchaVerifier("recaptcha-container", {
+      size: "invisible"
+    });
   }
   return window._recaptchaVerifier;
 }
