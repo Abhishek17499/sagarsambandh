@@ -320,17 +320,34 @@ const dataService = {
     if (!pendingConfirmationResult) throw new Error("પહેલા OTP મોકલો");
     const result = await pendingConfirmationResult.confirm(code);
     pendingConfirmationResult = null;
-    const uid = result.user.uid;
-    const userDoc = await db.collection("users").doc(uid).get();
+    const phoneUid = result.user.uid;
+    const cleanPhone = (state.pendingMobile || "").replace(/\D/g, "").slice(-10);
+
+    // 1. Check if user doc exists by phone UID
+    let userDoc = await db.collection("users").doc(phoneUid).get();
+    let existingData = null;
+    let finalUid = phoneUid;
+
     if (userDoc.exists) {
-      const data = userDoc.data();
-      if (data.blocked) {
+      existingData = userDoc.data();
+    } else if (cleanPhone) {
+      // 2. Also check by mobile number (in case account was created via Email/Password previously)
+      const snap = await db.collection("users").where("mobile", "==", cleanPhone).limit(1).get();
+      if (!snap.empty) {
+        userDoc = snap.docs[0];
+        existingData = userDoc.data();
+        finalUid = userDoc.id;
+      }
+    }
+
+    if (existingData) {
+      if (existingData.blocked) {
         await auth.signOut();
         throw new Error("તમારું account block કરવામાં આવ્યું છે. Admin નો સંપર્ક કરો.");
       }
-      return { isNewUser: false, id: uid, name: data.name, mobile: data.mobile, village: data.village };
+      return { isNewUser: false, id: finalUid, name: existingData.name, mobile: existingData.mobile || cleanPhone, village: existingData.village };
     }
-    return { isNewUser: true, id: uid, mobile: result.user.phoneNumber };
+    return { isNewUser: true, id: phoneUid, mobile: cleanPhone || result.user.phoneNumber };
   },
 
   // Signup step 3 — after OTP verified for a brand-new number: link an
@@ -342,27 +359,32 @@ const dataService = {
     try {
       await auth.currentUser.linkWithCredential(emailCred);
     } catch (e) {
-      if (e.code !== "auth/provider-already-linked") throw new Error(e.message || "Account setup ના થયું");
+      if (e.code !== "auth/provider-already-linked" && e.code !== "auth/email-already-in-use" && e.code !== "auth/credential-already-in-use") {
+        throw new Error(e.message || "Account setup ના થયું");
+      }
     }
     await db.collection("users").doc(uid).set({
       name, village, mobile, createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-    });
+    }, { merge: true });
     return { id: uid, name, mobile, village };
   },
 
   // Forgot-PIN — after OTP re-verified for an EXISTING number: overwrite the
-  // linked Email/Password credential's password with the new PIN. The
-  // person is left signed in (same uid, same data) so the caller can send
-  // them straight to Home.
+  // linked Email/Password credential's password with the new PIN.
   async resetPin(mobile, newPin) {
     if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
+    const newPass = pinToPassword(newPin);
     try {
-      await auth.currentUser.updatePassword(pinToPassword(newPin));
+      await auth.currentUser.updatePassword(newPass);
     } catch (e) {
-      // No Email/Password provider was linked yet (shouldn't normally
-      // happen for an existing account, but handle it rather than fail silently).
-      const emailCred = firebase.auth.EmailAuthProvider.credential(mobileToEmail(mobile), pinToPassword(newPin));
-      await auth.currentUser.linkWithCredential(emailCred);
+      const emailCred = firebase.auth.EmailAuthProvider.credential(mobileToEmail(mobile), newPass);
+      try {
+        await auth.currentUser.linkWithCredential(emailCred);
+      } catch (err) {
+        if (err.code !== "auth/provider-already-linked" && err.code !== "auth/email-already-in-use") {
+          throw new Error(err.message || "PIN અપડેટ ના થયો");
+        }
+      }
     }
     return { success: true };
   },
