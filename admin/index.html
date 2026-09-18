@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- SAGAR SAMBANDH — ADMIN APP — v11.9 (16 Sep 2026) — Avatar color/emoji bug fix (gender-based, ignores stale stored photoColor/photoEmoji so old candidates pick up new theme colors automatically) + Age validation (18-70) on Candidate Edit. Base: v11.8 (16 Sep 2026) — Multiple Photos gallery in Review screen. -->
+<!-- SAGAR SAMBANDH — ADMIN APP — v19 (18 Sep 2026) — Phase 0 Batch E: App Check activated with the real, registered reCAPTCHA v3 site key (same as User App — one Web App registration covers both). Phase 0 is now fully live except for Console enforcement mode, intentionally left at "Monitor" for a few days first (see updated comment). Base: v18 (18 Sep 2026) — Phase 2: All Candidates + All Members pagination. -->
 <html lang="gu">
 <head>
 <meta charset="UTF-8">
@@ -140,17 +140,15 @@ try {
 } catch (e) { firebaseError = e.message; }
 
 // App Check — verifies requests come from this real website, not a
-// copy-pasted config used in someone else's script/page. Team must replace
-// RECAPTCHA_V3_SITE_KEY below with the real key from Firebase Console
-// (Build → App Check → register a reCAPTCHA v3 site). Wrapped in try/catch
-// so a missing/placeholder key never breaks the rest of the app.
-// TEMPORARILY DISABLED (22 Aug 2026): this reCAPTCHA v3 key was not yet
-// registered under Firebase Console → App Check → Apps, causing every
-// token-exchange call to fail with 403 and the Firebase SDK to throttle
-// ALL further auth attempts client-side for ~24 hours. Re-enable only
-// after the key is properly registered in App Check + Google reCAPTCHA
-// Admin Console for the sagarsambandh.in domain.
-const RECAPTCHA_V3_SITE_KEY = "REPLACE_WITH_RECAPTCHA_V3_SITE_KEY";
+// copy-pasted config used in someone else's script/page. Registered in
+// Firebase Console (Build → App Check → Apps) with a real reCAPTCHA v3 site
+// key (18 Sep 2026), same key as the User App (one Web App registration
+// covers both). Enforcement is intentionally left at "Monitor" (not
+// "Enforce") in Console for a few days first — see the App Check APIs tab —
+// so real Admin traffic can be confirmed as verified before any request
+// gets blocked. (Previously throttled once, 22 Aug 2026, from activating
+// before registration — this key is the properly-registered one.)
+const RECAPTCHA_V3_SITE_KEY = "6LfIeJEtAAAAABLrVMdO-js6jnYBorm7jbKkaNZj";
 if (firebaseReady && RECAPTCHA_V3_SITE_KEY !== "REPLACE_WITH_RECAPTCHA_V3_SITE_KEY") {
   try {
     firebase.appCheck().activate(
@@ -176,13 +174,6 @@ let authReadyPromise = firebaseReady
     })
   : Promise.resolve();
 
-// Password hashing — browser's built-in Web Crypto API, no external library.
-async function sha256(text){
-  const data = new TextEncoder().encode(text);
-  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
-  return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2,"0")).join("");
-}
-
 // ============================================================
 // DATA SERVICE — real Firestore calls
 // Collections used: admins, candidates (status: pending/approved/rejected), users
@@ -191,6 +182,10 @@ async function sha256(text){
 // stored જૂની value (photoColor/photoEmoji) ક્યારેય નથી વપરાતી. આનાથી future માં
 // theme બદલાય તો પણ જૂના candidates ના avatar આપોઆપ નવા રંગમાં દેખાય — કોઈ data
 // migration જરૂરી નહીં.
+const ADMIN_GUJARAT = "ગુજરાત";
+const ADMIN_STATES = ["ગુજરાત","આંધ્ર પ્રદેશ","અરુણાચલ પ્રદેશ","આસામ","બિહાર","છત્તીસગઢ","ગોવા","હરિયાણા","હિમાચલ પ્રદેશ","ઝારખંડ","કર્ણાટક","કેરળ","મધ્ય પ્રદેશ","મહારાષ્ટ્ર","મણિપુર","મેઘાલય","મિઝોરમ","નાગાલેન્ડ","ઓડિશા","પંજાબ","રાજસ્થાન","સિક્કિમ","તમિલનાડુ","તેલંગાણા","ત્રિપુરા","ઉત્તર પ્રદેશ","ઉત્તરાખંડ","પશ્ચિમ બંગાળ","આંદામાન અને નિકોબાર ટાપુઓ","ચંડીગઢ","દાદરા અને નગર હવેલી અને દમણ અને દીવ","દિલ્હી","જમ્મુ અને કાશ્મીર","લદ્દાખ","લક્ષદ્વીપ","પુડુચેરી"];
+const ADMIN_AREAS = ["પોરબંદર","વેરાવળ","માંગરોળ","ઓખા","મુંદ્રા","રાજકોટ","અમદાવાદ","દીવ","જામનગર"];
+
 function avatarStyle(c){
   const isFemale = c.gender === "female";
   return {
@@ -215,55 +210,40 @@ const adminService = {
   },
 
   async login(rawEmail, password) {
-    if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
+    if (!firebaseReady) throw new Error(firebaseError || "Firebase લોડ ના થયું");
     const email = this.normalizeEmail(rawEmail);
 
-    const SUPER_ADMIN_EMAIL = "Agastya_Technext";
-    const SUPER_ADMIN_PASSWORD = "Technext@1910";
-
-    // 1. Try to sign in first
+    // Sign in with Firebase Auth — deliberately NO hardcoded master
+    // username/password here anymore. An earlier version had
+    // "Agastya_Technext"/"Technext@1910" baked directly into this
+    // client-side file, which meant anyone opening "View Source" on the
+    // live site could read the Super Admin's login and create their own
+    // Super Admin session. The very first Admin account must now be
+    // created once, manually, in the Firebase Console (Authentication →
+    // Add user) — see the setup guide. Whoever signs in with THAT account
+    // first, while the `admins` collection is still completely empty, is
+    // bootstrapped as Super Admin below (step 2) — no secret password is
+    // embedded in this file to do it, and self-registration from this
+    // login form is no longer possible at all.
     let cred;
-    let loginFailed = false;
     try {
       cred = await auth.signInWithEmailAndPassword(email, password);
     } catch (e) {
-      loginFailed = true;
+      throw new Error("ઈમેલ અથવા પાસવર્ડ ખોટા છે");
     }
 
-    if (loginFailed) {
-      // If login failed, check if this is the bootstrap admin credentials trying to register
-      if (rawEmail === SUPER_ADMIN_EMAIL && password === SUPER_ADMIN_PASSWORD) {
-        try {
-          cred = await auth.createUserWithEmailAndPassword(email, password);
-        } catch (err) {
-          if (err.code === "auth/admin-restricted-operation") {
-            throw new Error("Firebase Console માં User Sign-up (User creation) બંધ છે. કૃપા કરીને Authentication -> Settings -> User actions માં જઈને 'Enable create (sign-up)' ચાલુ કરો, લોગીન કરો, પછી પાછું બંધ કરી શકો છો.");
-          } else {
-            throw err;
-          }
-        }
-        // Create the admin document
-        await db.collection("admins").doc(cred.user.uid).set({
-          name: "Super Admin", email, role: "super",
-          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-        });
-        return { success: true, id: cred.user.uid, name: "Super Admin", email, role: "super" };
-      } else {
-        throw new Error("Email અથવા Password ખોટા છે");
-      }
-    }
-
-    // 2. If sign-in succeeded, check if the admin document exists
+    // 1. If an admins doc already exists for this uid, log in as that role.
     const adminDoc = await db.collection("admins").doc(cred.user.uid).get();
     if (adminDoc.exists) {
       const data = adminDoc.data();
       return { success: true, id: cred.user.uid, name: data.name, email: data.email, role: data.role };
     }
 
-    // 3. If signed in, but admin doc does not exist, check if the collection is empty (Bootstrap case)
+    // 2. No admins doc for this uid — bootstrap ONLY if the admins
+    // collection is genuinely empty (i.e. this really is the very first
+    // login ever, right after the account was created in Firebase Console).
     const adminsSnap = await db.collection("admins").limit(1).get();
     if (adminsSnap.empty) {
-      // Bootstrapping the signed-in user as Super Admin
       await db.collection("admins").doc(cred.user.uid).set({
         name: "Super Admin", email, role: "super",
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
@@ -273,18 +253,18 @@ const adminService = {
 
     // Not authorized
     await auth.signOut();
-    throw new Error("આ account Admin તરીકે register નથી. Super Admin ને contact કરો.");
+    throw new Error("આ એકાઉન્ટ એડમિન તરીકે રજિસ્ટર નથી. સુપર એડમિન ને કોન્ટેક્ટ કરો.");
   },
 
   async getAdmins() {
-    if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
+    if (!firebaseReady) throw new Error(firebaseError || "Firebase લોડ ના થયું");
     const snap = await db.collection("admins").get();
     return snap.docs.map(d => ({ id: d.id, ...d.data() }))
       .sort((a,b) => (a.createdAt?.seconds||0) - (b.createdAt?.seconds||0));
   },
 
   async addAdmin({ name, email, password, role }) {
-    if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
+    if (!firebaseReady) throw new Error(firebaseError || "Firebase લોડ ના થયું");
     const normalizedEmail = this.normalizeEmail(email);
     // Creating a user via the client SDK normally switches the *current*
     // signed-in session to the new user — undesirable while a Super Admin is
@@ -299,8 +279,8 @@ const adminService = {
       await secondaryAuth.signOut();
       return { id: cred.user.uid };
     } catch (e) {
-      if (e.code === "auth/email-already-in-use") throw new Error("આ email થી પહેલેથી Admin account છે");
-      throw new Error(e.message || "Admin add ના થયો");
+      if (e.code === "auth/email-already-in-use") throw new Error("આ ઈમેલ થી પહેલેથી એડમિન એકાઉન્ટ છે");
+      throw new Error(e.message || "એડમિન એડ ના થયો");
     } finally {
       await secondaryApp.delete();
     }
@@ -320,13 +300,13 @@ const adminService = {
   },
 
   async getActivityLog() {
-    if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
+    if (!firebaseReady) throw new Error(firebaseError || "Firebase લોડ ના થયું");
     const snap = await db.collection("activityLog").orderBy("timestamp", "desc").limit(50).get();
     return snap.docs.map(d => ({ id: d.id, ...d.data() }));
   },
 
   async getStats() {
-    if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
+    if (!firebaseReady) throw new Error(firebaseError || "Firebase લોડ ના થયું");
     const [usersSnap, approvedSnap, pendingSnap] = await Promise.all([
       db.collection("users").get(),
       db.collection("candidates").where("status", "==", "approved").get(),
@@ -336,23 +316,54 @@ const adminService = {
   },
 
   async getPending() {
-    if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
+    if (!firebaseReady) throw new Error(firebaseError || "Firebase લોડ ના થયું");
     const snap = await db.collection("candidates").orderBy("createdAt", "desc").limit(20).get();
     return snap.docs.map(d => ({ id: d.id, ...d.data() }));
   },
 
   async getAllCandidates() {
-    if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
+    if (!firebaseReady) throw new Error(firebaseError || "Firebase લોડ ના થયું");
     const snap = await db.collection("candidates").get();
     return snap.docs.map(d => ({ id: d.id, ...d.data() }))
       .sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
+  },
+
+  // Paginated fetch — one page (default 25) of candidates, optionally
+  // filtered by status, newest first. Firestore has no OFFSET/random-access
+  // paging, so page-NUMBER navigation only goes as far as "Next" has been
+  // clicked — renderAllCandidates keeps a cursor per page it has reached,
+  // and clicking an already-visited page number reuses that cursor rather
+  // than re-fetching from page 1.
+  async getCandidatesPage(status, lastDoc, pageSize) {
+    if (!firebaseReady) throw new Error(firebaseError || "Firebase લોડ ના થયું");
+    const size = pageSize || 25;
+    let query = db.collection("candidates");
+    if (status) query = query.where("status", "==", status);
+    query = query.orderBy("createdAt", "desc").limit(size);
+    if (lastDoc) query = query.startAfter(lastDoc);
+    const snap = await query.get();
+    return {
+      candidates: snap.docs.map(d => ({ id: d.id, ...d.data() })),
+      lastDoc: snap.docs.length ? snap.docs[snap.docs.length - 1] : null,
+      hasMore: snap.docs.length === size,
+    };
+  },
+
+  // Full-fetch — only for the explicit "બધામાં શોધો" search button (honors
+  // the active status tab), so its cost is opt-in rather than automatic.
+  async searchAllCandidates(status) {
+    if (!firebaseReady) throw new Error(firebaseError || "Firebase લોડ ના થયું");
+    let query = db.collection("candidates");
+    if (status) query = query.where("status", "==", status);
+    const snap = await query.get();
+    return snap.docs.map(d => ({ id: d.id, ...d.data() }));
   },
 
   // Approve થતાં જ sensitive documents (Aadhar/Education/LC) Storage માંથી auto-delete
   // થાય છે — Photo delete નથી થતો (એ member ને કાયમ દેખાડવાનો છે).
   // docsMap = candidate.docs (Review screen પાસે cached data already છે, extra read ટાળવા).
   async approveCandidate(id, docsMap) {
-    if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
+    if (!firebaseReady) throw new Error(firebaseError || "Firebase લોડ ના થયું");
     const docKeys = ["aadhar", "education", "lc"];
     for (const key of docKeys) {
       if (docsMap && docsMap[key]) {
@@ -368,9 +379,9 @@ const adminService = {
     return { success: true };
   },
 
-  async rejectCandidate(id) {
-    if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
-    await db.collection("candidates").doc(id).update({ status: "rejected" });
+  async rejectCandidate(id, reason) {
+    if (!firebaseReady) throw new Error(firebaseError || "Firebase લોડ ના થયું");
+    await db.collection("candidates").doc(id).update({ status: "rejected", rejectReason: reason || null });
     return { success: true };
   },
 
@@ -379,20 +390,40 @@ const adminService = {
   // so an Admin-made edit doesn't need to go back through re-approval like a
   // candidate's own self-edit does.
   async updateCandidateByAdmin(id, payload) {
-    if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
+    if (!firebaseReady) throw new Error(firebaseError || "Firebase લોડ ના થયું");
     await db.collection("candidates").doc(id).update(payload);
     return { success: true };
   },
 
   async getAllUsers() {
-    if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
+    if (!firebaseReady) throw new Error(firebaseError || "Firebase લોડ ના થયું");
     const snap = await db.collection("users").get();
     return snap.docs.map(d => ({ id: d.id, ...d.data() }))
       .sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
   },
 
+  // Paginated fetch — same cursor-per-page pattern as getCandidatesPage.
+  async getUsersPage(lastDoc, pageSize) {
+    if (!firebaseReady) throw new Error(firebaseError || "Firebase લોડ ના થયું");
+    const size = pageSize || 25;
+    let query = db.collection("users").orderBy("createdAt", "desc").limit(size);
+    if (lastDoc) query = query.startAfter(lastDoc);
+    const snap = await query.get();
+    return {
+      users: snap.docs.map(d => ({ id: d.id, ...d.data() })),
+      lastDoc: snap.docs.length ? snap.docs[snap.docs.length - 1] : null,
+      hasMore: snap.docs.length === size,
+    };
+  },
+
+  async searchAllUsers() {
+    if (!firebaseReady) throw new Error(firebaseError || "Firebase લોડ ના થયું");
+    const snap = await db.collection("users").get();
+    return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  },
+
   async toggleBlockUser(userId, blocked) {
-    if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
+    if (!firebaseReady) throw new Error(firebaseError || "Firebase લોડ ના થયું");
     await db.collection("users").doc(userId).update({ blocked });
     return { success: true };
   },
@@ -400,7 +431,7 @@ const adminService = {
   // Analytics — બધું client-side aggregate થાય છે, existing read-access જ વાપરે છે,
   // કોઈ નવો Rules change જરૂરી નથી.
   async getAnalyticsData() {
-    if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
+    if (!firebaseReady) throw new Error(firebaseError || "Firebase લોડ ના થયું");
     const [candSnap, interestSnap] = await Promise.all([
       db.collection("candidates").get(),
       db.collection("interests").get(),
@@ -459,6 +490,22 @@ async function tryRestoreAdminSession(){
 
 function render(){ if(!state.loggedIn){ renderLogin(); return; } renderShell(); }
 
+// XSS-safety helper — every piece of user-supplied text (candidate name,
+// city, occupation, member name, document filename, activity-log targetName,
+// etc.) that gets inserted into an innerHTML template MUST go through this
+// first. Without it, a candidate could submit a name like
+// `<img src=x onerror=alert(1)>` and have it execute as real HTML/script the
+// moment an Admin opens the Review screen (stored XSS against the Admin).
+function escapeHtml(str){
+  if (str === null || str === undefined) return "";
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 function showToast(msg){
   const t=document.createElement("div"); t.className="toast"; t.textContent=msg;
   document.body.appendChild(t); setTimeout(()=>t.remove(),2600);
@@ -480,7 +527,7 @@ function renderLogin(){
           <div class="field"><label>Email</label><div class="input-wrap"><input id="l-email" placeholder="admin@kharvasamaj.org"></div></div>
           <div class="field"><label>Password</label><div class="input-wrap"><input id="l-pass" type="password" placeholder="••••••••"></div></div>
           <div id="l-err"></div>
-          <button class="btn btn-primary" id="l-submit">Login કરો →</button>
+          <button class="btn btn-primary" id="l-submit">લોગિન કરો →</button>
           <div class="demo-note">Real Login: Registered Admin ના Email/Password જ કામ કરશે — OTP/2FA આગળના phase માં ઉમેરાશે. Dashboard નું data ખરેખર live Firestore માંથી આવે છે.</div>
         </div>
       </div>
@@ -497,7 +544,7 @@ function renderLogin(){
       const r = await adminService.login(email,pass);
       state.loggedIn=true; state.adminName=r.name; state.adminEmail=r.email; state.adminRole=r.role; render();
     }catch(err){
-      e.target.disabled=false; e.target.textContent="Login કરો →";
+      e.target.disabled=false; e.target.textContent="લોગિન કરો →";
       errEl.innerHTML = `<div class="err-text">${err.message}</div>`;
     }
   });
@@ -529,7 +576,7 @@ function attachSidebar(){
   const logoutBtn = document.getElementById("sidebar-logout");
   if(logoutBtn){
     logoutBtn.addEventListener("click", async ()=>{
-      if(!confirm("શું તમે ખરેખર Logout કરવા માંગો છો?")) return;
+      if(!confirm("શું તમે ખરેખર લોગઆઉટ કરવા માંગો છો?")) return;
       await adminService.logout();
       state.loggedIn=false; state.loginStep=1; state.adminName=""; state.adminEmail=""; state.adminRole="super"; state.view="dashboard";
       render();
@@ -560,7 +607,7 @@ function renderDashboard(main){
   main.innerHTML = `
     <div class="topbar">
       <div><h1>નમસ્તે, ${state.adminName || 'Admin'} 👋</h1><div class="sub">Pending approvals ની yaadi નીચે છે (Live Firestore data)</div></div>
-      <div class="admin-chip"><div class="avatar">${(state.adminName||'A').slice(0,2).toUpperCase()}</div>Super Admin</div>
+      <div class="admin-chip"><div class="avatar">${(state.adminName||'A').slice(0,2).toUpperCase()}</div>${state.adminRole==='super'?'Super Admin':state.adminRole==='staff'?'Staff Admin':'Viewer Admin'}</div>
     </div>
     <div class="stats-grid" id="stats-grid"><div style="grid-column:1/-1;color:var(--text-mid);font-size:13px;">Stats load થઈ રહ્યા છે...</div></div>
     <div class="panel">
@@ -595,10 +642,10 @@ function renderDashboard(main){
     el.innerHTML = list.map(c=>`
       <div class="approval-row">
         <div class="ar-photo" style="background:${avatarStyle(c).color}">${avatarStyle(c).emoji}</div>
-        <div class="ar-info"><div class="ar-name">${c.name}</div><div class="ar-meta">${c.city||'-'} · ${c.status}</div></div>
+        <div class="ar-info"><div class="ar-name">${escapeHtml(c.name)}</div><div class="ar-meta">${escapeHtml(c.city||'-')} · ${escapeHtml(c.status)}</div></div>
         ${c.status==="pending" ? `<div class="ar-actions"><button class="btn-view" data-review="${c.id}">Review</button></div>` : ""}
         ${c.status==="approved" ? `<span class="status-badge badge-approved">✓ Approved</span>` : ""}
-        ${c.status==="rejected" ? `<span class="status-badge badge-rejected">✕ Rejected</span>` : ""}
+        ${c.status==="rejected" ? `<span class="status-badge badge-rejected" title="${escapeHtml(c.rejectReason||"")}">✕ Rejected</span>` : ""}
       </div>
     `).join("");
     document.querySelectorAll("[data-review]").forEach(btn=>{
@@ -628,18 +675,19 @@ function renderReview(main){
           <div class="card">
             <div class="profile-hero">
               <div class="hero-photo" style="background:${avatarStyle(c).color}">${avatarStyle(c).emoji}</div>
-              <div><div class="hero-name">${c.name}</div><div class="hero-meta">${c.city||'-'}</div></div>
+              <div><div class="hero-name">${escapeHtml(c.name)}</div><div class="hero-meta">${escapeHtml(c.city||'-')}</div></div>
             </div>
             <div class="section-title">Basic Details (Firestore data)</div>
-            <div class="detail-row"><span class="k">Gender</span><span class="v">${c.gender||'-'}</span></div>
+            <div class="detail-row"><span class="k">Gender</span><span class="v">${escapeHtml(c.gender||'-')}</span></div>
             <div class="detail-row"><span class="k">ઉંમર</span><span class="v">${c.age||'-'}</span></div>
-            <div class="detail-row"><span class="k">પિતાનું નામ</span><span class="v">${c.fatherName||'-'}</span></div>
-            <div class="detail-row"><span class="k">માતાનું નામ</span><span class="v">${c.motherName||'-'}</span></div>
-            <div class="detail-row"><span class="k">રાશી</span><span class="v">${c.rashi||'-'}</span></div>
-            <div class="detail-row"><span class="k">દરજ્જો</span><span class="v">${c.maritalStatus||'-'}</span></div>
-            <div class="detail-row"><span class="k">ભાઈ-બહેન</span><span class="v">${c.siblings||'-'}${c.siblings?(c.siblingsVisible?' <span style="color:var(--success);font-size:9.5px;">(👁️ Visible to members)</span>':' <span style="color:var(--text-mid);font-size:9.5px;">(🙈 Hidden)</span>'):''}</span></div>
-            <div class="detail-row"><span class="k">શિક્ષણ</span><span class="v">${c.education||'-'}</span></div>
-            <div class="detail-row"><span class="k">Current Status</span><span class="v">${c.status}</span></div>
+            <div class="detail-row"><span class="k">પિતાનું નામ</span><span class="v">${escapeHtml(c.fatherName||'-')}</span></div>
+            <div class="detail-row"><span class="k">માતાનું નામ</span><span class="v">${escapeHtml(c.motherName||'-')}</span></div>
+            <div class="detail-row"><span class="k">રાશી</span><span class="v">${escapeHtml(c.rashi||'-')}</span></div>
+            <div class="detail-row"><span class="k">દરજ્જો</span><span class="v">${escapeHtml(c.maritalStatus||'-')}</span></div>
+            <div class="detail-row"><span class="k">ભાઈ-બહેન</span><span class="v">${escapeHtml(c.siblings||'-')}${c.siblings?(c.siblingsVisible?' <span style="color:var(--success);font-size:9.5px;">(👁️ Visible to members)</span>':' <span style="color:var(--text-mid);font-size:9.5px;">(🙈 Hidden)</span>'):''}</span></div>
+            <div class="detail-row"><span class="k">શિક્ષણ</span><span class="v">${escapeHtml(c.education||'-')}</span></div>
+            <div class="detail-row"><span class="k">Current Status</span><span class="v">${escapeHtml(c.status)}</span></div>
+            ${c.status==="rejected" && c.rejectReason ? `<div class="detail-row"><span class="k">Reject Reason</span><span class="v" style="color:var(--danger);">${escapeHtml(c.rejectReason)}</span></div>` : ""}
           </div>
         </div>
         <div>
@@ -654,10 +702,10 @@ function renderReview(main){
           <div class="card">
             <div class="section-title" style="margin-top:0;">Documents</div>
             ${(() => {
-              const docKeys = [["aadhar","🪪 Aadhar Card"],["education","🎓 શિક્ષણ પ્રમાણપત્ર"],["lc","📄 જન્મ તારીખ દાખલો / LC"]];
+              const docKeys = [["aadhar","🪪 આધાર કાર્ડ"],["education","🎓 શિક્ષણ પ્રમાણપત્ર"],["lc","📄 જન્મ તારીખ દાખલો / LC"]];
               const rows = docKeys.map(([key,label])=>{
                 const doc = c.docs && c.docs[key];
-                if(doc) return `<div class="doc-item"><div class="doc-thumb">✓</div><div><div class="doc-name">${label}</div><div class="doc-note">${doc.name||'file'}</div></div><a href="${doc.url}" target="_blank" class="icon-btn ib-download" style="text-decoration:none;">⬇</a></div>`;
+                if(doc) return `<div class="doc-item"><div class="doc-thumb">✓</div><div><div class="doc-name">${label}</div><div class="doc-note">${escapeHtml(doc.name||'file')}</div></div><a href="${doc.url}" target="_blank" class="icon-btn ib-download" style="text-decoration:none;">⬇</a></div>`;
                 if(c.documentsDeletedAt) return `<div class="doc-item" style="opacity:0.6;"><div class="doc-thumb">🗑️</div><div><div class="doc-name">${label}</div><div class="doc-note">Approve પછી Auto-Delete થયું</div></div></div>`;
                 return `<div class="doc-item" style="opacity:0.5;"><div class="doc-thumb">⏳</div><div><div class="doc-name">${label}</div><div class="doc-note">Upload બાકી છે</div></div></div>`;
               }).join("");
@@ -689,16 +737,19 @@ function renderReview(main){
     try{
       await adminService.approveCandidate(c.id, c.docs);
       await adminService.logActivity(state.adminEmail, "Approved candidate", c.name);
-      showToast("✓ Approved — Firestore માં save થયું");
+      showToast("✓ એપ્રુવ્ડ — સેવ થયું");
       setTimeout(()=>{ state.view="dashboard"; render(); }, 1000);
     }catch(err){ showToast("Error: "+err.message); }
   });
   document.getElementById("r-reject").addEventListener("click", async ()=>{
+    const reason = prompt("Reject કરવાનું કારણ લખો (candidate ને ભવિષ્યમાં દેખાડવા માટે record થશે):");
+    if(reason === null) return; // admin એ cancel કર્યું
+    if(!reason.trim()){ showToast("કારણ લખવું જરૂરી છે"); return; }
     document.getElementById("r-approve").disabled=true; document.getElementById("r-reject").disabled=true;
     try{
-      await adminService.rejectCandidate(c.id);
+      await adminService.rejectCandidate(c.id, reason.trim());
       await adminService.logActivity(state.adminEmail, "Rejected candidate", c.name);
-      showToast("✕ Rejected — Firestore માં save થયું");
+      showToast("✕ રિજેક્ટેડ — સેવ થયું");
       setTimeout(()=>{ state.view="dashboard"; render(); }, 1000);
     }catch(err){ showToast("Error: "+err.message); }
   });
@@ -711,33 +762,41 @@ function renderEditCandidate(main){
     <div class="review-wrap">
       <div class="back-row"><div class="back-btn" id="ec-back">←</div><div><h1 style="font-size:19px;color:var(--navy);font-weight:800;">Candidate Edit કરો</h1><div class="sub" style="font-size:11.5px;color:var(--text-mid);">Firestore ID: ${c.id}</div></div></div>
       <div class="card">
-        <div class="field"><label>ઉમેદવારનું પૂરું નામ</label><div class="input-wrap"><input id="ec-name" value="${c.name||''}"></div></div>
+        <div class="field"><label>ઉમેદવારનું પૂરું નામ</label><div class="input-wrap"><input id="ec-name" value="${escapeHtml(c.name||'')}"></div></div>
         <div class="field"><label>Gender</label><div class="input-wrap"><select id="ec-gender">
           <option value="male" ${c.gender==='male'?'selected':''}>Male</option>
           <option value="female" ${c.gender==='female'?'selected':''}>Female</option>
         </select></div></div>
         <div class="field"><label>ઉંમર</label><div class="input-wrap"><input id="ec-age" type="number" min="18" max="70" value="${c.age||''}"></div></div>
-        <div class="field"><label>પિતાનું નામ</label><div class="input-wrap"><input id="ec-father" value="${c.fatherName||''}"></div></div>
-        <div class="field"><label>માતાનું નામ</label><div class="input-wrap"><input id="ec-mother" value="${c.motherName||''}"></div></div>
+        <div class="field"><label>પિતાનું નામ</label><div class="input-wrap"><input id="ec-father" value="${escapeHtml(c.fatherName||'')}"></div></div>
+        <div class="field"><label>માતાનું નામ</label><div class="input-wrap"><input id="ec-mother" value="${escapeHtml(c.motherName||'')}"></div></div>
         <div class="field"><label>રાશી</label><div class="input-wrap"><select id="ec-rashi">
           <option value="">પસંદ કરો</option>
           ${["મેષ","વૃષભ","મિથુન","કર્ક","સિંહ","કન્યા","તુલા","વૃશ્ચિક","ધન","મકર","કુંભ","મીન"].map(r=>`<option ${c.rashi===r?'selected':''}>${r}</option>`).join("")}
         </select></div></div>
-        <div class="field"><label>શિક્ષણ</label><div class="input-wrap"><input id="ec-edu" value="${c.education||''}"></div></div>
-        <div class="field"><label>વ્યવસાય</label><div class="input-wrap"><input id="ec-occ" value="${c.occupation||''}"></div></div>
-        <div class="field"><label>શહેર / ગામ</label><div class="input-wrap"><input id="ec-city" value="${c.city||''}"></div></div>
+        <div class="field"><label>શિક્ષણ</label><div class="input-wrap"><input id="ec-edu" value="${escapeHtml(c.education||'')}"></div></div>
+        <div class="field"><label>વ્યવસાય</label><div class="input-wrap"><input id="ec-occ" value="${escapeHtml(c.occupation||'')}"></div></div>
+        <div class="field"><label>રાજ્ય</label><div class="input-wrap"><select id="ec-state">
+          <option value="">પસંદ કરો</option>
+          ${ADMIN_STATES.map(s=>`<option ${c.state===s?'selected':''}>${s}</option>`).join("")}
+        </select></div></div>
+        <div class="field" id="ec-area-wrap" style="${c.state===ADMIN_GUJARAT?'':'display:none;'}"><label>વિસ્તાર</label><div class="input-wrap"><select id="ec-area">
+          <option value="">પસંદ કરો</option>
+          ${ADMIN_AREAS.map(a=>`<option ${c.city===a?'selected':''}>${a}</option>`).join("")}
+        </select></div></div>
+        <div class="field" id="ec-city-wrap" style="${c.state===ADMIN_GUJARAT?'display:none;':''}"><label>શહેર / ગામ</label><div class="input-wrap"><input id="ec-city" value="${c.state!==ADMIN_GUJARAT?(c.city||''):''}"></div></div>
         <div class="field"><label>દરજ્જો</label><div class="input-wrap"><select id="ec-status">
           <option value="કુંવારા" ${c.maritalStatus==='કુંવારા'?'selected':''}>કુંવારા</option>
           <option value="છૂટાછેડા" ${c.maritalStatus==='છૂટાછેડા'?'selected':''}>છૂટાછેડા</option>
         </select></div></div>
-        <div class="field"><label>ભાઈ-બહેન ની વિગત (Optional)</label><div class="input-wrap"><input id="ec-sib" value="${c.siblings||''}"></div></div>
+        <div class="field"><label>ભાઈ-બહેન ની વિગત (Optional)</label><div class="input-wrap"><input id="ec-sib" value="${escapeHtml(c.siblings||'')}"></div></div>
         <div id="ec-err"></div>
       </div>
       <div style="background:#FFF6E7;border:1px solid #F2D8A0;border-radius:12px;padding:11px 13px;margin-bottom:16px;font-size:11px;color:#8A6116;line-height:1.6;">
-        ℹ️ Admin Edit કરવાથી candidate નો current Status (<b>${c.status}</b>) બદલાશે નહીં — Re-approval જરૂરી નથી.
+        ℹ️ Admin Edit કરવાથી candidate નો current Status (<b>${escapeHtml(c.status)}</b>) બદલાશે નહીં — Re-approval જરૂરી નથી.
       </div>
       <div class="action-bar">
-        <button class="btn btn-approve" id="ec-save" style="flex:1;">✓ Save Changes</button>
+        <button class="btn btn-approve" id="ec-save" style="flex:1;">✓ સેવ કરો</button>
         <button class="btn btn-reject" id="ec-cancel" style="flex:1;">Cancel</button>
       </div>
     </div>
@@ -745,6 +804,11 @@ function renderEditCandidate(main){
   function goBack(){ state.editCandidateData=null; state.view = state.editReturnView || "allCandidates"; render(); }
   document.getElementById("ec-back").addEventListener("click", goBack);
   document.getElementById("ec-cancel").addEventListener("click", goBack);
+  document.getElementById("ec-state").addEventListener("change", (e)=>{
+    const isGuj = e.target.value === ADMIN_GUJARAT;
+    document.getElementById("ec-area-wrap").style.display = isGuj ? "" : "none";
+    document.getElementById("ec-city-wrap").style.display = isGuj ? "none" : "";
+  });
   document.getElementById("ec-save").addEventListener("click", async (e)=>{
     const name=document.getElementById("ec-name").value.trim();
     const gender=document.getElementById("ec-gender").value;
@@ -754,22 +818,24 @@ function renderEditCandidate(main){
     const rashi=document.getElementById("ec-rashi").value;
     const education=document.getElementById("ec-edu").value.trim();
     const occupation=document.getElementById("ec-occ").value.trim();
-    const city=document.getElementById("ec-city").value.trim();
+    const stateVal=document.getElementById("ec-state").value;
+    const isGuj = stateVal === ADMIN_GUJARAT;
+    const city = isGuj ? document.getElementById("ec-area").value : document.getElementById("ec-city").value.trim();
     const maritalStatus=document.getElementById("ec-status").value;
     const siblings=document.getElementById("ec-sib").value.trim();
     const errEl=document.getElementById("ec-err"); errEl.innerHTML="";
-    if(!name||!gender||!age||!fatherName||!motherName||!education||!city){
+    if(!name||!gender||!age||!fatherName||!motherName||!education||!stateVal||!city){
       errEl.innerHTML = `<div class="err-text">બધા જરૂરી fields ભરો</div>`; return;
     }
     if(Number(age) < 18 || Number(age) > 70 || !Number.isInteger(Number(age))){
       errEl.innerHTML = `<div class="err-text">ઉંમર 18 થી 70 વર્ષ ની વચ્ચે જ હોવી જોઈએ</div>`; return;
     }
-    const payload = { name, gender, age:Number(age), fatherName, motherName, rashi, education, occupation, city, maritalStatus, siblings: siblings||null };
-    e.target.disabled=true; e.target.textContent="Save થઈ રહ્યું છે...";
+    const payload = { name, gender, age:Number(age), fatherName, motherName, rashi, education, occupation, state: stateVal, city, maritalStatus, siblings: siblings||null };
+    e.target.disabled=true; e.target.textContent="સેવ થઈ રહ્યું છે...";
     try{
       await adminService.updateCandidateByAdmin(c.id, payload);
       await adminService.logActivity(state.adminEmail, "Edited candidate details", name);
-      showToast("✓ Candidate ની વિગત Update થઈ");
+      showToast("✓ કેન્ડિડેટ ની વિગત અપડેટ થઈ");
       if(state.editReturnView==="review"){
         const idx = state.pendingCache.findIndex(x=>x.id===c.id);
         if(idx>-1) Object.assign(state.pendingCache[idx], payload);
@@ -801,38 +867,44 @@ function renderAllCandidates(main, initialStatus){
     <div class="panel">
       <div class="panel-head"><h2>Candidates</h2></div>
       <div id="ac-list"><div style="padding:20px;color:var(--text-mid);font-size:13px;">Load થઈ રહ્યું છે...</div></div>
+      <div id="ac-pager" style="display:flex;gap:6px;align-items:center;justify-content:center;padding:14px;flex-wrap:wrap;"></div>
     </div>
   `;
 
-  let allCandidates = [];
-  function paint(){
-    const q = document.getElementById("ac-search").value.trim().toLowerCase();
-    let list = allCandidates;
-    if(state.candidatesFilter) list = list.filter(c=>c.status===state.candidatesFilter);
-    if(q) list = list.filter(c => (c.name||"").toLowerCase().includes(q) || (c.city||"").toLowerCase().includes(q));
-    const el = document.getElementById("ac-list");
-    if(list.length===0){ el.innerHTML = `<div class="empty">કોઈ candidate ના મળ્યા</div>`; return; }
-    el.innerHTML = list.map(c=>`
+  const PAGE_SIZE = 25;
+  let currentStatus = status;
+  let pageCursors = [null];  // pageCursors[i] = cursor to fetch page i+2 (i.e. index0 unused start marker)
+  let currentPage = 1;
+  let hasMore = true;
+  let currentList = [];
+  let searchAllResults = null; // non-null while "બધામાં શોધો" is active
+
+  function rowsHtml(list){
+    if(list.length===0) return `<div class="empty">કોઈ candidate ના મળ્યા</div>`;
+    return list.map(c=>`
       <div class="approval-row">
         <div class="ar-photo" style="background:${avatarStyle(c).color}">${avatarStyle(c).emoji}</div>
-        <div class="ar-info"><div class="ar-name">${c.name}${c.deactivated?' <span style="color:var(--text-mid);font-size:10px;font-weight:700;">(Deactivated)</span>':''}</div><div class="ar-meta">${c.city||'-'} · ${c.age||'-'} વર્ષ</div></div>
+        <div class="ar-info"><div class="ar-name">${escapeHtml(c.name)}${c.deactivated?' <span style="color:var(--text-mid);font-size:10px;font-weight:700;">(Deactivated)</span>':''}</div><div class="ar-meta">${escapeHtml(c.city||'-')} · ${c.age||'-'} વર્ષ</div></div>
         <div class="ar-actions">
           ${c.status==="pending" ? `<button class="btn-view" data-review="${c.id}">Review</button>` : ""}
-          ${state.adminRole!=='viewer' ? `<button class="btn-view" data-edit="${c.id}">✏️ Edit</button>` : ""}
+          ${state.adminRole!=='viewer' ? `<button class="btn-view" data-edit="${c.id}">✏️ એડિટ</button>` : ""}
         </div>
         ${c.status==="approved" ? `<span class="status-badge badge-approved">✓ Approved</span>` : ""}
-        ${c.status==="rejected" ? `<span class="status-badge badge-rejected">✕ Rejected</span>` : ""}
+        ${c.status==="rejected" ? `<span class="status-badge badge-rejected" title="${escapeHtml(c.rejectReason||"")}">✕ Rejected</span>` : ""}
       </div>
     `).join("");
+  }
+
+  function attachRowEvents(list){
     document.querySelectorAll("[data-review]").forEach(btn=>{
       btn.addEventListener("click", ()=>{
-        state.pendingCache = allCandidates;
+        state.pendingCache = list;
         state.reviewId = btn.getAttribute("data-review"); state.view="review"; render();
       });
     });
     document.querySelectorAll("[data-edit]").forEach(btn=>{
       btn.addEventListener("click", ()=>{
-        const candidate = allCandidates.find(x=>x.id===btn.getAttribute("data-edit"));
+        const candidate = list.find(x=>x.id===btn.getAttribute("data-edit"));
         state.editCandidateData = candidate;
         state.editReturnView = "allCandidates";
         state.view = "editCandidate"; render();
@@ -840,22 +912,85 @@ function renderAllCandidates(main, initialStatus){
     });
   }
 
+  function clientFilter(list){
+    const q = document.getElementById("ac-search").value.trim().toLowerCase();
+    if(!q) return list;
+    return list.filter(c => (c.name||"").toLowerCase().includes(q) || (c.city||"").toLowerCase().includes(q));
+  }
+
+  function paintPager(){
+    const pager = document.getElementById("ac-pager");
+    if(searchAllResults !== null){ pager.innerHTML = ""; return; }
+    const maxReached = pageCursors.length; // pages 1..maxReached have been visited/fetched
+    let html = "";
+    for(let p=1; p<=maxReached; p++){
+      html += `<button class="mini-btn" data-page="${p}" style="min-width:34px;${p===currentPage?'background:var(--navy);color:#fff;':'background:var(--ice);color:var(--primary);'}">${p}</button>`;
+    }
+    if(hasMore) html += `<button class="mini-btn" id="ac-next-page" style="background:var(--ice);color:var(--primary);">આગળ →</button>`;
+    pager.innerHTML = html;
+    pager.querySelectorAll("[data-page]").forEach(btn=>{
+      btn.addEventListener("click", ()=> goToPage(Number(btn.getAttribute("data-page"))));
+    });
+    const nextBtn = document.getElementById("ac-next-page");
+    if(nextBtn) nextBtn.addEventListener("click", ()=> goToPage(currentPage+1));
+  }
+
+  async function goToPage(pageNum){
+    const el = document.getElementById("ac-list");
+    el.innerHTML = `<div style="padding:20px;color:var(--text-mid);font-size:13px;">Load થઈ રહ્યું છે...</div>`;
+    try{
+      const cursor = pageCursors[pageNum-1]; // null for page 1
+      const result = await adminService.getCandidatesPage(currentStatus || null, cursor, PAGE_SIZE);
+      currentList = result.candidates;
+      currentPage = pageNum;
+      hasMore = result.hasMore;
+      if(pageCursors.length < pageNum + 1) pageCursors[pageNum] = result.lastDoc;
+      const filtered = clientFilter(currentList);
+      el.innerHTML = rowsHtml(filtered);
+      attachRowEvents(currentList);
+      paintPager();
+    }catch(err){
+      el.innerHTML = `<div class="status-banner status-err" style="margin:16px;">Data load ના થયું: ${err.message}</div>`;
+    }
+  }
+
+  async function doSearchAll(){
+    const el = document.getElementById("ac-list");
+    el.innerHTML = `<div style="padding:20px;color:var(--text-mid);font-size:13px;">બધામાં શોધી રહ્યા છીએ...</div>`;
+    try{
+      searchAllResults = await adminService.searchAllCandidates(currentStatus || null);
+      const filtered = clientFilter(searchAllResults);
+      el.innerHTML = rowsHtml(filtered) + `<div id="ac-clear-search" style="text-align:center;padding:12px;color:var(--primary);font-weight:700;font-size:12px;cursor:pointer;">← Pagination પર પાછા જાવ</div>`;
+      attachRowEvents(searchAllResults);
+      document.getElementById("ac-clear-search").addEventListener("click", ()=>{ searchAllResults=null; goToPage(1); });
+      paintPager();
+    }catch(err){
+      el.innerHTML = `<div class="status-banner status-err" style="margin:16px;">Data load ના થયું: ${err.message}</div>`;
+    }
+  }
+
   document.querySelectorAll(".ac-tab").forEach(tab=>{
     tab.addEventListener("click", ()=>{
       document.querySelectorAll(".ac-tab").forEach(t=>t.classList.remove("active"));
       tab.classList.add("active");
-      state.candidatesFilter = tab.getAttribute("data-status");
-      paint();
+      currentStatus = tab.getAttribute("data-status");
+      state.candidatesFilter = currentStatus;
+      pageCursors = [null]; searchAllResults = null;
+      goToPage(1);
     });
   });
-  document.getElementById("ac-search").addEventListener("input", paint);
-
-  adminService.getAllCandidates().then(list=>{
-    allCandidates = list;
-    paint();
-  }).catch(err=>{
-    document.getElementById("ac-list").innerHTML = `<div class="status-banner status-err" style="margin:16px;">Data load ના થયું: ${err.message}</div>`;
+  document.getElementById("ac-search").addEventListener("input", ()=>{
+    const source = searchAllResults !== null ? searchAllResults : currentList;
+    const filtered = clientFilter(source);
+    const el = document.getElementById("ac-list");
+    const q = document.getElementById("ac-search").value.trim();
+    el.innerHTML = rowsHtml(filtered) + (q && searchAllResults===null ? `<div id="ac-search-all-btn" style="text-align:center;padding:12px;color:var(--primary);font-weight:700;font-size:12px;cursor:pointer;">🔍 બધા candidates માં "${escapeHtml(q)}" શોધો</div>` : (searchAllResults!==null ? `<div id="ac-clear-search" style="text-align:center;padding:12px;color:var(--primary);font-weight:700;font-size:12px;cursor:pointer;">← Pagination પર પાછા જાવ</div>` : ""));
+    attachRowEvents(source);
+    if(document.getElementById("ac-search-all-btn")) document.getElementById("ac-search-all-btn").addEventListener("click", doSearchAll);
+    if(document.getElementById("ac-clear-search")) document.getElementById("ac-clear-search").addEventListener("click", ()=>{ searchAllResults=null; goToPage(1); });
   });
+
+  goToPage(1);
 }
 
 function renderMembers(main){
@@ -864,25 +999,30 @@ function renderMembers(main){
       <div><h1>👥 All Members</h1><div class="sub">Community ના બધા registered members (Live Firestore data)</div></div>
     </div>
     <div class="panel" style="padding:16px 18px;">
-      <div class="input-wrap" style="max-width:340px;"><input id="m-search" placeholder="નામ અથવા mobile થી શોધો..." style="border:none;outline:none;font-family:inherit;font-size:13px;padding:11px 0;width:100%;color:var(--text-dark);"></div>
+      <div class="input-wrap" style="max-width:340px;"><input id="m-search" placeholder="નામ અથવા મોબાઈલ થી શોધો..." style="border:none;outline:none;font-family:inherit;font-size:13px;padding:11px 0;width:100%;color:var(--text-dark);"></div>
     </div>
     <div class="panel">
       <div class="panel-head"><h2>Members</h2></div>
       <div id="members-list"><div style="padding:20px;color:var(--text-mid);font-size:13px;">Load થઈ રહ્યું છે...</div></div>
+      <div id="m-pager" style="display:flex;gap:6px;align-items:center;justify-content:center;padding:14px;flex-wrap:wrap;"></div>
     </div>
   `;
 
-  let allUsers = [];
-  function paint(list){
-    const el = document.getElementById("members-list");
-    if(!el) return;
-    if(list.length===0){ el.innerHTML = `<div class="empty">કોઈ member ના મળ્યા</div>`; return; }
-    el.innerHTML = list.map(u=>`
+  const PAGE_SIZE = 25;
+  let pageCursors = [null];
+  let currentPage = 1;
+  let hasMore = true;
+  let currentList = [];
+  let searchAllResults = null;
+
+  function rowsHtml(list){
+    if(list.length===0) return `<div class="empty">કોઈ member ના મળ્યા</div>`;
+    return list.map(u=>`
       <div class="approval-row">
         <div class="ar-photo" style="background:linear-gradient(160deg,#D98FA0,#A8455C);">👤</div>
         <div class="ar-info">
-          <div class="ar-name">${u.name}${u.blocked?' <span style="color:var(--danger);font-size:10px;font-weight:800;">(BLOCKED)</span>':''}</div>
-          <div class="ar-meta">${u.mobile} · ${u.village||'-'}</div>
+          <div class="ar-name">${escapeHtml(u.name)}${u.blocked?' <span style="color:var(--danger);font-size:10px;font-weight:800;">(BLOCKED)</span>':''}</div>
+          <div class="ar-meta">${escapeHtml(u.mobile)} · ${escapeHtml(u.village||'-')}</div>
         </div>
         <div class="ar-actions">
           ${state.adminRole!=='viewer' ? `
@@ -892,6 +1032,9 @@ function renderMembers(main){
         </div>
       </div>
     `).join("");
+  }
+
+  function attachRowEvents(list){
     document.querySelectorAll("[data-toggle-block]").forEach(btn=>{
       btn.addEventListener("click", async ()=>{
         const userId = btn.getAttribute("data-toggle-block");
@@ -899,27 +1042,85 @@ function renderMembers(main){
         btn.disabled = true;
         try{
           await adminService.toggleBlockUser(userId, !currentlyBlocked);
-          const u = allUsers.find(x=>x.id===userId);
+          const u = list.find(x=>x.id===userId);
           await adminService.logActivity(state.adminEmail, currentlyBlocked ? "Unblocked member" : "Blocked member", u ? u.name : userId);
-          showToast(currentlyBlocked ? "✓ Unblock કર્યું" : "🚫 Block કર્યું");
+          showToast(currentlyBlocked ? "✓ અનબ્લોક કર્યું" : "🚫 બ્લોક કર્યું");
           if(u) u.blocked = !currentlyBlocked;
-          paint(allUsers);
+          const el = document.getElementById("members-list");
+          el.innerHTML = rowsHtml(clientFilter(list));
+          attachRowEvents(list);
         }catch(err){ showToast("Error: "+err.message); btn.disabled=false; }
       });
     });
   }
 
-  adminService.getAllUsers().then(list=>{
-    allUsers = list;
-    paint(allUsers);
-    document.getElementById("m-search").addEventListener("input", (e)=>{
-      const q = e.target.value.trim().toLowerCase();
-      if(!q){ paint(allUsers); return; }
-      paint(allUsers.filter(u => (u.name||"").toLowerCase().includes(q) || (u.mobile||"").includes(q)));
+  function clientFilter(list){
+    const q = document.getElementById("m-search").value.trim().toLowerCase();
+    if(!q) return list;
+    return list.filter(u => (u.name||"").toLowerCase().includes(q) || (u.mobile||"").includes(q));
+  }
+
+  function paintPager(){
+    const pager = document.getElementById("m-pager");
+    if(searchAllResults !== null){ pager.innerHTML = ""; return; }
+    const maxReached = pageCursors.length;
+    let html = "";
+    for(let p=1; p<=maxReached; p++){
+      html += `<button class="mini-btn" data-page="${p}" style="min-width:34px;${p===currentPage?'background:var(--navy);color:#fff;':'background:var(--ice);color:var(--primary);'}">${p}</button>`;
+    }
+    if(hasMore) html += `<button class="mini-btn" id="m-next-page" style="background:var(--ice);color:var(--primary);">આગળ →</button>`;
+    pager.innerHTML = html;
+    pager.querySelectorAll("[data-page]").forEach(btn=>{
+      btn.addEventListener("click", ()=> goToPage(Number(btn.getAttribute("data-page"))));
     });
-  }).catch(err=>{
-    document.getElementById("members-list").innerHTML = `<div class="status-banner status-err" style="margin:16px;">Data load ના થયું: ${err.message}</div>`;
+    const nextBtn = document.getElementById("m-next-page");
+    if(nextBtn) nextBtn.addEventListener("click", ()=> goToPage(currentPage+1));
+  }
+
+  async function goToPage(pageNum){
+    const el = document.getElementById("members-list");
+    el.innerHTML = `<div style="padding:20px;color:var(--text-mid);font-size:13px;">Load થઈ રહ્યું છે...</div>`;
+    try{
+      const cursor = pageCursors[pageNum-1];
+      const result = await adminService.getUsersPage(cursor, PAGE_SIZE);
+      currentList = result.users;
+      currentPage = pageNum;
+      hasMore = result.hasMore;
+      if(pageCursors.length < pageNum + 1) pageCursors[pageNum] = result.lastDoc;
+      el.innerHTML = rowsHtml(clientFilter(currentList));
+      attachRowEvents(currentList);
+      paintPager();
+    }catch(err){
+      el.innerHTML = `<div class="status-banner status-err" style="margin:16px;">Data load ના થયું: ${err.message}</div>`;
+    }
+  }
+
+  async function doSearchAll(){
+    const el = document.getElementById("members-list");
+    el.innerHTML = `<div style="padding:20px;color:var(--text-mid);font-size:13px;">બધામાં શોધી રહ્યા છીએ...</div>`;
+    try{
+      searchAllResults = await adminService.searchAllUsers();
+      el.innerHTML = rowsHtml(clientFilter(searchAllResults)) + `<div id="m-clear-search" style="text-align:center;padding:12px;color:var(--primary);font-weight:700;font-size:12px;cursor:pointer;">← Pagination પર પાછા જાવ</div>`;
+      attachRowEvents(searchAllResults);
+      document.getElementById("m-clear-search").addEventListener("click", ()=>{ searchAllResults=null; goToPage(1); });
+      paintPager();
+    }catch(err){
+      el.innerHTML = `<div class="status-banner status-err" style="margin:16px;">Data load ના થયું: ${err.message}</div>`;
+    }
+  }
+
+  document.getElementById("m-search").addEventListener("input", ()=>{
+    const source = searchAllResults !== null ? searchAllResults : currentList;
+    const filtered = clientFilter(source);
+    const el = document.getElementById("members-list");
+    const q = document.getElementById("m-search").value.trim();
+    el.innerHTML = rowsHtml(filtered) + (q && searchAllResults===null ? `<div id="m-search-all-btn" style="text-align:center;padding:12px;color:var(--primary);font-weight:700;font-size:12px;cursor:pointer;">🔍 બધા members માં "${escapeHtml(q)}" શોધો</div>` : (searchAllResults!==null ? `<div id="m-clear-search" style="text-align:center;padding:12px;color:var(--primary);font-weight:700;font-size:12px;cursor:pointer;">← Pagination પર પાછા જાવ</div>` : ""));
+    attachRowEvents(source);
+    if(document.getElementById("m-search-all-btn")) document.getElementById("m-search-all-btn").addEventListener("click", doSearchAll);
+    if(document.getElementById("m-clear-search")) document.getElementById("m-clear-search").addEventListener("click", ()=>{ searchAllResults=null; goToPage(1); });
   });
+
+  goToPage(1);
 }
 
 function renderReported(main){
@@ -934,7 +1135,7 @@ function renderReported(main){
     el.innerHTML = blocked.map(u=>`
       <div class="approval-row">
         <div class="ar-photo" style="background:linear-gradient(160deg,#D8544A,#8a2e26);">🚫</div>
-        <div class="ar-info"><div class="ar-name">${u.name}</div><div class="ar-meta">${u.mobile} · ${u.village||'-'}</div></div>
+        <div class="ar-info"><div class="ar-name">${escapeHtml(u.name)}</div><div class="ar-meta">${escapeHtml(u.mobile)} · ${escapeHtml(u.village||'-')}</div></div>
       </div>
     `).join("");
   }).catch(err=>{
@@ -999,7 +1200,7 @@ function renderManageAdmins(main){
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr auto;gap:10px;align-items:end;">
         <div><label style="display:block;font-size:11px;font-weight:600;color:var(--text-dark);margin-bottom:5px;">Name</label><div class="input-wrap"><input id="na-name" style="border:none;outline:none;padding:10px 0;font-size:13px;width:100%;font-family:inherit;"></div></div>
         <div><label style="display:block;font-size:11px;font-weight:600;color:var(--text-dark);margin-bottom:5px;">Email</label><div class="input-wrap"><input id="na-email" style="border:none;outline:none;padding:10px 0;font-size:13px;width:100%;font-family:inherit;"></div></div>
-        <div><label style="display:block;font-size:11px;font-weight:600;color:var(--text-dark);margin-bottom:5px;">Password</label><div class="input-wrap"><input id="na-password" type="text" style="border:none;outline:none;padding:10px 0;font-size:13px;width:100%;font-family:inherit;"></div></div>
+        <div><label style="display:block;font-size:11px;font-weight:600;color:var(--text-dark);margin-bottom:5px;">Password</label><div class="input-wrap"><input id="na-password" type="password" style="border:none;outline:none;padding:10px 0;font-size:13px;width:100%;font-family:inherit;"></div></div>
         <div><label style="display:block;font-size:11px;font-weight:600;color:var(--text-dark);margin-bottom:5px;">Role</label><div class="input-wrap"><select id="na-role" style="border:none;outline:none;padding:10px 0;font-size:13px;width:100%;font-family:inherit;background:transparent;">
           <option value="staff">Staff Admin</option>
           <option value="viewer">Viewer Admin</option>
@@ -1018,7 +1219,7 @@ function renderManageAdmins(main){
       document.getElementById("admins-list").innerHTML = list.map(a=>`
         <div class="approval-row">
           <div class="ar-photo" style="background:linear-gradient(160deg,#D98FA0,#A8455C);">👤</div>
-          <div class="ar-info"><div class="ar-name">${a.name}</div><div class="ar-meta">${a.email}</div></div>
+          <div class="ar-info"><div class="ar-name">${escapeHtml(a.name)}</div><div class="ar-meta">${escapeHtml(a.email)}</div></div>
           <span class="status-badge ${a.role==='super'?'badge-approved':'badge-rejected'}" style="${a.role!=='super'?'background:var(--ice);color:var(--primary);':''}">${a.role==='super'?'Super Admin':a.role==='staff'?'Staff Admin':'Viewer Admin'}</span>
         </div>
       `).join("");
@@ -1032,12 +1233,12 @@ function renderManageAdmins(main){
     const role=document.getElementById("na-role").value;
     const errEl=document.getElementById("na-err"); errEl.innerHTML="";
     if(!name||!email||!password){ errEl.innerHTML = `<div class="err-text">Name, Email અને Password — ત્રણેય ભરો</div>`; return; }
-    if(password.length<4){ errEl.innerHTML = `<div class="err-text">Password ઓછામાં ઓછો 4 characters નો હોવો જોઈએ</div>`; return; }
+    if(password.length<8){ errEl.innerHTML = `<div class="err-text">Password ઓછામાં ઓછો 8 characters નો હોવો જોઈએ</div>`; return; }
     e.target.disabled=true; e.target.textContent="Adding...";
     try{
       await adminService.addAdmin({name,email,password,role});
       await adminService.logActivity(state.adminEmail, "Added new admin", `${name} (${role})`);
-      showToast("✓ Admin add થયો");
+      showToast("✓ એડમિન એડ થયો");
       document.getElementById("na-name").value=""; document.getElementById("na-email").value=""; document.getElementById("na-password").value="";
       e.target.disabled=false; e.target.textContent="+ Add";
       loadList();
@@ -1071,16 +1272,16 @@ function renderExport(main){
       const rows = [["Name","Mobile","Village","Blocked"], ...users.map(u=>[u.name,u.mobile,u.village||"",u.blocked?"Yes":"No"])];
       downloadCSV("members.csv", rows);
       await adminService.logActivity(state.adminEmail, "Exported data", "All Members");
-      showToast("✓ Download શરૂ થયું");
+      showToast("✓ ડાઉનલોડ શરૂ થયું");
     }catch(err){ showToast("Error: "+err.message); }
   });
   document.getElementById("exp-candidates").addEventListener("click", async ()=>{
     try{
-      const candidates = await adminService.getPending();
+      const candidates = await adminService.getAllCandidates();
       const rows = [["Name","Gender","Age","City","Education","Status"], ...candidates.map(c=>[c.name,c.gender||"",c.age||"",c.city||"",c.education||"",c.status])];
       downloadCSV("candidates.csv", rows);
       await adminService.logActivity(state.adminEmail, "Exported data", "All Candidates");
-      showToast("✓ Download શરૂ થયું");
+      showToast("✓ ડાઉનલોડ શરૂ થયું");
     }catch(err){ showToast("Error: "+err.message); }
   });
 }
@@ -1096,7 +1297,7 @@ function renderActivityLog(main){
     el.innerHTML = list.map(a=>`
       <div class="approval-row">
         <div class="ar-photo" style="background:linear-gradient(160deg,#D98FA0,#A8455C);font-size:14px;">📝</div>
-        <div class="ar-info"><div class="ar-name">${a.action}${a.targetName ? ' — '+a.targetName : ''}</div><div class="ar-meta">By ${a.adminEmail||'-'}</div></div>
+        <div class="ar-info"><div class="ar-name">${escapeHtml(a.action)}${a.targetName ? ' — '+escapeHtml(a.targetName) : ''}</div><div class="ar-meta">By ${escapeHtml(a.adminEmail||'-')}</div></div>
       </div>
     `).join("");
   }).catch(err=>{

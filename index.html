@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- SAGAR SAMBANDH — USER APP — v19 (16 Sep 2026) — English-toggle: pre-login flow completed. New first-run "Choose Language" screen (ગુજરાતી/English, 2 big buttons) shown once before Mobile Entry when no preference is stored; choice persists in localStorage (sagarSambandhLang) and now also applies whenever the in-app EN/ગુજ pill is toggled (previously reset to Gujarati on every reload). Mobile Entry, PIN Login, and Signup Details screens — entirely hardcoded Gujarati before, no toggle available at all — now fully bilingual via STRINGS/t(). Base: v18 (16 Sep 2026) — app name/search-placeholder/years-unit translation fix. -->
+<!-- SAGAR SAMBANDH — USER APP — v31 (18 Sep 2026) — Phase 0 Batch E: App Check activated with the real, registered reCAPTCHA v3 site key (6LfIeJEt...) — the site was already registered in Firebase Console → App Check → Apps ("Registered" status confirmed) and at google.com/recaptcha; only the site key was still a placeholder in code. Phase 0 is now fully live except for Console enforcement mode, which is intentionally left at "Monitor" for a few days before switching to "Enforce" (see updated comment). Base: v30 (18 Sep 2026) — Phase 2: Home screen pagination. -->
 <html lang="gu">
 <head>
 <meta charset="UTF-8">
@@ -25,7 +25,7 @@
     --navy:#4A1220; --primary:#7A2438; --primary-light:#A8455C;
     --sky:#D98FA0; --ice:#F0DAD3; --accent:#C9A227;
     --text-dark:#2B0E14; --text-mid:#8A6B6F; --border:#E8DCD3;
-    --success:#2E9E6B; --danger:#D8544A;
+    --success:#2E9E6B; --danger:#D8544A; --bg:#FAF4EC;
   }
   *{box-sizing:border-box; margin:0; padding:0;}
   body{
@@ -134,12 +134,12 @@
   .card-sub{ font-size:11px; color:var(--text-mid); margin-top:2px; }
   .loading{ text-align:center; padding:60px 20px; color:var(--text-mid); font-size:13px; }
   .empty{ text-align:center; padding:60px 20px; color:var(--text-mid); font-size:12.5px; }
-  .bottom-nav{ position:fixed; bottom:0; left:0; right:0; background:#fff; border-top:1px solid var(--border); display:flex; justify-content:center; gap:0; padding:12px 14px calc(12px + env(safe-area-inset-bottom)); flex-shrink:0; z-index:50; }
+  .bottom-nav{ position:fixed; bottom:0; left:0; right:0; background:#fff; border-top:1px solid var(--border); display:flex; justify-content:center; gap:0; padding:8px 14px calc(8px + env(safe-area-inset-bottom)); flex-shrink:0; z-index:50; }
   .bottom-nav-inner{ display:flex; justify-content:space-around; gap:4px; width:100%; max-width:480px; }
-  .nav-item{ flex:1; display:flex; flex-direction:column; align-items:center; gap:5px; padding:10px 4px; border-radius:14px; font-size:10.5px; color:var(--text-mid); font-weight:600; cursor:pointer; position:relative; }
+  .nav-item{ flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; padding:7px 4px; border-radius:14px; font-size:10px; color:var(--text-mid); font-weight:600; cursor:pointer; position:relative; }
   .nav-item.active{ background:var(--ice); color:var(--navy); font-weight:800; }
-  .nav-icon{ font-size:21px; }
-  .nav-item.active .nav-icon{ font-size:23px; }
+  .nav-icon{ font-size:20px; }
+  .nav-item.active .nav-icon{ font-size:21px; }
   .nav-badge{ position:absolute; top:2px; right:14px; width:15px; height:15px; border-radius:50%; background:var(--accent); color:var(--navy); font-size:8.5px; font-weight:800; display:flex; align-items:center; justify-content:center; }
   .int-tab-badge{ display:inline-flex; align-items:center; justify-content:center; min-width:15px; height:15px; border-radius:8px; background:var(--accent); color:var(--navy); font-size:9px; font-weight:800; padding:0 4px; margin-left:3px; vertical-align:middle; }
   .back-row{ display:flex; align-items:center; gap:12px; }
@@ -155,6 +155,15 @@
   .status-ok{ background:#E7F6EF; color:var(--success); }
   .status-err{ background:#FCEBEA; color:var(--danger); }
   .err-text{ font-size:11.5px; color:var(--danger); margin-top:-6px; margin-bottom:10px; }
+  .input-wrap.field-error{ border-color:var(--danger); box-shadow:0 0 0 3px rgba(216,84,74,0.12); }
+  .otp-boxes.field-error .otp-box{ border-color:var(--danger); box-shadow:0 0 0 2px rgba(216,84,74,0.12); }
+  .select2-container--default .select2-selection--single.field-error{ border-color:var(--danger); box-shadow:0 0 0 3px rgba(216,84,74,0.12); }
+  @keyframes skel-shimmer{ 0%{background-position:-200px 0;} 100%{background-position:200px 0;} }
+  .skel-card{ background:#fff; border-radius:18px; display:flex; overflow:hidden; margin-bottom:14px; border:1px solid #F0E4DC; }
+  .skel-photo{ width:100px; height:96px; flex-shrink:0; }
+  .skel-body{ padding:12px 13px; flex:1; display:flex; flex-direction:column; gap:8px; justify-content:center; }
+  .skel-photo,.skel-line{ background:linear-gradient(90deg,#F0E4DC 25%,#FAF1EB 37%,#F0E4DC 63%); background-size:400px 100%; animation:skel-shimmer 1.4s ease-in-out infinite; border-radius:6px; }
+  .skel-line{ height:11px; } .skel-line.w60{ width:60%; } .skel-line.w40{ width:40%; } .skel-line.w80{ width:80%; }
   .status-pending{ font-size:10px; font-weight:700; padding:4px 9px; border-radius:9px; display:inline-block; margin-top:6px; }
   .detail-row{ display:flex; justify-content:space-between; padding:9px 0; border-bottom:1px solid var(--border); font-size:13px; }
   .detail-row .k{ color:var(--text-mid); } .detail-row .v{ color:var(--text-dark); font-weight:600; }
@@ -162,6 +171,7 @@
 </head>
 <body>
 <div class="phone" id="phone"><div class="notch"></div><div id="app"></div></div>
+<div id="recaptcha-container"></div>
 
 <script>
 // ============================================================
@@ -193,17 +203,17 @@ try {
 }
 
 // App Check — verifies requests come from this real website, not a
-// copy-pasted config used in someone else's script/page. Team must replace
-// RECAPTCHA_V3_SITE_KEY below with the real key from Firebase Console
-// (Build → App Check → register a reCAPTCHA v3 site). Wrapped so a
-// missing/placeholder key never breaks the rest of the app.
-// TEMPORARILY DISABLED (22 Aug 2026): this reCAPTCHA v3 key was not yet
-// registered under Firebase Console → App Check → Apps, causing every
-// token-exchange call to fail with 403 and the Firebase SDK to throttle
-// ALL further auth attempts client-side for ~24 hours. Re-enable only
-// after the key is properly registered in App Check + Google reCAPTCHA
-// Admin Console for the sagarsambandh.in domain.
-const RECAPTCHA_V3_SITE_KEY = "REPLACE_WITH_RECAPTCHA_V3_SITE_KEY";
+// copy-pasted config used in someone else's script/page. Registered in
+// Firebase Console (Build → App Check → Apps) with a real reCAPTCHA v3 site
+// key (18 Sep 2026) — the app is registered as "reCAPTCHA / Registered" and
+// the site key below is live on the google.com/recaptcha admin console for
+// sagarsambandh.in. Enforcement is intentionally left at "Monitor" (not
+// "Enforce") in Console for a few days first — see the App Check APIs tab —
+// so real traffic can be confirmed as verified before any request gets
+// blocked. Only after that, switch Firestore/Storage/Auth to "Enforce" one
+// at a time. (Previously throttled once, 22 Aug 2026, from activating
+// before registration — this key is the properly-registered one.)
+const RECAPTCHA_V3_SITE_KEY = "6LfIeJEtAAAAABLrVMdO-js6jnYBorm7jbKkaNZj";
 if (firebaseReady && RECAPTCHA_V3_SITE_KEY !== "REPLACE_WITH_RECAPTCHA_V3_SITE_KEY") {
   try {
     firebase.appCheck().activate(
@@ -231,18 +241,28 @@ let authReadyPromise = firebaseReady
     })
   : Promise.resolve();
 
-// ⚠️ DEV/TESTING FALLBACK (22 Aug 2026): Real Phone OTP is temporarily
-// throttled server-side by Firebase (App Check misconfiguration earlier
-// today — see Sagar-Sambandh-OTP-Bug-Summary.docx). Until that clears and
-// we consciously decide to switch back, login uses Mobile Number + 4-digit
-// PIN — but under the hood it still creates a REAL (non-anonymous) Firebase
-// Auth session via Email/Password, exactly like admin.html does for Admin
-// login. This matters because Firestore Rules check
-// request.auth.token.firebase.sign_in_provider != 'anonymous' — a plain
-// Anonymous session (no real per-person identity) gets blocked by Rules,
-// which is exactly correct/secure behaviour, not a bug.
+// ⚠️ DEV/TESTING FALLBACK note (22 Aug 2026, superseded 17 Sep 2026): Real
+// Phone OTP was temporarily throttled that day (App Check misconfiguration —
+// see Sagar-Sambandh-OTP-Bug-Summary.docx) and the app ran on Mobile+PIN
+// only for a few weeks. As of this version, OTP is back — but only at the
+// two moments that actually need to prove phone ownership: (1) Signup, and
+// (2) Forgot PIN. Daily login stays Mobile+PIN (no SMS cost). Mechanism:
+// signInWithPhoneNumber() gives a REAL, phone-verified Firebase Auth session
+// for that phone number's uid; right after that, an Email/Password
+// credential (fake email + PIN-derived password, same trick as before) gets
+// *linked* to that SAME uid via linkWithCredential(), so later Mobile+PIN
+// logins sign into the identical, already-phone-verified account — no
+// second OTP needed until the person forgets their PIN.
 function mobileToEmail(mobile){ return `${mobile}@sagarsambandh.local`; }
 function pinToPassword(pin){ return `sagar${pin}bandh`; } // Firebase needs 6+ chars; PIN itself stays 4 digits in the UI
+
+let pendingConfirmationResult = null;
+function getRecaptchaVerifier(){
+  if (!window._recaptchaVerifier) {
+    window._recaptchaVerifier = new firebase.auth.RecaptchaVerifier("recaptcha-container", { size: "invisible" }, auth);
+  }
+  return window._recaptchaVerifier;
+}
 
 // ============================================================
 // DATA SERVICE — real Firestore calls
@@ -286,22 +306,70 @@ function applyFontZoom(){
 }
 
 const dataService = {
-  // Mobile+PIN fallback — signup creates a real (non-anonymous) Firebase
-  // Auth user, then a matching users/{uid} Firestore doc (doc ID = uid, to
-  // match Security Rules' `request.auth.uid == userId` check).
-  async signup(mobile, pin, name, village) {
+  // Step 1 of Signup / Forgot-PIN — sends the real SMS OTP via Firebase Phone
+  // Auth. Same call powers both flows; what happens after confirmOtp()
+  // differs (collect name+PIN for a new account, vs. just set a new PIN).
+  async sendOtp(mobile) {
     if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
-    let cred;
-    try {
-      cred = await auth.createUserWithEmailAndPassword(mobileToEmail(mobile), pinToPassword(pin));
-    } catch (e) {
-      if (e.code === "auth/email-already-in-use") throw new Error("આ Mobile Number થી પહેલેથી account છે — Login કરો");
-      throw new Error(e.message || "Account બની ના શક્યું");
+    const verifier = getRecaptchaVerifier();
+    const fullPhone = "+91" + mobile;
+    pendingConfirmationResult = await auth.signInWithPhoneNumber(fullPhone, verifier);
+    return { success: true };
+  },
+
+  // Step 2 — verifies the 6-digit code. On success the person now has a
+  // REAL, phone-verified Firebase Auth session (auth.currentUser). Returns
+  // whether a users/{uid} doc already exists for this phone, so the caller
+  // can route to "collect name+PIN" (new) or "set a new PIN" (existing).
+  async confirmOtp(code) {
+    if (!pendingConfirmationResult) throw new Error("પહેલા OTP મોકલો");
+    const result = await pendingConfirmationResult.confirm(code);
+    pendingConfirmationResult = null;
+    const uid = result.user.uid;
+    const userDoc = await db.collection("users").doc(uid).get();
+    if (userDoc.exists) {
+      const data = userDoc.data();
+      if (data.blocked) {
+        await auth.signOut();
+        throw new Error("તમારું account block કરવામાં આવ્યું છે. Admin નો સંપર્ક કરો.");
+      }
+      return { isNewUser: false, id: uid, name: data.name, mobile: data.mobile, village: data.village };
     }
-    await db.collection("users").doc(cred.user.uid).set({
+    return { isNewUser: true, id: uid, mobile: result.user.phoneNumber };
+  },
+
+  // Signup step 3 — after OTP verified for a brand-new number: link an
+  // Email/Password credential (fake email + PIN-derived password) to the
+  // already-phone-verified uid, then create the users/{uid} Firestore doc.
+  async completeSignup(uid, mobile, pin, name, village) {
+    if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
+    const emailCred = firebase.auth.EmailAuthProvider.credential(mobileToEmail(mobile), pinToPassword(pin));
+    try {
+      await auth.currentUser.linkWithCredential(emailCred);
+    } catch (e) {
+      if (e.code !== "auth/provider-already-linked") throw new Error(e.message || "Account setup ના થયું");
+    }
+    await db.collection("users").doc(uid).set({
       name, village, mobile, createdAt: firebase.firestore.FieldValue.serverTimestamp(),
     });
-    return { id: cred.user.uid, name, mobile, village };
+    return { id: uid, name, mobile, village };
+  },
+
+  // Forgot-PIN — after OTP re-verified for an EXISTING number: overwrite the
+  // linked Email/Password credential's password with the new PIN. The
+  // person is left signed in (same uid, same data) so the caller can send
+  // them straight to Home.
+  async resetPin(mobile, newPin) {
+    if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
+    try {
+      await auth.currentUser.updatePassword(pinToPassword(newPin));
+    } catch (e) {
+      // No Email/Password provider was linked yet (shouldn't normally
+      // happen for an existing account, but handle it rather than fail silently).
+      const emailCred = firebase.auth.EmailAuthProvider.credential(mobileToEmail(mobile), pinToPassword(newPin));
+      await auth.currentUser.linkWithCredential(emailCred);
+    }
+    return { success: true };
   },
 
   async login(mobile, pin) {
@@ -343,49 +411,83 @@ const dataService = {
     return { success: true };
   },
 
-  async getProfiles(userId) {
+  // One-time lookup of the user's own candidate(s) by gender — used to
+  // compute Match Score for every profile on every page, without refetching
+  // per page. Called once when Home mounts.
+  async getMyRefByGender(userId) {
     if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
-    const snap = await db.collection("candidates").where("status", "==", "approved").get();
-    let profiles = snap.docs.map(d => ({ id: d.id, ...d.data() })).filter(p => !p.deactivated);
-
-    // Match Score: compare against the logged-in user's own (opposite-gender) candidate profile.
-    // If user hasn't created a profile yet, no score is shown — matching needs a reference point.
-    let myRef = null;
+    let myRefByGender = { male: null, female: null };
     if (userId) {
       const mySnap = await db.collection("candidates").where("createdByUserId", "==", userId).get();
-      const myCandidates = mySnap.docs.map(d => d.data());
-      if (myCandidates.length > 0) myRef = myCandidates[0];
+      mySnap.docs.map(d => d.data()).forEach(c => {
+        if ((c.gender === "male" || c.gender === "female") && !myRefByGender[c.gender]) myRefByGender[c.gender] = c;
+      });
     }
+    return myRefByGender;
+  },
+
+  _computeMatchScore(p, myRefByGender) {
     const COMPATIBLE_RASHI = {
       "મેષ":["સિંહ","ધન"], "વૃષભ":["કન્યા","મકર"], "મિથુન":["તુલા","કુંભ"], "કર્ક":["વૃશ્ચિક","મીન"],
       "સિંહ":["મેષ","ધન"], "કન્યા":["વૃષભ","મકર"], "તુલા":["મિથુન","કુંભ"], "વૃશ્ચિક":["કર્ક","મીન"],
       "ધન":["મેષ","સિંહ"], "મકર":["વૃષભ","કન્યા"], "કુંભ":["મિથુન","તુલા"], "મીન":["કર્ક","વૃશ્ચિક"],
     };
-    profiles = profiles.map(p => {
-      if (!myRef) return { ...p, matchScore: null };
-      let score = 0;
-      if (myRef.city && p.city && myRef.city === p.city) score += 1;
-      const ageDiff = Math.abs((myRef.age||0) - (p.age||0));
-      if (ageDiff <= 5) score += 2; else if (ageDiff <= 8) score += 1;
-      if (myRef.rashi && p.rashi) {
-        if (myRef.rashi === p.rashi) score += 1;
-        else if ((COMPATIBLE_RASHI[myRef.rashi]||[]).includes(p.rashi)) score += 1.5;
-      }
-      if (myRef.education && p.education && myRef.education === p.education) score += 1;
-      const finalScore = Math.min(5, Math.round(score * 2) / 2);
-      return { ...p, matchScore: finalScore };
-    });
-
-    // Favorites — attach favorite:true/false so Home screen can show the heart state
-    // and filter by "favorites only" without a separate round-trip per card.
-    if (userId) {
-      const favIds = await this.getFavoriteIds(userId);
-      const favSet = new Set(favIds);
-      profiles = profiles.map(p => ({ ...p, favorite: favSet.has(p.id) }));
-    } else {
-      profiles = profiles.map(p => ({ ...p, favorite: false }));
+    const myRef = p.gender === "male" ? myRefByGender.female : p.gender === "female" ? myRefByGender.male : null;
+    if (!myRef) return null;
+    let score = 0;
+    if (myRef.city && p.city && myRef.city === p.city) score += 1;
+    const ageDiff = Math.abs((myRef.age||0) - (p.age||0));
+    if (ageDiff <= 5) score += 2; else if (ageDiff <= 8) score += 1;
+    if (myRef.rashi && p.rashi) {
+      if (myRef.rashi === p.rashi) score += 1;
+      else if ((COMPATIBLE_RASHI[myRef.rashi]||[]).includes(p.rashi)) score += 1.5;
     }
-    return profiles;
+    if (myRef.education && p.education && myRef.education === p.education) score += 1;
+    return Math.min(5, Math.round(score * 2) / 2);
+  },
+
+  _annotate(profiles, myRefByGender, favSet) {
+    return profiles.map(p => ({ ...p, matchScore: this._computeMatchScore(p, myRefByGender), favorite: favSet.has(p.id) }));
+  },
+
+  // Paginated fetch — one page (default 20) of approved candidates, newest
+  // first. `gender` (optional) is applied as a real Firestore query filter
+  // (server-side) since it's the one filter cheap enough to index for every
+  // combination; Age/Rashi/Area stay client-side over whatever's been
+  // loaded (see ensureEnoughForFilters in renderHome). Pass the previous
+  // page's `lastDoc` as the cursor for the next page (null for page 1).
+  // NOTE: `hasMore` is a heuristic (true when a full page came back) — since
+  // deactivated/own-candidate docs are filtered out client-side after the
+  // fact, a page can occasionally come back shorter than pageSize even
+  // though more records exist; the next scroll simply fetches again.
+  async getProfilesPage(userId, { gender, lastDoc, pageSize, myRefByGender, favSet } = {}) {
+    if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
+    const size = pageSize || 20;
+    let query = db.collection("candidates").where("status", "==", "approved");
+    if (gender) query = query.where("gender", "==", gender);
+    query = query.orderBy("createdAt", "desc").limit(size);
+    if (lastDoc) query = query.startAfter(lastDoc);
+    const snap = await query.get();
+    const rawDocs = snap.docs;
+    let profiles = rawDocs.map(d => ({ id: d.id, ...d.data() })).filter(p => !p.deactivated && p.createdByUserId !== userId);
+    profiles = this._annotate(profiles, myRefByGender || {male:null,female:null}, favSet || new Set());
+    return {
+      profiles,
+      lastDoc: rawDocs.length ? rawDocs[rawDocs.length - 1] : null,
+      hasMore: rawDocs.length === size,
+    };
+  },
+
+  // Full-fetch — used only for the explicit "બધામાં શોધો" (search all)
+  // button, so its cost (a full collection read, minus the gender filter if
+  // active) is opt-in rather than automatic on every keystroke.
+  async searchAllProfiles(userId, { gender, myRefByGender, favSet } = {}) {
+    if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
+    let query = db.collection("candidates").where("status", "==", "approved");
+    if (gender) query = query.where("gender", "==", gender);
+    const snap = await query.get();
+    let profiles = snap.docs.map(d => ({ id: d.id, ...d.data() })).filter(p => !p.deactivated && p.createdByUserId !== userId);
+    return this._annotate(profiles, myRefByGender || {male:null,female:null}, favSet || new Set());
   },
 
   async getFavoriteIds(userId) {
@@ -420,6 +522,16 @@ const dataService = {
 
   async sendInterest(userId, candidateId) {
     if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
+    // Duplicate-interest guard — a person could otherwise tap "Send Interest"
+    // repeatedly (or reopen the same profile) and create several pending
+    // interests toward the same candidate, cluttering both their own Sent
+    // list and the receiving family's Received list.
+    const existing = await db.collection("interests")
+      .where("fromUserId", "==", userId)
+      .where("toCandidateId", "==", candidateId)
+      .where("status", "==", "pending")
+      .limit(1).get();
+    if (!existing.empty) throw new Error("તમે આ પ્રોફાઇલ ને પહેલેથી ઈન્ટરેસ્ટ મોકલેલું છે");
     await db.collection("interests").add({
       fromUserId: userId, toCandidateId: candidateId, status: "pending",
       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
@@ -574,6 +686,16 @@ const dataService = {
     return url;
   },
 
+  async removeDocument(candidateId, docKey) {
+    if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
+    try { await storage.ref().child(`candidates/${candidateId}/docs/${docKey}`).delete(); }
+    catch (e) { /* Storage માંથી પહેલેથી delete થયેલી હોય તો પણ Firestore reference clean કરો */ }
+    await db.collection("candidates").doc(candidateId).update({
+      [`docs.${docKey}`]: firebase.firestore.FieldValue.delete(),
+    });
+    return { success: true };
+  },
+
   async createCandidate(userId, payload) {
     if (!firebaseReady) throw new Error(firebaseError || "Firebase load ના થયું");
     const existing = await db.collection("candidates").where("createdByUserId", "==", userId).get();
@@ -619,7 +741,7 @@ const app = document.getElementById("app");
 function getLangPref(){ return localStorage.getItem("sagarSambandhLang"); }
 function setLangPref(lang){ localStorage.setItem("sagarSambandhLang", lang); }
 
-let state = { screen: getLangPref() ? "checking" : "chooseLanguage", user: null, openProfileId: null, formDraft: {}, uploadCandidateId: null, uploadCandidatePhotos: [], uploadCandidatePhotoVisible: false, editCandidateId: null, lang: getLangPref() || "gu" };
+let state = { screen: getLangPref() ? "checking" : "chooseLanguage", user: null, openProfileId: null, formDraft: {}, uploadCandidateId: null, uploadCandidatePhotos: [], uploadCandidatePhotoVisible: false, uploadCandidateDocs: {}, editCandidateId: null, lang: getLangPref() || "gu" };
 
 // Note: session persistence is now handled natively by Firebase Auth
 // (auth.currentUser survives refresh automatically) — see renderChecking().
@@ -631,14 +753,16 @@ let state = { screen: getLangPref() ? "checking" : "chooseLanguage", user: null,
 const STRINGS = {
   gu: {
     welcome: "નમસ્તે 🙏", home: "હોમ", search: "સર્ચ", interest: "ઈન્ટરેસ્ટ", profile: "પ્રોફાઇલ",
-    myProfiles: "📁 My Profiles", myProfilesSub: "તમે બનાવેલા candidate profiles (max 4)",
-    interestsTitle: "💌 Interests", interestsSub: "તમારા candidates ને મળેલા Interest requests",
-    browseSub: "Community profiles browse કરો (Live Firestore data)",
+    myProfiles: "📁 મારા પ્રોફાઇલ", myProfilesSub: "તમે બનાવેલા કેન્ડિડેટ પ્રોફાઇલ (મહત્તમ 4)",
+    interestsTitle: "💌 ઈન્ટરેસ્ટ", interestsSub: "તમારા કેન્ડિડેટ્સ ને મળેલી ઈન્ટરેસ્ટ રિક્વેસ્ટ",
+    browseSub: "કોમ્યુનિટી પ્રોફાઇલ બ્રાઉઝ કરો",
     // Form Step 1
     formStep1Title: "ઉમેદવાર ફોર્મ",
     candidateName: "ઉમેદવારનું પૂરું નામ",
     candidateNamePh: "દા.ત. પ્રિયા કિરીટભાઈ પટેલ",
-    gender: "જાતિ (Gender)",
+    nameEnglishLbl: "નામ (ઇંગ્લિશમાં ટાઈપ કરો)",
+    nameEnglishPh: "દા.ત. Priya Patel",
+    gender: "જાતિ (જેન્ડર)",
     genderPh: "પસંદ કરો",
     age: "ઉંમર",
     agePh: "દા.ત. 26",
@@ -648,7 +772,7 @@ const STRINGS = {
     motherNamePh: "માતાનું પૂરું નામ",
     rashi: "રાશી",
     rashiPh: "રાશી પસંદ કરો",
-    fillAllFields: "કૃપા કરીને બધા fields ભરો",
+    fillAllFields: "કૃપા કરીને બધા ફિલ્ડ્સ ભરો",
     ageInvalid: "ઉંમર 18 થી 70 વર્ષ ની વચ્ચે જ હોવી જોઈએ",
     nextBtn: "આગળ વધો →",
     // Form Step 2
@@ -656,34 +780,38 @@ const STRINGS = {
     education: "શિક્ષણ",
     educationPh: "દા.ત. B.Com",
     occupation: "વ્યવસાય",
-    occupationPh: "દા.ત. Private Job",
+    occupationPh: "દા.ત. પ્રાઇવેટ જોબ",
     city: "શહેર / ગામ",
     cityPh: "દા.ત. પોરબંદર",
+    stateLbl: "રાજ્ય",
+    statePh: "રાજ્ય પસંદ કરો",
+    areaLbl: "વિસ્તાર",
+    areaPh: "વિસ્તાર પસંદ કરો",
     maritalStatus: "દરજ્જો",
     maritalStatusPh: "દરજ્જો પસંદ કરો",
-    siblings: "ભાઈ-બહેન ની વિગત (Optional)",
+    siblings: "ભાઈ-બહેન ની વિગત (ઓપ્શનલ)",
     siblingsPh: "દા.ત. 1 ભાઈ, 0 બહેન",
     eduCityRequired: "શિક્ષણ અને શહેર ભરવા જરૂરી છે",
     // Review
-    reviewTitle: "Review અને Submit",
-    reviewEditTitle: "Review અને Update",
+    reviewTitle: "રિવ્યુ અને સબમિટ",
+    reviewEditTitle: "રિવ્યુ અને અપડેટ",
     reviewCheck: "તમે ભરેલી વિગતો ચકાસો",
-    submitBtn: "Submit કરો ✓",
-    updateBtn: "Update કરો ✓",
-    submitting: "Submit થઈ રહ્યું છે...",
-    updating: "Update થઈ રહ્યું છે...",
-    submitSuccess: "✓ Basic details save થયા! હવે Photo/Documents ઉમેરો",
-    updateSuccess: "✓ Update થયું! Admin ફરી verify કરશે",
-    reviewNote: "Submit કર્યા પછી, Admin આ profile ને verify કરશે. Approve થયા પછી જ profile બીજા members ને દે઺8ાશે.",
-    reviewEditNote: "Update કર્યા પછી, profile ફરીથી Admin approval ની રાહ જોશે (re-verification જરૂરી).",
+    submitBtn: "સબમિટ કરો ✓",
+    updateBtn: "અપડેટ કરો ✓",
+    submitting: "સબમિટ થઈ રહ્યું છે...",
+    updating: "અપડેટ થઈ રહ્યું છે...",
+    submitSuccess: "✓ મૂળભૂત વિગતો સેવ થઈ! હવે ફોટો/ડોક્યુમેન્ટ્સ ઉમેરો",
+    updateSuccess: "✓ અપડેટ થયું! એડમિન ફરી વેરિફાઇ કરશે",
+    reviewNote: "સબમિટ કર્યા પછી, એડમિન આ પ્રોફાઇલ ને વેરિફાઇ કરશે. એપ્રુવ થયા પછી જ પ્રોફાઇલ બીજા મેમ્બર્સ ને દેખાશે.",
+    reviewEditNote: "અપડેટ કર્યા પછી, પ્રોફાઇલ ફરીથી એડમિન એપ્રુવલ ની રાહ જોશે (ફરી-વેરિફિકેશન જરૂરી).",
     // Docs
-    docsTitle: "Photo અને Documents",
-    photoVisible: "મારો Photo બીજા members ને દે઺8ાડો",
-    photoDefault: "Default: છુપાયેલો — ગમે ત્યારે My Profiles માંથી બદલી શકાય",
-    docsRequired: "જરૂરી Documents",
-    docsNote: "Documents ફક્ત Admin verification માટે વપરાશે. Approve થયા પછી server પરથી delete થઈ જશે — ફક્ત Photo રહશે.",
-    doneBtn: "Done — My Profiles પર જાવ →",
-    photoPh: "Passport size, સ્પષ્ટ, તાજેતરની",
+    docsTitle: "ફોટો અને ડોક્યુમેન્ટ્સ",
+    photoVisible: "મારો ફોટો બીજા મેમ્બર્સ ને દેખાડો",
+    photoDefault: "ડિફોલ્ટ: છુપાયેલો — ગમે ત્યારે મારા પ્રોફાઇલ માંથી બદલી શકાય",
+    docsRequired: "જરૂરી ડોક્યુમેન્ટ્સ",
+    docsNote: "ડોક્યુમેન્ટ્સ ફક્ત એડમિન વેરિફિકેશન માટે વપરાશે. એપ્રુવ થયા પછી સર્વર પરથી ડિલીટ થઈ જશે — ફક્ત ફોટો રહેશે.",
+    doneBtn: "થઈ ગયું — મારા પ્રોફાઇલ પર જાવ →",
+    photoPh: "પાસપોર્ટ સાઈઝ, સ્પષ્ટ, તાજેતરની",
     // Detail Screen
     basicDetails: "👤 મૂળભૂત વિગતો",
     fatherNameLbl: "પિતાનું નામ",
@@ -692,7 +820,7 @@ const STRINGS = {
     maritalStatusLbl: "દરજ્જો",
     siblingsLbl: "ભાઈ-બહેન",
     sendInterestBtn: "💌 ઈન્ટરેસ્ટ મોકલો",
-    interestSentToast: "💌 ઈન્ટરેસ્ટ મોકલાયું! (Firestore માં save થયું)",
+    interestSentToast: "💌 ઈન્ટરેસ્ટ મોકલાયું!",
     profileNotFound: "પ્રોફાઇલ ના મળી",
     // My Profiles actions/status
     editBtn: "એડિટ",
@@ -714,6 +842,8 @@ const STRINGS = {
     logoutBtn: "🚪 લોગઆઉટ",
     loadingText: "લોડ થઈ રહ્યું છે...",
     settingsNav: "સેટિંગ્સ",
+    termsMenuLabel: "📄 નિયમો અને Privacy",
+    termsScreenTitle: "📄 નિયમો અને Privacy Policy",
     navMyProfiles: "મારા પ્રોફાઇલ",
     appName: "સાગર સંબંધ",
     searchPlaceholder: "નામ, શહેર, વ્યવસાય શોધો...",
@@ -722,29 +852,41 @@ const STRINGS = {
     chooseLangTitle: "તમારી ભાષા પસંદ કરો",
     chooseLangSub: "Choose your language",
     mobileEntryTitle: "નમસ્તે 🙏 ચાલો શરૂ કરીએ",
-    mobileEntrySub: "Mobile Number નાખો",
+    mobileEntrySub: "મોબાઈલ નંબર નાખો",
     mobileNumberLbl: "મોબાઈલ નંબર",
-    loginBtnExisting: "લોગિન કરો (પહેલેથી Account છે) →",
-    signupBtnNew: "નવું Account બનાવો →",
-    otpTestNote: "(Testing phase: Mobile + PIN — Real SMS OTP હાલ કામચલાઉ બંધ છે)",
+    loginBtnExisting: "લોગિન કરો (પહેલેથી ખાતું છે) →",
+    signupBtnNew: "નવું ખાતું બનાવો →",
     mobileInvalid: "10-અંકનો સાચો મોબાઈલ નંબર નાખો",
     pinLoginTitle: "🔐 PIN નાખો",
     pinLoginSub: "+91 {mobile} માટે તમારો 4-અંકનો PIN",
     pinLoginBtn: "લોગિન કરો →",
     pinLoggingIn: "લોગિન થઈ રહ્યા છીએ...",
     changeNumberBtn: "← નંબર બદલો",
+    forgotPinLink: "PIN ભૂલી ગયા?",
+    sendingOtp: "OTP મોકલી રહ્યા છીએ...",
+    otpSendFailed: "OTP મોકલી ના શકાયો — ફરી પ્રયત્ન કરો",
+    otpVerifyTitle: "📱 OTP નાખો",
+    otpVerifySub: "+91 {mobile} પર 6-અંકનો code મોકલ્યો છે",
+    otpVerifyBtn: "Verify કરો →",
+    otpVerifying: "Verify થઈ રહ્યું છે...",
+    otpInvalid: "OTP ખોટો છે અથવા expire થયો",
     signupTitle: "🙏 નવું ખાતું",
     signupSub: "+91 {mobile} — તમારી થોડી માહિતી અને 4-અંકનો PIN સેટ કરો",
     fullNameLbl: "પૂરું નામ",
     fullNamePh: "દા.ત. રમેશ સોલંકી",
     villageLbl: "ગામ / શહેર",
     villagePh: "દા.ત. પોરબંદર",
-    pinSetLbl: "4-અંકનો PIN સેટ કરો (daily login માટે)",
+    pinSetLbl: "4-અંકનો PIN સેટ કરો (દરરોજ ના લોગિન માટે)",
     pinReenterLbl: "PIN ફરીથી નાખો",
     declarationText: "હું પુષ્ટિ કરું છું કે હું <b>પોરબંદર ખારવા સમાજ</b> નો સભ્ય છું અને આપેલી માહિતી સાચી છે.",
     createAccountBtn: "ખાતું બનાવો →",
     creatingAccountText: "ખાતું બની રહ્યું છે...",
-    fillAllFieldsSimple: "બધા fields ભરો",
+    newPinTitle: "🔑 નવો PIN સેટ કરો",
+    newPinSub: "+91 {mobile} માટે નવો 4-અંકનો PIN",
+    newPinSetBtn: "PIN સેટ કરો →",
+    newPinSetting: "PIN સેટ થઈ રહ્યો છે...",
+    newPinSuccessToast: "✓ નવો PIN સેટ થયો!",
+    fillAllFieldsSimple: "બધા ફિલ્ડ્સ ભરો",
     pinMustBe4: "PIN બરાબર 4 અંકનો હોવો જોઈએ",
     pinsDontMatch: "બંને PIN સરખા નથી",
     noInterestsMsg: "હજુ કોઈ ઈન્ટરેસ્ટ નથી આવ્યું",
@@ -768,11 +910,13 @@ const STRINGS = {
     welcome: "Welcome 🙏", home: "Home", search: "Search", interest: "Interest", profile: "Profile",
     myProfiles: "📁 My Profiles", myProfilesSub: "Candidate profiles you created (max 4)",
     interestsTitle: "💌 Interests", interestsSub: "Interest requests received for your candidates",
-    browseSub: "Browse community profiles (Live Firestore data)",
+    browseSub: "Browse community profiles",
     // Form Step 1
     formStep1Title: "Candidate Form",
     candidateName: "Candidate's Full Name",
     candidateNamePh: "e.g. Priya Kiritbhai Patel",
+    nameEnglishLbl: "Name (type in English)",
+    nameEnglishPh: "e.g. Priya Patel",
     gender: "Gender",
     genderPh: "Select Gender",
     age: "Age",
@@ -794,6 +938,10 @@ const STRINGS = {
     occupationPh: "e.g. Private Job",
     city: "City / Village",
     cityPh: "e.g. Porbandar",
+    stateLbl: "State",
+    statePh: "Select State",
+    areaLbl: "Area",
+    areaPh: "Select Area",
     maritalStatus: "Marital Status",
     maritalStatusPh: "Select Marital Status",
     siblings: "Siblings Detail (Optional)",
@@ -827,7 +975,7 @@ const STRINGS = {
     maritalStatusLbl: "Marital Status",
     siblingsLbl: "Siblings",
     sendInterestBtn: "💌 Send Interest",
-    interestSentToast: "💌 Interest sent! (Saved in Firestore)",
+    interestSentToast: "💌 Interest sent!",
     profileNotFound: "Profile not found",
     // My Profiles actions/status
     editBtn: "Edit",
@@ -849,6 +997,8 @@ const STRINGS = {
     logoutBtn: "🚪 Logout",
     loadingText: "Loading...",
     settingsNav: "Settings",
+    termsMenuLabel: "📄 Terms & Privacy",
+    termsScreenTitle: "📄 Terms & Privacy Policy",
     navMyProfiles: "My Profiles",
     appName: "Sagar Sambandh",
     searchPlaceholder: "Search by name, city, occupation...",
@@ -861,13 +1011,20 @@ const STRINGS = {
     mobileNumberLbl: "Mobile Number",
     loginBtnExisting: "Login (already have an Account) →",
     signupBtnNew: "Create New Account →",
-    otpTestNote: "(Testing phase: Mobile + PIN — Real SMS OTP is temporarily disabled)",
     mobileInvalid: "Enter a valid 10-digit mobile number",
     pinLoginTitle: "🔐 Enter PIN",
     pinLoginSub: "Your 4-digit PIN for +91 {mobile}",
     pinLoginBtn: "Login →",
     pinLoggingIn: "Logging in...",
     changeNumberBtn: "← Change Number",
+    forgotPinLink: "Forgot PIN?",
+    sendingOtp: "Sending OTP...",
+    otpSendFailed: "Could not send OTP — please try again",
+    otpVerifyTitle: "📱 Enter OTP",
+    otpVerifySub: "We sent a 6-digit code to +91 {mobile}",
+    otpVerifyBtn: "Verify →",
+    otpVerifying: "Verifying...",
+    otpInvalid: "OTP is incorrect or expired",
     signupTitle: "🙏 New Account",
     signupSub: "+91 {mobile} — a few details and a 4-digit PIN",
     fullNameLbl: "Full Name",
@@ -876,6 +1033,11 @@ const STRINGS = {
     villagePh: "e.g. Porbandar",
     pinSetLbl: "Set a 4-digit PIN (for daily login)",
     pinReenterLbl: "Re-enter PIN",
+    newPinTitle: "🔑 Set New PIN",
+    newPinSub: "New 4-digit PIN for +91 {mobile}",
+    newPinSetBtn: "Set PIN →",
+    newPinSetting: "Setting PIN...",
+    newPinSuccessToast: "✓ New PIN set!",
     declarationText: "I confirm that I am a member of the <b>Shri Porbandar Kharva Samaj</b> and the information provided is accurate.",
     createAccountBtn: "Create Account →",
     creatingAccountText: "Creating account...",
@@ -920,7 +1082,9 @@ function render(){
   else if(state.screen==="checking") renderChecking();
   else if(state.screen==="mobileEntry") renderMobileEntry();
   else if(state.screen==="loginPin") renderLoginPin();
+  else if(state.screen==="otpVerify") renderOtpVerify();
   else if(state.screen==="signupDetails") renderSignupDetails();
+  else if(state.screen==="setNewPin") renderSetNewPin();
   else if(state.screen==="home") renderHome();
   else if(state.screen==="detail") renderDetail();
   else if(state.screen==="myProfiles") renderMyProfiles();
@@ -930,12 +1094,84 @@ function render(){
   else if(state.screen==="formReview") renderFormReview();
   else if(state.screen==="formDocs") renderFormDocs();
   else if(state.screen==="settings") renderSettings();
+  else if(state.screen==="terms") renderTerms();
+}
+
+// XSS-safety helper — every piece of user-supplied text (candidate name, city,
+// occupation, admin action targetName, etc.) that gets inserted into an
+// innerHTML template MUST go through this first. Without it, a candidate
+// could submit a name like `<img src=x onerror=alert(1)>` and have it
+// execute as real HTML/script for anyone who later views that card (stored
+// XSS) — including an Admin reviewing the profile.
+function escapeHtml(str){
+  if (str === null || str === undefined) return "";
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 }
 
 function showToast(msg){
   const t=document.createElement("div"); t.className="toast"; t.textContent=msg;
   document.body.appendChild(t);
   setTimeout(()=>t.remove(),2600);
+}
+
+// Inline field-error helpers — highlights the actual invalid field's .input-wrap
+// (or .otp-boxes container) with a red border, on top of the existing error
+// text below the form. Auto-clears the highlight the moment the person edits
+// that field, so the red border doesn't linger after they've fixed it.
+function setFieldError(inputId, hasError){
+  const input = document.getElementById(inputId);
+  if(!input) return;
+  let wrap = input.closest(".input-wrap") || input.closest(".otp-boxes");
+  if(!wrap && input.tagName === "SELECT"){
+    // select2 injects a sibling .select2-container right after the original <select>
+    const s2 = input.nextElementSibling;
+    wrap = (s2 && s2.classList.contains("select2-container")) ? s2.querySelector(".select2-selection--single") : input;
+  }
+  wrap = wrap || input;
+  if(hasError){
+    wrap.classList.add("field-error");
+    const clear = ()=>{ wrap.classList.remove("field-error"); input.removeEventListener("input", clear); input.removeEventListener("change", clear); };
+    input.addEventListener("input", clear);
+    input.addEventListener("change", clear);
+  } else {
+    wrap.classList.remove("field-error");
+  }
+}
+function markFieldErrors(ids){ ids.forEach(id=>setFieldError(id, true)); }
+function clearFieldErrors(ids){ ids.forEach(id=>setFieldError(id, false)); }
+
+// Loading skeleton — card-shaped shimmer placeholders instead of a bare
+// "Load થઈ રહ્યું છે..." text line, for list screens (Home/MyProfiles/Interest).
+function skeletonCards(n){
+  return Array.from({length:n||3}).map(()=>`
+    <div class="skel-card">
+      <div class="skel-photo"></div>
+      <div class="skel-body">
+        <div class="skel-line w60"></div>
+        <div class="skel-line w40"></div>
+        <div class="skel-line w80"></div>
+      </div>
+    </div>
+  `).join("");
+}
+
+// Upload validation — the browser's `accept` attribute on a file input is
+// only a hint (a person can bypass it and pick any file from "All Files"),
+// so it's not real protection. This is the actual check, run before every
+// upload, against oversized or wrong-type files reaching Storage.
+function validateUploadFile(file, { maxMB, allowedTypes, label }){
+  if (!allowedTypes.some(t => file.type === t || (t.endsWith("/*") && file.type.startsWith(t.slice(0,-1))))) {
+    return `${label} ફક્ત ${allowedTypes.join(", ")} format માં જ upload કરી શકાય`;
+  }
+  if (file.size > maxMB * 1024 * 1024) {
+    return `${label} ${maxMB}MB થી નાનો હોવો જોઈએ`;
+  }
+  return null;
 }
 
 function renderChooseLanguage(){
@@ -1014,20 +1250,38 @@ function renderMobileEntry(){
       <div id="f-err"></div>
       <button class="btn btn-primary" id="f-login">${t('loginBtnExisting')}</button>
       <button class="btn btn-ghost" id="f-signup">${t('signupBtnNew')}</button>
-      <div class="center-note" style="margin-top:12px; opacity:0.7;">${t('otpTestNote')}</div>
     </div>
   `;
   document.getElementById("f-mobile").addEventListener("input", (e)=>{ e.target.value = e.target.value.replace(/\D/g,'').slice(0,10); });
 
-  function proceed(target){
+  function readMobile(){
     const mobile=document.getElementById("f-mobile").value.trim();
     const errEl=document.getElementById("f-err"); errEl.innerHTML="";
-    if(mobile.length!==10){ errEl.innerHTML = `<div class="err-text">${t('mobileInvalid')}</div>`; return; }
-    state.pendingMobile = mobile;
-    state.screen = target; render();
+    if(mobile.length!==10){ errEl.innerHTML = `<div class="err-text">${t('mobileInvalid')}</div>`; markFieldErrors(["f-mobile"]); return null; }
+    clearFieldErrors(["f-mobile"]);
+    return mobile;
   }
-  document.getElementById("f-login").addEventListener("click", ()=> proceed("loginPin"));
-  document.getElementById("f-signup").addEventListener("click", ()=> proceed("signupDetails"));
+  // Login: no OTP needed for daily use — straight to PIN entry.
+  document.getElementById("f-login").addEventListener("click", ()=>{
+    const mobile = readMobile(); if(!mobile) return;
+    state.pendingMobile = mobile;
+    state.screen = "loginPin"; render();
+  });
+  // Signup: must prove phone ownership with a real OTP first.
+  document.getElementById("f-signup").addEventListener("click", async (e)=>{
+    const mobile = readMobile(); if(!mobile) return;
+    const errEl=document.getElementById("f-err");
+    e.target.disabled=true; e.target.textContent=t('sendingOtp');
+    try{
+      await dataService.sendOtp(mobile);
+      state.pendingMobile = mobile;
+      state.otpPurpose = "signup";
+      state.screen = "otpVerify"; render();
+    }catch(err){
+      e.target.disabled=false; e.target.textContent=t('signupBtnNew');
+      errEl.innerHTML = `<div class="err-text">${t('otpSendFailed')} (${err.message})</div>`;
+    }
+  });
 }
 
 function renderLoginPin(){
@@ -1038,11 +1292,15 @@ function renderLoginPin(){
     </div>
     <div class="content">
       <div class="otp-boxes">
-        ${[0,1,2,3].map(i=>`<input class="otp-box" maxlength="1" inputmode="numeric" data-pin="${i}">`).join("")}
+        ${[0,1,2,3].map(i=>`<input class="otp-box" type="password" maxlength="1" inputmode="numeric" data-pin="${i}">`).join("")}
       </div>
       <div id="pin-err"></div>
       <button class="btn btn-primary" id="pin-submit" disabled>${t('pinLoginBtn')}</button>
-      <div class="center-note"><b style="color:var(--primary);cursor:pointer;" id="pin-back">${t('changeNumberBtn')}</b></div>
+      <div class="center-note">
+        <b style="color:var(--primary);cursor:pointer;" id="pin-forgot">${t('forgotPinLink')}</b>
+        &nbsp;·&nbsp;
+        <b style="color:var(--primary);cursor:pointer;" id="pin-back">${t('changeNumberBtn')}</b>
+      </div>
     </div>
   `;
   const boxes = Array.from(document.querySelectorAll("[data-pin]"));
@@ -1056,6 +1314,17 @@ function renderLoginPin(){
     });
   });
   document.getElementById("pin-back").addEventListener("click", ()=>{ state.screen="mobileEntry"; render(); });
+  document.getElementById("pin-forgot").addEventListener("click", async (e)=>{
+    e.target.style.opacity=0.6; e.target.textContent=t('sendingOtp');
+    try{
+      await dataService.sendOtp(state.pendingMobile);
+      state.otpPurpose = "forgotPin";
+      state.screen = "otpVerify"; render();
+    }catch(err){
+      e.target.style.opacity=1; e.target.textContent=t('forgotPinLink');
+      document.getElementById("pin-err").innerHTML = `<div class="err-text">${t('otpSendFailed')} (${err.message})</div>`;
+    }
+  });
   submitBtn.addEventListener("click", async (e)=>{
     const pin = boxes.map(b=>b.value).join("");
     const errEl=document.getElementById("pin-err"); errEl.innerHTML="";
@@ -1069,6 +1338,71 @@ function renderLoginPin(){
       boxes.forEach(b=>b.value="");
       if(boxes[0]) boxes[0].focus();
       errEl.innerHTML = `<div class="err-text">${err.message}</div>`;
+      const otpWrap = document.querySelector(".otp-boxes");
+      otpWrap.classList.add("field-error");
+      const clearOtpErr = ()=>{ otpWrap.classList.remove("field-error"); boxes.forEach(b=>b.removeEventListener("input", clearOtpErr)); };
+      boxes.forEach(b=>b.addEventListener("input", clearOtpErr));
+    }
+  });
+}
+
+// Shared OTP-entry screen for both Signup and Forgot-PIN — which flow it's
+// for is read from state.otpPurpose, set by the screen that sent the OTP.
+function renderOtpVerify(){
+  app.innerHTML = `
+    <div class="header">
+      <div class="header-title">${t('otpVerifyTitle')}</div>
+      <div class="header-sub">${t('otpVerifySub').replace('{mobile}', state.pendingMobile)}</div>
+    </div>
+    <div class="content">
+      <div class="otp-boxes">
+        ${[0,1,2,3,4,5].map(i=>`<input class="otp-box" maxlength="1" inputmode="numeric" data-otp="${i}">`).join("")}
+      </div>
+      <div id="otp-err"></div>
+      <button class="btn btn-primary" id="otp-submit" disabled>${t('otpVerifyBtn')}</button>
+      <div class="center-note"><b style="color:var(--primary);cursor:pointer;" id="otp-back">${t('changeNumberBtn')}</b></div>
+    </div>
+  `;
+  const boxes = Array.from(document.querySelectorAll("[data-otp]"));
+  const submitBtn = document.getElementById("otp-submit");
+  function checkFull(){ submitBtn.disabled = boxes.some(b=>!b.value); }
+  boxes.forEach((b,i)=>{
+    b.addEventListener("input", ()=>{
+      b.value = b.value.replace(/\D/g,'').slice(0,1);
+      if(b.value && boxes[i+1]) boxes[i+1].focus();
+      checkFull();
+    });
+  });
+  document.getElementById("otp-back").addEventListener("click", ()=>{ state.screen="mobileEntry"; render(); });
+  submitBtn.addEventListener("click", async (e)=>{
+    const code = boxes.map(b=>b.value).join("");
+    const errEl=document.getElementById("otp-err"); errEl.innerHTML="";
+    e.target.disabled=true; e.target.textContent=t('otpVerifying');
+    try{
+      const result = await dataService.confirmOtp(code);
+      if(state.otpPurpose === "forgotPin"){
+        if(result.isNewUser){
+          // Forgot-PIN was attempted for a number with no account yet.
+          throw new Error("આ Mobile Number થી કોઈ account નથી");
+        }
+        state.otpVerifiedProfile = { id: result.id, name: result.name, mobile: result.mobile, village: result.village };
+        state.screen = "setNewPin"; render();
+      } else {
+        // signup
+        if(!result.isNewUser){
+          // This number already has an account — just log them straight in.
+          state.user = { id: result.id, name: result.name, mobile: result.mobile, village: result.village };
+          state.screen = "home"; render();
+          return;
+        }
+        state.otpVerifiedUid = result.id;
+        state.screen = "signupDetails"; render();
+      }
+    }catch(err){
+      e.target.disabled=false; e.target.textContent=t('otpVerifyBtn');
+      boxes.forEach(b=>b.value="");
+      if(boxes[0]) boxes[0].focus();
+      errEl.innerHTML = `<div class="err-text">${t('otpInvalid')}</div>`;
     }
   });
 }
@@ -1085,15 +1419,14 @@ function renderSignupDetails(){
       <div class="field"><label>${t('pinSetLbl')}</label><div class="input-wrap"><input id="cp-pin" type="password" inputmode="numeric" maxlength="4" placeholder="••••"></div></div>
       <div class="field"><label>${t('pinReenterLbl')}</label><div class="input-wrap"><input id="cp-pin2" type="password" inputmode="numeric" maxlength="4" placeholder="••••"></div></div>
       <div class="declaration">
-        <input type="checkbox" id="cp-agree" checked>
-        <p>${t('declarationText')}</p>
+        <input type="checkbox" id="cp-agree">
+        <p>${t('declarationText')} <span id="cp-terms-link" style="color:var(--primary);text-decoration:underline;cursor:pointer;font-weight:600;">${t('termsMenuLabel')}</span></p>
       </div>
       <div id="cp-err"></div>
       <button class="btn btn-primary" id="cp-submit">${t('createAccountBtn')}</button>
-      <div class="center-note"><b style="color:var(--primary);cursor:pointer;" id="cp-back">${t('changeNumberBtn')}</b></div>
     </div>
   `;
-  document.getElementById("cp-back").addEventListener("click", ()=>{ state.screen="mobileEntry"; render(); });
+  document.getElementById("cp-terms-link").addEventListener("click", ()=>{ state.termsReturnScreen = "signupDetails"; state.screen = "terms"; render(); });
   ["cp-pin","cp-pin2"].forEach(id=>{
     document.getElementById(id).addEventListener("input", (e)=>{ e.target.value = e.target.value.replace(/\D/g,'').slice(0,4); });
   });
@@ -1104,15 +1437,59 @@ function renderSignupDetails(){
     const pin2=document.getElementById("cp-pin2").value.trim();
     const agreed=document.getElementById("cp-agree").checked;
     const errEl=document.getElementById("cp-err"); errEl.innerHTML="";
-    if(!name || !village || !agreed){ errEl.innerHTML = `<div class="err-text">${t('fillAllFieldsSimple')}</div>`; return; }
-    if(pin.length!==4){ errEl.innerHTML = `<div class="err-text">${t('pinMustBe4')}</div>`; return; }
-    if(pin!==pin2){ errEl.innerHTML = `<div class="err-text">${t('pinsDontMatch')}</div>`; return; }
+    clearFieldErrors(["cp-name","cp-village","cp-pin","cp-pin2"]);
+    if(!name || !village || !agreed){
+      errEl.innerHTML = `<div class="err-text">${t('fillAllFieldsSimple')}</div>`;
+      markFieldErrors([!name&&"cp-name", !village&&"cp-village"].filter(Boolean));
+      return;
+    }
+    if(pin.length!==4){ errEl.innerHTML = `<div class="err-text">${t('pinMustBe4')}</div>`; markFieldErrors(["cp-pin"]); return; }
+    if(pin!==pin2){ errEl.innerHTML = `<div class="err-text">${t('pinsDontMatch')}</div>`; markFieldErrors(["cp-pin","cp-pin2"]); return; }
     e.target.disabled=true; e.target.textContent=t('creatingAccountText');
     try{
-      const user = await dataService.signup(state.pendingMobile, pin, name, village);
-      state.user = user; state.screen="home"; render();
+      const user = await dataService.completeSignup(state.otpVerifiedUid, state.pendingMobile, pin, name, village);
+      state.user = user; state.otpVerifiedUid = null; state.screen = "home"; render();
     }catch(err){
       e.target.disabled=false; e.target.textContent=t('createAccountBtn');
+      errEl.innerHTML = `<div class="err-text">${err.message}</div>`;
+    }
+  });
+}
+
+// Forgot-PIN's final step — OTP already verified (state.otpVerifiedProfile
+// holds the account's existing name/mobile/village), just needs a new PIN.
+function renderSetNewPin(){
+  const profile = state.otpVerifiedProfile;
+  app.innerHTML = `
+    <div class="header">
+      <div class="header-title">${t('newPinTitle')}</div>
+      <div class="header-sub">${t('newPinSub').replace('{mobile}', state.pendingMobile)}</div>
+    </div>
+    <div class="content">
+      <div class="field"><label>${t('pinSetLbl')}</label><div class="input-wrap"><input id="np-pin" type="password" inputmode="numeric" maxlength="4" placeholder="••••"></div></div>
+      <div class="field"><label>${t('pinReenterLbl')}</label><div class="input-wrap"><input id="np-pin2" type="password" inputmode="numeric" maxlength="4" placeholder="••••"></div></div>
+      <div id="np-err"></div>
+      <button class="btn btn-primary" id="np-submit">${t('newPinSetBtn')}</button>
+    </div>
+  `;
+  ["np-pin","np-pin2"].forEach(id=>{
+    document.getElementById(id).addEventListener("input", (e)=>{ e.target.value = e.target.value.replace(/\D/g,'').slice(0,4); });
+  });
+  document.getElementById("np-submit").addEventListener("click", async (e)=>{
+    const pin=document.getElementById("np-pin").value.trim();
+    const pin2=document.getElementById("np-pin2").value.trim();
+    const errEl=document.getElementById("np-err"); errEl.innerHTML="";
+    clearFieldErrors(["np-pin","np-pin2"]);
+    if(pin.length!==4){ errEl.innerHTML = `<div class="err-text">${t('pinMustBe4')}</div>`; markFieldErrors(["np-pin"]); return; }
+    if(pin!==pin2){ errEl.innerHTML = `<div class="err-text">${t('pinsDontMatch')}</div>`; markFieldErrors(["np-pin","np-pin2"]); return; }
+    e.target.disabled=true; e.target.textContent=t('newPinSetting');
+    try{
+      await dataService.resetPin(state.pendingMobile, pin);
+      state.user = profile; state.otpVerifiedProfile = null;
+      showToast(t('newPinSuccessToast'));
+      state.screen = "home"; render();
+    }catch(err){
+      e.target.disabled=false; e.target.textContent=t('newPinSetBtn');
       errEl.innerHTML = `<div class="err-text">${err.message}</div>`;
     }
   });
@@ -1138,7 +1515,7 @@ function updateInterestBadge(){
 
 function renderHome(){
   app.innerHTML = `
-    <div class="header" style="position:relative;padding:24px 20px 16px;">
+    <div class="header" style="position:relative;padding:20px 20px 14px;">
       <div style="display:flex;align-items:center;justify-content:space-between;">
         <div style="display:flex;align-items:center;gap:8px;">
           <div style="width:26px;height:26px;border-radius:8px;background:rgba(255,255,255,0.18);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
@@ -1146,28 +1523,26 @@ function renderHome(){
           </div>
           <div style="font-size:15px;font-weight:800;">${t('appName')}</div>
         </div>
-        <div style="display:flex;align-items:center;gap:8px;">
-          <div style="display:flex;background:rgba(255,255,255,0.18);border-radius:16px;padding:2px;font-size:10px;font-weight:700;">
-            <span data-lang-btn="gu" style="padding:5px 9px;border-radius:14px;cursor:pointer;${state.lang==='gu'?'background:#fff;color:var(--navy);':'color:rgba(255,255,255,0.85);'}">ગુજ</span>
-            <span data-lang-btn="en" style="padding:5px 9px;border-radius:14px;cursor:pointer;${state.lang==='en'?'background:#fff;color:var(--navy);':'color:rgba(255,255,255,0.85);'}">EN</span>
-          </div>
-          <button id="hdr-fav-btn" style="position:relative;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.18);border:none;display:flex;align-items:center;justify-content:center;color:#fff;cursor:pointer;" aria-label="Favorites">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
-            <span id="hdr-fav-count" style="display:none;position:absolute;top:-3px;right:-3px;background:#C9A227;color:#4A1220;font-size:8px;font-weight:800;border-radius:8px;padding:1px 5px;min-width:14px;text-align:center;"></span>
-          </button>
+        <div style="display:flex;background:rgba(255,255,255,0.18);border-radius:16px;padding:2px;font-size:10px;font-weight:700;">
+          <span data-lang-btn="gu" style="padding:5px 9px;border-radius:14px;cursor:pointer;${state.lang==='gu'?'background:#fff;color:var(--navy);':'color:rgba(255,255,255,0.85);'}">ગુજ</span>
+          <span data-lang-btn="en" style="padding:5px 9px;border-radius:14px;cursor:pointer;${state.lang==='en'?'background:#fff;color:var(--navy);':'color:rgba(255,255,255,0.85);'}">EN</span>
         </div>
       </div>
 
-      <div style="margin-top:12px;display:flex;gap:9px;">
-        <div class="search-bar" style="flex:1;margin-top:0;"><span>🔍</span><input id="home-search" placeholder="${t('searchPlaceholder')}" style="border:none;outline:none;background:transparent;font-family:inherit;font-size:13px;width:100%;color:var(--text-dark);"></div>
-        <button id="hdr-filters-btn" style="flex-shrink:0;width:44px;height:44px;border-radius:14px;background:var(--accent);border:none;display:flex;align-items:center;justify-content:center;position:relative;cursor:pointer;" aria-label="Filters">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
-          <span id="hdr-filters-count" style="display:none;position:absolute;top:-4px;right:-4px;width:16px;height:16px;border-radius:50%;background:var(--navy);color:#fff;font-size:9px;font-weight:800;align-items:center;justify-content:center;"></span>
+      <div style="margin-top:10px;display:flex;gap:9px;align-items:center;">
+        <button id="hdr-filters-btn" style="flex-shrink:0;width:44px;height:44px;border-radius:14px;background:var(--navy);border:none;display:flex;align-items:center;justify-content:center;position:relative;cursor:pointer;" aria-label="Filters">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
+          <span id="hdr-filters-count" style="display:none;position:absolute;top:-4px;right:-4px;width:16px;height:16px;border-radius:50%;background:var(--accent);color:var(--navy);font-size:9px;font-weight:800;align-items:center;justify-content:center;"></span>
+        </button>
+        <div class="search-bar" style="flex:1;height:44px;box-sizing:border-box;margin-top:0;padding:0 14px;"><span>🔍</span><input id="home-search" placeholder="${t('searchPlaceholder')}" style="border:none;outline:none;background:transparent;font-family:inherit;font-size:13px;width:100%;color:var(--text-dark);"></div>
+        <button id="hdr-fav-btn" style="flex-shrink:0;width:44px;height:44px;border-radius:14px;background:var(--navy);border:none;display:flex;align-items:center;justify-content:center;position:relative;cursor:pointer;" aria-label="Favorites">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
+          <span id="hdr-fav-count" style="display:none;position:absolute;top:-4px;right:-4px;width:16px;height:16px;border-radius:50%;background:var(--accent);color:var(--navy);font-size:9px;font-weight:800;align-items:center;justify-content:center;"></span>
         </button>
       </div>
     </div>
 
-    <div class="content" id="home-content"><div class="loading">Firestore માંથી profiles load થઈ રહ્યા છે...</div></div>
+    <div class="content" id="home-content">${skeletonCards(4)}</div>
     ${bottomNavHtml("home")}
 
     <div id="filters-overlay" style="display:none;position:fixed;inset:0;background:rgba(43,14,20,0.45);z-index:100;">
@@ -1180,7 +1555,7 @@ function renderHome(){
 
         <div style="font-size:11px;font-weight:700;color:var(--text-mid);margin-bottom:7px;">પ્રોફાઇલ</div>
         <div style="display:flex;gap:6px;background:var(--ice);padding:4px;border-radius:12px;margin-bottom:18px;">
-          <div class="fp-gender seg active" data-gender="" style="flex:1;text-align:center;padding:9px 0;font-size:12px;font-weight:700;border-radius:10px;cursor:pointer;color:var(--primary);">બધા</div>
+          <div class="fp-gender seg active" data-gender="" style="flex:1;text-align:center;padding:9px 0;font-size:12px;font-weight:700;border-radius:10px;cursor:pointer;background:var(--navy);color:#fff;">બધા</div>
           <div class="fp-gender seg" data-gender="male" style="flex:1;text-align:center;padding:9px 0;font-size:12px;font-weight:700;border-radius:10px;cursor:pointer;color:var(--primary);">યુવક</div>
           <div class="fp-gender seg" data-gender="female" style="flex:1;text-align:center;padding:9px 0;font-size:12px;font-weight:700;border-radius:10px;cursor:pointer;color:var(--primary);">યુવતી</div>
         </div>
@@ -1193,13 +1568,13 @@ function renderHome(){
         </div>
 
         <div style="font-size:11px;font-weight:700;color:var(--text-mid);margin-bottom:8px;">રાશી</div>
-        <div id="fp-rashi" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px;">
-          ${["મેષ","વૃષભ","મિથુન","કર્ક","સિંહ","કન્યા","તુલા","વૃશ્ચિક","ધન","મકર","કુંભ","મીન"].map(r=>`<div class="fp-rashi-chip" data-rashi="${r}" style="font-size:11px;font-weight:600;color:var(--primary);background:var(--ice);border:1px solid var(--sky);padding:7px 12px;border-radius:16px;cursor:pointer;">${r}</div>`).join("")}
+        <div id="fp-rashi" style="display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-bottom:18px;">
+          ${["મેષ","વૃષભ","મિથુન","કર્ક","સિંહ","કન્યા","તુલા","વૃશ્ચિક","ધન","મકર","કુંભ","મીન"].map(r=>`<div class="fp-rashi-chip" data-rashi="${r}" style="font-size:11px;font-weight:600;color:var(--primary);background:var(--ice);border:1px solid var(--sky);padding:7px 4px;border-radius:16px;cursor:pointer;text-align:center;">${r}</div>`).join("")}
         </div>
 
         <div style="font-size:11px;font-weight:700;color:var(--text-mid);margin-bottom:8px;">વિસ્તાર પ્રમાણે</div>
         <div id="fp-area" style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:18px;">
-          ${["પોરબંદર","વેરાવળ","માંગરોળ","ઓખા","મુંદ્રા","રાજકોટ"].map(a=>`<div class="fp-area-chip" data-area="${a}" style="font-size:11px;font-weight:600;color:var(--primary);background:var(--ice);border:1px solid var(--sky);padding:8px 13px;border-radius:16px;cursor:pointer;">${a}</div>`).join("")}
+          ${AREAS_DATA.map(a=>a.gu).map(a=>`<div class="fp-area-chip" data-area="${a}" style="font-size:11px;font-weight:600;color:var(--primary);background:var(--ice);border:1px solid var(--sky);padding:8px 13px;border-radius:16px;cursor:pointer;">${a}</div>`).join("")}
         </div>
 
         <label style="display:flex;align-items:center;gap:9px;margin-bottom:20px;cursor:pointer;">
@@ -1222,23 +1597,42 @@ function renderHome(){
       else if(k==="profile"){ state.screen="myProfiles"; render(); }
       else if(k==="interest"){ state.screen="interest"; render(); }
       else if(k==="settings"){ state.screen="settings"; render(); }
-      else showToast("આ screen આગળના phase માં બનશે");
+      else showToast("આ સ્ક્રીન આગળના ફેઝ માં બનશે");
     });
   });
   updateInterestBadge();
 
-  let allProfiles = [];
+  let allProfiles = [];       // accumulated across loaded pages
+  let lastDoc = null;         // Firestore cursor for the next page
+  let hasMore = true;
+  let isLoadingMore = false;
+  let serverGender = "";      // gender filter currently reflected in the query (server-side)
+  let myRefByGender = { male: null, female: null };
+  let favSet = new Set();
+
   let activeGender = "";
   let sortByMatch = false;
   let favOnly = false;
   let ageMin = null, ageMax = null;
   let selectedRashis = new Set();
   let selectedAreas = new Set();
+  let searchAllResults = null; // set when "બધામાં શોધો" has been used for the current query
+
+  function annotate(list){
+    return list.map(p => ({ ...p, favorite: favSet.has(p.id) }));
+  }
 
   function paintList(list){
     const el = document.getElementById("home-content");
     if(!el) return;
-    if(list.length===0){ el.innerHTML = `<div class="empty">કોઈ profile ના મળી</div>`; return; }
+    if(list.length===0){
+      el.innerHTML = `
+        <div class="empty">કોઈ profile ના મળી</div>
+        ${searchAllBtnHtml()}
+      `;
+      attachSearchAllBtn();
+      return;
+    }
     el.innerHTML = list.map(p=>{
       const showPhoto = p.photoVisible !== false && primaryPhotoURL(p); // field ના હોય (જૂના profiles) તો Visible ગણવું
       const av = avatarStyle(p);
@@ -1246,13 +1640,13 @@ function renderHome(){
       <div class="card" data-open="${p.id}">
         <div class="card-photo" style="background:${av.color};${showPhoto?`background-image:url('${primaryPhotoURL(p)}');background-size:cover;background-position:center;`:''}">${showPhoto?'':av.emoji}<div class="verified-tag">✓ VERIFIED</div><div class="fav-btn" data-fav-toggle="${p.id}" aria-label="${p.favorite?'Remove from favorites':'Add to favorites'}"><div class="fav-btn-visual">${p.favorite?'❤️':'🤍'}</div></div></div>
         <div class="card-body">
-          <div class="card-name">${p.name}</div>
-          <div class="card-sub">${p.age} ${t('yearsUnit')} · ${p.education} · ${p.city}</div>
-          ${p.matchScore!=null ? `<div class="stars">${"★".repeat(Math.round(p.matchScore))}${"☆".repeat(5-Math.round(p.matchScore))} <b>${p.matchScore}/5 Match</b></div>` : `<div class="stars" style="color:var(--text-mid);font-size:10px;">પ્રોફાઇલ બનાવો, Match Score જુઓ</div>`}
+          <div class="card-name">${escapeHtml(p.name)}</div>
+          <div class="card-sub">${p.age} ${t('yearsUnit')} · ${escapeHtml(p.education)} · ${escapeHtml(p.city)}</div>
+          ${p.matchScore!=null ? `<div class="stars">${"★".repeat(Math.round(p.matchScore))}${"☆".repeat(5-Math.round(p.matchScore))} <b>${p.matchScore}/5 મેચ</b></div>` : `<div class="stars" style="color:var(--text-mid);font-size:10px;">પ્રોફાઇલ બનાવો, મેચ સ્કોર જુઓ</div>`}
         </div>
       </div>
     `;
-    }).join("");
+    }).join("") + (isCurrentlySearching() ? searchAllBtnHtml() : "") + (hasMore && !isCurrentlySearching() ? `<div class="loading" id="infinite-loading" style="padding:16px;">વધુ load થઈ રહ્યા છે...</div>` : "");
     document.querySelectorAll("[data-open]").forEach(card=>{
       card.addEventListener("click", ()=>{ state.openProfileId = card.getAttribute("data-open"); state.screen="detail"; render(); });
     });
@@ -1261,16 +1655,46 @@ function renderHome(){
         e.stopPropagation();
         if(!state.user){ return; }
         const id = btn.getAttribute("data-fav-toggle");
-        const p = allProfiles.find(x=>x.id===id);
+        const p = allProfiles.find(x=>x.id===id) || (searchAllResults||[]).find(x=>x.id===id);
+        if(!p) return;
         const newVal = !p.favorite;
         const visual = btn.querySelector(".fav-btn-visual");
         p.favorite = newVal; // optimistic UI — તરત જ heart બદલાય
+        if(newVal) favSet.add(id); else favSet.delete(id);
         visual.textContent = newVal ? '❤️' : '🤍';
         try{ await dataService.toggleFavorite(state.user.id, id, newVal); }
-        catch(err){ p.favorite = !newVal; visual.textContent = !newVal ? '❤️' : '🤍'; showToast("Error: "+err.message); }
+        catch(err){ p.favorite = !newVal; if(!newVal) favSet.add(id); else favSet.delete(id); visual.textContent = !newVal ? '❤️' : '🤍'; showToast("Error: "+err.message); }
         updateFavCount();
-        if(favOnly) applyFilters(); // favorites-only view માં હોય તો remove થયેલું card તરત hide થાય
+        if(favOnly) applyFilters();
       });
+    });
+    if(isCurrentlySearching()) attachSearchAllBtn();
+  }
+
+  function isCurrentlySearching(){
+    return document.getElementById("home-search") && document.getElementById("home-search").value.trim().length > 0;
+  }
+
+  // "બધામાં શોધો" — search box only checks records already loaded via
+  // infinite-scroll by default (fast, no extra reads). This button does a
+  // one-time full fetch (matching the active gender filter, if any) so a
+  // search can reach candidates that haven't scrolled into view yet.
+  function searchAllBtnHtml(){
+    if(searchAllResults !== null) return ""; // already used for this query
+    const q = document.getElementById("home-search") ? document.getElementById("home-search").value.trim() : "";
+    if(!q) return "";
+    return `<div id="search-all-btn" style="text-align:center;padding:14px;color:var(--primary);font-weight:700;font-size:12.5px;cursor:pointer;">🔍 બધા profiles માં "${escapeHtml(q)}" શોધો</div>`;
+  }
+  function attachSearchAllBtn(){
+    const btn = document.getElementById("search-all-btn");
+    if(!btn) return;
+    btn.addEventListener("click", async ()=>{
+      btn.textContent = "શોધી રહ્યા છીએ...";
+      try{
+        const full = await dataService.searchAllProfiles(state.user?.id, { gender: serverGender||null, myRefByGender, favSet });
+        searchAllResults = full;
+        applyFilters();
+      }catch(err){ showToast("Error: "+err.message); }
     });
   }
 
@@ -1291,10 +1715,25 @@ function renderHome(){
     if(n>0){ badge.style.display="flex"; badge.textContent=n; } else { badge.style.display="none"; }
   }
 
-  function applyFilters(){
-    const q = document.getElementById("home-search").value.trim().toLowerCase();
-    let list = allProfiles;
-    if(activeGender) list = list.filter(p => p.gender === activeGender);
+  // Auto-load a few more pages if client-side filters (Age/Rashi/Area)
+  // leave very few results but more pages are known to exist — otherwise a
+  // filter could look "empty" just because the match hasn't scrolled into
+  // view yet. Capped so one filter tap can't trigger unbounded reads.
+  async function ensureEnoughForFilters(){
+    const AUTO_LOAD_CAP = 5;
+    let loads = 0;
+    while(hasMore && loads < AUTO_LOAD_CAP){
+      const filteredCount = clientFilter(allProfiles).length;
+      if(filteredCount >= 8) break; // enough to show a reasonable page
+      const gotMore = await loadNextPage();
+      if(!gotMore) break;
+      loads++;
+    }
+  }
+
+  function clientFilter(source){
+    const q = document.getElementById("home-search") ? document.getElementById("home-search").value.trim().toLowerCase() : "";
+    let list = source;
     if(favOnly) list = list.filter(p => p.favorite);
     if(ageMin) list = list.filter(p => (p.age||0) >= ageMin);
     if(ageMax) list = list.filter(p => (p.age||0) <= ageMax);
@@ -1308,10 +1747,53 @@ function renderHome(){
         (p.education||"").toLowerCase().includes(q)
       );
     }
+    return list;
+  }
+
+  async function applyFilters(){
+    const source = searchAllResults !== null ? searchAllResults : allProfiles;
+    if(searchAllResults === null) await ensureEnoughForFilters();
+    let list = clientFilter(searchAllResults !== null ? searchAllResults : allProfiles);
     if(sortByMatch) list = [...list].sort((a,b) => (b.matchScore||0) - (a.matchScore||0));
     paintList(list);
     updateFiltersCount();
   }
+
+  // Fetches the next page (server-side gender filter applied if active),
+  // annotates with match-score/favorite, appends to allProfiles. Returns
+  // true if any new records were added.
+  async function loadNextPage(){
+    if(isLoadingMore || !hasMore) return false;
+    isLoadingMore = true;
+    try{
+      const page = await dataService.getProfilesPage(state.user?.id, {
+        gender: serverGender || null, lastDoc, pageSize: 20, myRefByGender, favSet,
+      });
+      allProfiles = allProfiles.concat(page.profiles);
+      lastDoc = page.lastDoc;
+      hasMore = page.hasMore;
+      return page.profiles.length > 0;
+    }catch(err){
+      showToast("Error: "+err.message);
+      return false;
+    }finally{
+      isLoadingMore = false;
+    }
+  }
+
+  // Infinite scroll — window-level listener, replaced on every renderHome()
+  // call so repeated Home visits don't stack up duplicate listeners.
+  if(window._homeScrollHandler) window.removeEventListener("scroll", window._homeScrollHandler);
+  window._homeScrollHandler = async ()=>{
+    if(state.screen !== "home") return;
+    if(isCurrentlySearching()) return; // search mode doesn't auto-page
+    const nearBottom = (document.documentElement.scrollHeight - window.innerHeight - window.scrollY) < 400;
+    if(nearBottom && hasMore && !isLoadingMore){
+      const got = await loadNextPage();
+      if(got) applyFilters();
+    }
+  };
+  window.addEventListener("scroll", window._homeScrollHandler);
 
   document.getElementById("hdr-fav-btn").addEventListener("click", ()=>{
     favOnly = !favOnly;
@@ -1355,23 +1837,37 @@ function renderHome(){
     document.querySelectorAll(".fp-area-chip").forEach(c=>{ c.style.background="var(--ice)"; c.style.color="var(--primary)"; });
     document.getElementById("fp-sort-match").checked=false;
   });
-  document.getElementById("filters-apply").addEventListener("click", ()=>{
+  document.getElementById("filters-apply").addEventListener("click", async ()=>{
     ageMin = Number(document.getElementById("fp-age-min").value) || null;
     ageMax = Number(document.getElementById("fp-age-max").value) || null;
     sortByMatch = document.getElementById("fp-sort-match").checked;
     overlay.style.display="none";
+    if(activeGender !== serverGender){
+      // Gender is a server-side query field — changing it means the current
+      // page-cursor is no longer valid, so start over from page 1 with the
+      // new gender filter instead of trying to patch the loaded set.
+      serverGender = activeGender;
+      allProfiles = []; lastDoc = null; hasMore = true; searchAllResults = null;
+      document.getElementById("home-content").innerHTML = skeletonCards(4);
+      await loadNextPage();
+    }
     applyFilters();
   });
 
-  dataService.getProfiles(state.user?.id).then(profiles=>{
-    allProfiles = profiles;
-    paintList(allProfiles);
-    updateFavCount();
-    document.getElementById("home-search").addEventListener("input", applyFilters);
-  }).catch(err=>{
-    const el = document.getElementById("home-content");
-    if(el) el.innerHTML = `<div class="status-banner status-err">Data load ના થયું: ${err.message}</div>`;
-  });
+  document.getElementById("home-search").addEventListener("input", ()=>{ searchAllResults = null; applyFilters(); });
+
+  (async ()=>{
+    try{
+      myRefByGender = await dataService.getMyRefByGender(state.user?.id);
+      favSet = new Set(state.user?.id ? await dataService.getFavoriteIds(state.user.id) : []);
+      await loadNextPage();
+      updateFavCount();
+      applyFilters();
+    }catch(err){
+      const el = document.getElementById("home-content");
+      if(el) el.innerHTML = `<div class="status-banner status-err">Data load ના થયું: ${err.message}</div>`;
+    }
+  })();
 }
 
 function renderDetail(){
@@ -1386,23 +1882,24 @@ function renderDetail(){
       <div class="header" style="padding-bottom:20px;">
         <div class="back-row"><div class="back-btn" id="back-btn">←</div><div class="header-title">${t('profile')}</div><div class="back-btn" id="fav-toggle-btn" style="margin-left:auto;">${isFav?'❤️':'🤍'}</div></div>
         <div style="width:90px;height:90px;border-radius:22px;display:flex;align-items:center;justify-content:center;font-size:38px;margin:14px auto 0;border:3px solid rgba(255,255,255,0.4);background:${av.color};${(p.photoVisible!==false && primaryPhotoURL(p))?`background-image:url('${primaryPhotoURL(p)}');background-size:cover;background-position:center;`:''}">${(p.photoVisible!==false && primaryPhotoURL(p))?'':av.emoji}</div>
-        <div style="text-align:center;font-size:18px;font-weight:800;margin-top:10px;">${p.name}</div>
-        <div style="text-align:center;font-size:11.5px;opacity:0.85;margin-top:3px;">${p.age} ${t('yearsUnit')} · ${p.education} · ${p.city}</div>
+        <div style="text-align:center;font-size:18px;font-weight:800;margin-top:10px;">${escapeHtml(p.name)}</div>
+        <div style="text-align:center;font-size:11.5px;opacity:0.85;margin-top:3px;">${p.age} ${t('yearsUnit')} · ${escapeHtml(p.education)} · ${escapeHtml(p.city)}</div>
       </div>
       <div class="content">
         <div style="font-size:12px;font-weight:700;color:var(--navy);margin:6px 0 8px;">${t('basicDetails')}</div>
-        <div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px;"><span style="color:var(--text-mid);">${t('fatherNameLbl')}</span><span style="font-weight:600;">${p.fatherName||'-'}</span></div>
-        <div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px;"><span style="color:var(--text-mid);">${t('motherNameLbl')}</span><span style="font-weight:600;">${p.motherName||'-'}</span></div>
-        <div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px;"><span style="color:var(--text-mid);">${t('rashiLbl')}</span><span style="font-weight:600;">${p.rashi||'-'}</span></div>
-        <div style="display:flex;justify-content:space-between;padding:9px 0;${p.siblingsVisible && p.siblings ? 'border-bottom:1px solid var(--border);':''}font-size:13px;"><span style="color:var(--text-mid);">${t('maritalStatusLbl')}</span><span style="font-weight:600;">${p.maritalStatus||'-'}</span></div>
-        ${p.siblingsVisible && p.siblings ? `<div style="display:flex;justify-content:space-between;padding:9px 0;font-size:13px;"><span style="color:var(--text-mid);">${t('siblingsLbl')}</span><span style="font-weight:600;">${p.siblings}</span></div>` : ""}
+        <div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px;"><span style="color:var(--text-mid);">${t('fatherNameLbl')}</span><span style="font-weight:600;">${escapeHtml(p.fatherName||'-')}</span></div>
+        <div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px;"><span style="color:var(--text-mid);">${t('motherNameLbl')}</span><span style="font-weight:600;">${escapeHtml(p.motherName||'-')}</span></div>
+        <div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px;"><span style="color:var(--text-mid);">${t('rashiLbl')}</span><span style="font-weight:600;">${escapeHtml(p.rashi||'-')}</span></div>
+        <div style="display:flex;justify-content:space-between;padding:9px 0;${p.siblingsVisible && p.siblings ? 'border-bottom:1px solid var(--border);':''}font-size:13px;"><span style="color:var(--text-mid);">${t('maritalStatusLbl')}</span><span style="font-weight:600;">${escapeHtml(p.maritalStatus||'-')}</span></div>
+        ${p.siblingsVisible && p.siblings ? `<div style="display:flex;justify-content:space-between;padding:9px 0;font-size:13px;"><span style="color:var(--text-mid);">${t('siblingsLbl')}</span><span style="font-weight:600;">${escapeHtml(p.siblings)}</span></div>` : ""}
         <button class="btn btn-primary" style="margin-top:20px;" id="send-interest">${t('sendInterestBtn')}</button>
       </div>
     `;
     document.getElementById("back-btn").addEventListener("click", ()=>{ state.screen="home"; render(); });
-    document.getElementById("send-interest").addEventListener("click", async ()=>{
+    document.getElementById("send-interest").addEventListener("click", async (e)=>{
+      e.target.disabled = true;
       try{ await dataService.sendInterest(state.user.id, p.id); showToast(t('interestSentToast')); }
-      catch(err){ showToast("Error: "+err.message); }
+      catch(err){ showToast("Error: "+err.message); e.target.disabled = false; }
     });
     const favBtn = document.getElementById("fav-toggle-btn");
     let currentFav = isFav;
@@ -1428,7 +1925,7 @@ function renderInterest(){
         <div class="int-tab" data-tab="sent" style="flex:1;text-align:center;padding:10px 0;font-size:12px;font-weight:700;border-radius:11px;cursor:pointer;color:rgba(255,255,255,0.85);">${t('sentTab')} <span class="int-tab-badge" id="tab-badge-sent" style="display:none;"></span></div>
       </div>
     </div>
-    <div class="content" id="int-content"><div class="loading">${t('loadingText')}</div></div>
+    <div class="content" id="int-content">${skeletonCards(3)}</div>
     ${bottomNavHtml("interest")}
   `;
   attachLangToggle();
@@ -1439,7 +1936,7 @@ function renderInterest(){
       else if(k==="profile"){ state.screen="myProfiles"; render(); }
       else if(k==="interest") render();
       else if(k==="settings"){ state.screen="settings"; render(); }
-      else showToast("આ screen આગળના phase માં બનશે");
+      else showToast("આ સ્ક્રીન આગળના ફેઝ માં બનશે");
     });
   });
   updateInterestBadge();
@@ -1453,8 +1950,8 @@ function renderInterest(){
       <div class="card" style="cursor:default;">
         <div class="card-photo" style="background:linear-gradient(160deg,#D98FA0,#A8455C);">👤</div>
         <div class="card-body">
-          <div class="card-name">${i.fromUserName}</div>
-          <div class="card-sub">${t('interestForProfile').replace('{name}', i.forCandidateName)}</div>
+          <div class="card-name">${escapeHtml(i.fromUserName)}</div>
+          <div class="card-sub">${t('interestForProfile').replace('{name}', escapeHtml(i.forCandidateName))}</div>
           <span class="status-pending" style="background:${i.status==='accepted'?'#E7F6EF':i.status==='declined'?'#FCEBEA':'#FDF1E7'};color:${i.status==='accepted'?'var(--success)':i.status==='declined'?'var(--danger)':'#B4762A'};">
             ${i.status==='accepted'?t('statusAccepted'):i.status==='declined'?t('statusDeclined'):t('statusPendingShort')}
           </span>
@@ -1488,7 +1985,7 @@ function renderInterest(){
       <div class="card" style="cursor:default;">
         <div class="card-photo" style="background:linear-gradient(160deg,#A8455C,#4A1220);">👤</div>
         <div class="card-body">
-          <div class="card-name">${i.toCandidateName}</div>
+          <div class="card-name">${escapeHtml(i.toCandidateName)}</div>
           <div class="card-sub">${i.toCandidateCity||'-'} · ${i.toCandidateAge||'-'} વર્ષ</div>
           <span class="status-pending" style="background:${i.status==='accepted'?'#E7F6EF':i.status==='declined'?'#FCEBEA':'#FDF1E7'};color:${i.status==='accepted'?'var(--success)':i.status==='declined'?'var(--danger)':'#B4762A'};">
             ${i.status==='accepted'?t('statusAccepted'):i.status==='declined'?t('statusDeclined'):t('statusPendingShort')}
@@ -1552,7 +2049,7 @@ function renderMyProfiles(){
       <div class="header-title">${t('myProfiles')}</div>
       <div class="header-sub">${t('myProfilesSub')}</div>
     </div>
-    <div class="content" id="myp-content"><div class="loading">${t('loadingText')}</div></div>
+    <div class="content" id="myp-content">${skeletonCards(2)}</div>
     ${bottomNavHtml("profile")}
   `;
   attachLangToggle();
@@ -1563,7 +2060,7 @@ function renderMyProfiles(){
       else if(k==="profile") render();
       else if(k==="interest"){ state.screen="interest"; render(); }
       else if(k==="settings"){ state.screen="settings"; render(); }
-      else showToast("આ screen આગળના phase માં બનશે");
+      else showToast("આ સ્ક્રીન આગળના ફેઝ માં બનશે");
     });
   });
   updateInterestBadge();
@@ -1577,8 +2074,8 @@ function renderMyProfiles(){
         <div style="display:flex;">
           <div class="card-photo" style="background:${avatarStyle(c).color};${primaryPhotoURL(c)?`background-image:url('${primaryPhotoURL(c)}');background-size:cover;background-position:center;`:''}">${primaryPhotoURL(c)?'':avatarStyle(c).emoji}</div>
           <div class="card-body">
-            <div class="card-name">${c.name}${c.deactivated?` <span style="color:var(--text-mid);font-size:10px;font-weight:700;">${t('deactivatedTag')}</span>`:''}</div>
-            <div class="card-sub">${c.age} ${t('yearsUnit')} · ${c.education||'-'} · ${c.city||'-'}</div>
+            <div class="card-name">${escapeHtml(c.name)}${c.deactivated?` <span style="color:var(--text-mid);font-size:10px;font-weight:700;">${t('deactivatedTag')}</span>`:''}</div>
+            <div class="card-sub">${c.age} ${t('yearsUnit')} · ${escapeHtml(c.education||'-')} · ${escapeHtml(c.city||'-')}</div>
             <span class="status-pending" style="background:${c.deactivated?'#EEF1F3':c.status==='approved'?'#E7F6EF':c.status==='rejected'?'#FCEBEA':'#FDF1E7'};color:${c.deactivated?'var(--text-mid)':c.status==='approved'?'var(--success)':c.status==='rejected'?'var(--danger)':'#B4762A'};">
               ${c.deactivated?t('statusDeactivated'):c.status==='approved'?t('statusApproved'):c.status==='rejected'?t('statusRejected'):t('statusPending')}
             </span>
@@ -1638,7 +2135,7 @@ function renderMyProfiles(){
     + `
       <div class="card" style="cursor:default; flex-direction:column; align-items:stretch; margin-top:16px;">
         <div style="padding:14px;">
-          <div style="font-size:11.5px;color:var(--text-mid);margin-bottom:10px;">${t('loggedInAs')} <b style="color:var(--navy);">${state.user.name}</b> (${state.user.mobile})</div>
+          <div style="font-size:11.5px;color:var(--text-mid);margin-bottom:10px;">${t('loggedInAs')} <b style="color:var(--navy);">${escapeHtml(state.user.name)}</b> (${escapeHtml(state.user.mobile)})</div>
           <button class="btn" id="logout-btn" style="background:#FCEBEA;color:var(--danger);width:100%;">${t('logoutBtn')}</button>
         </div>
       </div>
@@ -1646,7 +2143,7 @@ function renderMyProfiles(){
     const addBtn = document.getElementById("add-candidate");
     if(addBtn) addBtn.addEventListener("click", ()=>{ state.formDraft={}; state.editCandidateId=null; state.screen="formStep1"; render(); });
     document.getElementById("logout-btn").addEventListener("click", async ()=>{
-      if(!confirm("શું તમે ખરેખર Logout કરવા માંગો છો?")) return;
+      if(!confirm("શું તમે ખરેખર લોગઆઉટ કરવા માંગો છો?")) return;
       await dataService.logout();
       state.user=null; state.screen="mobileEntry"; render();
     });
@@ -1664,6 +2161,7 @@ function renderMyProfiles(){
         state.uploadCandidateId = candidate.id;
         state.uploadCandidatePhotos = (candidate.photos && candidate.photos.length) ? candidate.photos : (candidate.photoURL ? [{ url: candidate.photoURL, path: `candidates/${candidate.id}/photo.jpg` }] : []);
         state.uploadCandidatePhotoVisible = candidate.photoVisible === true;
+        state.uploadCandidateDocs = candidate.docs || {};
         state.screen="formDocs"; render();
       });
     });
@@ -1693,27 +2191,162 @@ function renderMyProfiles(){
     });
     document.querySelectorAll("[data-activate]").forEach(btn=>{
       btn.addEventListener("click", async ()=>{
-        if(activeCount>=4){ showToast("4/4 profiles વપરાયેલા — પહેલા બીજો profile Deactivate કરો"); return; }
+        if(activeCount>=4){ showToast("4/4 પ્રોફાઇલ વપરાયેલા — પહેલા બીજો પ્રોફાઇલ ડિએક્ટિવેટ કરો"); return; }
         btn.disabled = true;
         try{
           await dataService.activateCandidate(btn.getAttribute("data-activate"));
-          showToast("✓ Profile ફરી Active થયું");
+          showToast("✓ પ્રોફાઇલ ફરી એક્ટિવ થયું");
           renderMyProfiles();
         }catch(err){ showToast("Error: "+err.message); btn.disabled=false; }
       });
     });
     document.querySelectorAll("[data-deactivate]").forEach(btn=>{
       btn.addEventListener("click", async ()=>{
-        if(!confirm("શું તમે ખરેખર આ profile ને 'Married/Settled' તરીકે mark કરવા માંગો છો? એ પછી profile બીજા members ને નહીં દેખાય.")) return;
+        if(!confirm("શું તમે ખરેખર આ પ્રોફાઇલ ને 'લગ્ન/સ્થાયી' તરીકે માર્ક કરવા માંગો છો? એ પછી પ્રોફાઇલ બીજા મેમ્બર્સ ને નહીં દેખાય.")) return;
         try{
           await dataService.deactivateCandidate(btn.getAttribute("data-deactivate"));
-          showToast("✓ Profile deactivate થયું");
+          showToast("✓ પ્રોફાઇલ ડિએક્ટિવેટ થયું");
           renderMyProfiles();
         }catch(err){ showToast("Error: "+err.message); }
       });
     });
   }).catch(err=>{
     document.getElementById("myp-content").innerHTML = `<div class="status-banner status-err">Data load ના થયું: ${err.message}</div>`;
+  });
+}
+
+// Terms & Privacy Policy content — bilingual, static (not per-key STRINGS
+// since it's long-form content, not short UI labels). Matches the
+// Sagar-Sambandh-Terms-Privacy-Policy-Draft.docx approved 17 Sep 2026.
+const TERMS_CONTENT = {
+  gu: {
+    intro: "શ્રી પોરબંદર ખારવા સમાજ (શ્રી સાગર ચેરિટેબલ ટ્રસ્ટ) દ્વારા ચલાવવામાં આવતી \"સાગર સંબંધ\" App નો ઉપયોગ કરતા પહેલા કૃપા કરીને આ નિયમો અને Privacy Policy કાળજીપૂર્વક વાંચો. App વાપરવાથી તમે આ શરતો સ્વીકારો છો.",
+    sections: [
+      { h: "① અમે કઈ માહિતી ભેગી કરીએ છીએ", items: [
+        "તમારી પોતાની — નામ, મોબાઈલ નંબર, ગામ/શહેર",
+        "Candidate Profile ની — ઉંમર, જાતિ, શિક્ષણ, વ્યવસાય, પિતા/માતાનું નામ, રાશી, દરજ્જો, ભાઈ-બહેન ની વિગત, રાજ્ય/વિસ્તાર",
+        "Photos — મહત્તમ 5, candidate ની",
+        "ઓળખ Documents — આધાર કાર્ડ, શિક્ષણ પ્રમાણપત્ર, જન્મ તારીખ દાખલો/LC — ફક્ત Admin verification સમયે",
+      ]},
+      { h: "② આ માહિતી શા માટે વાપરીએ છીએ", items: [
+        "ફક્ત શ્રી પોરબંદર ખારવા સમાજ ની અંદર લગ્ન-સંબંધી (matrimonial) matching માટે",
+        "Profile ની સત્યતા અને પાત્રતા ચકાસવા (Admin verification)",
+        "આ માહિતી કોઈ પણ commercial, advertising, કે ત્રીજી પાર્ટી ના હેતુ માટે વપરાતી નથી",
+      ]},
+      { h: "③ Documents ની સુરક્ષા", items: [
+        "આધાર કાર્ડ, શિક્ષણ પ્રમાણપત્ર, LC — ફક્ત Admin verification માટે વપરાય છે",
+        "Profile Approve થતાં જ આ Documents Server માંથી આપોઆપ Delete થઈ જાય છે — રાખવામાં આવતા નથી",
+        "Photos, Approve થયા પછી, profile browse કરવા માટે રહે છે — જ્યાં સુધી તમે profile Deactivate/Delete ના કરો",
+      ]},
+      { h: "④ તમારી માહિતી કોણ જોઈ શકે", items: [
+        "ફક્ત Login કરેલા, Approved community members જ Approved profiles Browse કરી શકે",
+        "Photo — Default: છુપાયેલો. તમે પોતે Show/Hide કરી શકો",
+        "ભાઈ-બહેન ની વિગત — Default: છુપાયેલી. તમે પોતે Show/Hide કરી શકો",
+        "Trust દ્વારા નિયુક્ત Admin — verification માટે પૂરી વિગત જોઈ શકે",
+      ]},
+      { h: "⑤ ડેટા ક્યાં અને કેવી રીતે Store થાય", items: [
+        "Google Firebase (cloud infrastructure) પર સુરક્ષિત રીતે Store થાય છે",
+        "Password/PIN plain-text માં નહીં, સુરક્ષિત રીતે store થાય છે",
+        "વાજબી technical સુરક્ષા પગલાં લેવાયેલા છે — તેમ છતાં, કોઈ પણ Online સિસ્ટમ 100% જોખમ-મુક્ત નથી હોતી",
+      ]},
+      { h: "⑥ સભ્યપણું ની પાત્રતા", items: [
+        "Candidate ની ઉંમર 18 વર્ષ કે વધુ હોવી ફરજિયાત",
+        "શ્રી પોરબંદર ખારવા સમાજ ના સભ્ય (અથવા સભ્ય ના પરિવારજન) હોવા જરૂરી",
+        "આપેલી માહિતી સાચી હોવી જોઈએ — ખોટી માહિતી મળે તો Profile Reject/Remove થઈ શકે",
+      ]},
+      { h: "⑦ તમારા અધિકારો", items: [
+        "તમારો Profile ગમે ત્યારે Edit/Update કરવાનો અધિકાર",
+        "Photo અને ભાઈ-બહેન ની વિગત Show/Hide કરવાનો અધિકાર",
+        "Profile ને \"લગ્ન/સ્થાયી\" તરીકે Mark કરવાનો (Deactivate) અધિકાર",
+        "Account અને તમારો Data સંપૂર્ણપણે Delete કરવાની વિનંતી કરવાનો અધિકાર — Admin નો સંપર્ક કરો",
+        "મોકલેલું Interest ગમે ત્યારે પાછું ખેંચવાનો અધિકાર",
+      ]},
+      { h: "⑧ Account Block / દુરુપયોગ", items: [
+        "ખોટી માહિતી, દુરુપયોગ, કે અયોગ્ય વર્તન ના કિસ્સામાં Trust ને Account Block કરવાનો અધિકાર છે.",
+      ]},
+      { h: "⑨ Policy માં ફેરફાર", items: [
+        "આ Policy ભવિષ્યમાં અપડેટ થઈ શકે છે. મહત્વના ફેરફારો વિશે App ની અંદર જાણ કરવામાં આવશે.",
+      ]},
+    ],
+    contactH: "⑩ સંપર્ક",
+    contactLines: ["સંચાલક (Operated By): Agastya Technext Company", "મોબાઈલ નંબર: 6352473188", "ઈમેલ: Agastya.technext@gmail.com"],
+  },
+  en: {
+    intro: "Please read these Terms & Privacy Policy carefully before using the \"Sagar Sambandh\" app, operated by Shri Porbandar Kharva Samaj (Shri Sagar Charitable Trust). By using this app, you agree to these terms.",
+    sections: [
+      { h: "① What Information We Collect", items: [
+        "Your own — name, mobile number, village/city",
+        "Candidate profile — age, gender, education, occupation, father's/mother's name, zodiac sign (rashi), marital status, sibling details, state/area",
+        "Photos — up to 5, of the candidate",
+        "Identity documents — Aadhar Card, Education Certificate, Birth/Leaving Certificate — only during Admin verification",
+      ]},
+      { h: "② Why We Use This Information", items: [
+        "Solely for matrimonial matching within the Shri Porbandar Kharva Samaj community",
+        "To verify the authenticity and eligibility of a profile (Admin verification)",
+        "This information is never used for any commercial, advertising, or third-party purpose",
+      ]},
+      { h: "③ Document Security", items: [
+        "Aadhar Card, Education Certificate, and LC are used only for Admin verification",
+        "These documents are automatically deleted from the server the moment a profile is approved — they are not retained",
+        "Photos remain (for browsing) after approval, until you deactivate or delete the profile",
+      ]},
+      { h: "④ Who Can See Your Information", items: [
+        "Only logged-in, approved fellow community members can browse approved profiles",
+        "Photo — Default: hidden. You can choose to show or hide it yourself",
+        "Sibling details — Default: hidden. You can choose to show or hide them yourself",
+        "Trust-appointed Admins can view full details for verification purposes",
+      ]},
+      { h: "⑤ Where and How Data Is Stored", items: [
+        "Stored securely on Google Firebase (cloud infrastructure)",
+        "Passwords/PINs are stored securely, never in plain readable form",
+        "Reasonable technical safeguards are in place — though no online system is ever 100% risk-free",
+      ]},
+      { h: "⑥ Eligibility for Membership", items: [
+        "The candidate must be 18 years of age or older",
+        "Must be a member of Shri Porbandar Kharva Samaj, or a family member submitting on a member's behalf",
+        "Information provided must be accurate — a profile found to contain false information may be rejected or removed",
+      ]},
+      { h: "⑦ Your Rights", items: [
+        "The right to edit/update your profile at any time",
+        "The right to show or hide your photo and sibling details",
+        "The right to mark a profile as \"Married/Settled\" (deactivate it)",
+        "The right to request full deletion of your account and data — contact the Admin",
+        "The right to withdraw a sent Interest at any time",
+      ]},
+      { h: "⑧ Account Blocking / Misuse", items: [
+        "The Trust reserves the right to block an account in cases of false information, misuse, or inappropriate behaviour.",
+      ]},
+      { h: "⑨ Changes to This Policy", items: [
+        "This policy may be updated from time to time. Material changes will be communicated within the app.",
+      ]},
+    ],
+    contactH: "⑩ Contact",
+    contactLines: ["Operated By: Agastya Technext Company", "Mobile Number: 6352473188", "Email: Agastya.technext@gmail.com"],
+  },
+};
+
+function renderTerms(){
+  const c = TERMS_CONTENT[state.lang] || TERMS_CONTENT.gu;
+  app.innerHTML = `
+    <div class="header" style="padding-bottom:18px;">
+      <div class="back-row"><div class="back-btn" id="terms-back">←</div><div class="header-title">${t('termsScreenTitle')}</div></div>
+    </div>
+    <div class="content">
+      <p style="font-size:12.5px;line-height:1.7;color:var(--text-dark);margin-bottom:16px;">${c.intro}</p>
+      ${c.sections.map(s => `
+        <div style="font-size:13px;font-weight:700;color:var(--navy);margin:16px 0 8px;">${s.h}</div>
+        ${s.items.map(i => `<div style="display:flex;gap:8px;font-size:12px;color:var(--text-dark);line-height:1.6;margin-bottom:6px;"><span style="color:var(--primary);flex-shrink:0;">•</span><span>${i}</span></div>`).join("")}
+      `).join("")}
+      <div style="font-size:13px;font-weight:700;color:var(--navy);margin:16px 0 8px;">${c.contactH}</div>
+      <div style="background:var(--ice);border-radius:12px;padding:13px;">
+        ${c.contactLines.map((l,i) => `<div style="font-size:12px;color:var(--text-dark);${i===0?'font-weight:700;':''}margin-bottom:4px;">${l}</div>`).join("")}
+      </div>
+    </div>
+  `;
+  document.getElementById("terms-back").addEventListener("click", ()=>{
+    state.screen = state.termsReturnScreen || "settings";
+    state.termsReturnScreen = null;
+    render();
   });
 }
 
@@ -1741,9 +2374,17 @@ function renderSettings(){
         <div id="notif-toggles"><div style="font-size:12px;color:var(--text-mid);">${t('loadingText')}</div></div>
         <div style="font-size:10px;color:var(--text-mid);margin-top:10px;line-height:1.5;">📱 Push notification (ફોન પર ring/vibrate) હજુ ઉપલબ્ધ નથી — હાલ આ preference save થાય છે, future update માં actual notification મળશે.</div>
       </div>
+
+      <div style="background:#fff;border-radius:16px;padding:16px;margin-bottom:14px;border:1px solid var(--border);cursor:pointer;" id="settings-terms-link">
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <div style="font-size:13px;font-weight:700;color:var(--navy);">${t('termsMenuLabel')}</div>
+          <div style="color:var(--text-mid);font-size:16px;">→</div>
+        </div>
+      </div>
     </div>
     ${bottomNavHtml("settings")}
   `;
+  document.getElementById("settings-terms-link").addEventListener("click", ()=>{ state.screen="terms"; render(); });
   attachLangToggle();
   document.querySelectorAll("[data-nav]").forEach(el=>{
     el.addEventListener("click", ()=>{
@@ -1752,7 +2393,7 @@ function renderSettings(){
       else if(k==="profile"){ state.screen="myProfiles"; render(); }
       else if(k==="interest"){ state.screen="interest"; render(); }
       else if(k==="settings") render();
-      else showToast("આ screen આગળના phase માં બનશે");
+      else showToast("આ સ્ક્રીન આગળના ફેઝ માં બનશે");
     });
   });
   updateInterestBadge();
@@ -1827,6 +2468,60 @@ const RASHI_DATA = [
   { gu: "મીન",       en: "Meen Pisces" }
 ];
 
+// State/Area — candidate ના city free-text field ને બદલે, જેથી Match Score અને
+// Area Filter માટે એક જ પ્રમાણભૂત (standardized) spelling વપરાય.
+const STATES_DATA = [
+  { gu: "ગુજરાત", en: "Gujarat" },
+  { gu: "આંધ્ર પ્રદેશ", en: "Andhra Pradesh" },
+  { gu: "અરુણાચલ પ્રદેશ", en: "Arunachal Pradesh" },
+  { gu: "આસામ", en: "Assam" },
+  { gu: "બિહાર", en: "Bihar" },
+  { gu: "છત્તીસગઢ", en: "Chhattisgarh" },
+  { gu: "ગોવા", en: "Goa" },
+  { gu: "હરિયાણા", en: "Haryana" },
+  { gu: "હિમાચલ પ્રદેશ", en: "Himachal Pradesh" },
+  { gu: "ઝારખંડ", en: "Jharkhand" },
+  { gu: "કર્ણાટક", en: "Karnataka" },
+  { gu: "કેરળ", en: "Kerala" },
+  { gu: "મધ્ય પ્રદેશ", en: "Madhya Pradesh" },
+  { gu: "મહારાષ્ટ્ર", en: "Maharashtra" },
+  { gu: "મણિપુર", en: "Manipur" },
+  { gu: "મેઘાલય", en: "Meghalaya" },
+  { gu: "મિઝોરમ", en: "Mizoram" },
+  { gu: "નાગાલેન્ડ", en: "Nagaland" },
+  { gu: "ઓડિશા", en: "Odisha" },
+  { gu: "પંજાબ", en: "Punjab" },
+  { gu: "રાજસ્થાન", en: "Rajasthan" },
+  { gu: "સિક્કિમ", en: "Sikkim" },
+  { gu: "તમિલનાડુ", en: "Tamil Nadu" },
+  { gu: "તેલંગાણા", en: "Telangana" },
+  { gu: "ત્રિપુરા", en: "Tripura" },
+  { gu: "ઉત્તર પ્રદેશ", en: "Uttar Pradesh" },
+  { gu: "ઉત્તરાખંડ", en: "Uttarakhand" },
+  { gu: "પશ્ચિમ બંગાળ", en: "West Bengal" },
+  { gu: "આંદામાન અને નિકોબાર ટાપુઓ", en: "Andaman and Nicobar Islands" },
+  { gu: "ચંડીગઢ", en: "Chandigarh" },
+  { gu: "દાદરા અને નગર હવેલી અને દમણ અને દીવ", en: "Dadra and Nagar Haveli and Daman and Diu" },
+  { gu: "દિલ્હી", en: "Delhi" },
+  { gu: "જમ્મુ અને કાશ્મીર", en: "Jammu and Kashmir" },
+  { gu: "લદ્દાખ", en: "Ladakh" },
+  { gu: "લક્ષદ્વીપ", en: "Lakshadweep" },
+  { gu: "પુડુચેરી", en: "Puducherry" }
+];
+
+const AREAS_DATA = [
+  { gu: "પોરબંદર", en: "Porbandar" },
+  { gu: "વેરાવળ", en: "Veraval" },
+  { gu: "માંગરોળ", en: "Mangrol" },
+  { gu: "ઓખા", en: "Okha" },
+  { gu: "મુંદ્રા", en: "Mundra" },
+  { gu: "રાજકોટ", en: "Rajkot" },
+  { gu: "અમદાવાદ", en: "Ahmedabad" },
+  { gu: "દીવ", en: "Diu" },
+  { gu: "જામનગર", en: "Jamnagar" }
+];
+const GUJARAT_GU = "ગુજરાત";
+
 function initSelect2(id, opts){
   if(typeof $ === 'undefined') return;
   $(`#${id}`).select2(Object.assign({
@@ -1843,7 +2538,12 @@ function renderFormStep1(){
   app.innerHTML = `
     ${formHeaderHtml(1, t('formStep1Title'))}
     <div class="content">
-      <div class="field"><label>${t('candidateName')}</label><div class="input-wrap"><input id="ff-name" value="${d.name||''}" placeholder="${t('candidateNamePh')}"></div></div>
+      <div class="field">
+        <label>${t('nameEnglishLbl')}</label>
+        <div class="input-wrap"><input id="ff-name-en" value="${escapeHtml(d.nameEnglish||'')}" placeholder="${t('nameEnglishPh')}" autocomplete="off"></div>
+        <div id="ff-name-suggestions" style="display:none;flex-wrap:wrap;gap:6px;margin-top:8px;"></div>
+      </div>
+      <div class="field"><label>${t('candidateName')}</label><div class="input-wrap"><input id="ff-name" value="${escapeHtml(d.name||'')}" placeholder="${t('candidateNamePh')}"></div></div>
       <div class="field"><label>${t('gender')}</label>
         <select id="ff-gender" style="width:100%" data-placeholder="${gPh}">
           <option value=""></option>
@@ -1852,8 +2552,8 @@ function renderFormStep1(){
         </select>
       </div>
       <div class="field"><label>${t('age')}</label><div class="input-wrap"><input id="ff-age" type="number" min="18" max="70" value="${d.age||''}" placeholder="${t('agePh')}"></div></div>
-      <div class="field"><label>${t('fatherName')}</label><div class="input-wrap"><input id="ff-father" value="${d.fatherName||''}" placeholder="${t('fatherNamePh')}"></div></div>
-      <div class="field"><label>${t('motherName')}</label><div class="input-wrap"><input id="ff-mother" value="${d.motherName||''}" placeholder="${t('motherNamePh')}"></div></div>
+      <div class="field"><label>${t('fatherName')}</label><div class="input-wrap"><input id="ff-father" value="${escapeHtml(d.fatherName||'')}" placeholder="${t('fatherNamePh')}"></div></div>
+      <div class="field"><label>${t('motherName')}</label><div class="input-wrap"><input id="ff-mother" value="${escapeHtml(d.motherName||'')}" placeholder="${t('motherNamePh')}"></div></div>
       <div class="field"><label>${t('rashi')}</label>
         <select id="ff-rashi" style="width:100%" data-placeholder="${rPh}">
           <option value=""></option>
@@ -1865,6 +2565,32 @@ function renderFormStep1(){
     </div>
   `;
   initSelect2('ff-gender', { minimumResultsForSearch: Infinity, placeholder: gPh, allowClear: true });
+
+  // Name transliteration — Google Input Tools (free, unofficial-but-widely-used
+  // endpoint; same engine Gboard's Gujarati keyboard uses). Debounced, editable
+  // suggestions — candidate picks one, or ignores and types ગુજરાતી directly.
+  let nameEnDebounce;
+  document.getElementById("ff-name-en").addEventListener("input", (e)=>{
+    clearTimeout(nameEnDebounce);
+    const text = e.target.value.trim();
+    const sugEl = document.getElementById("ff-name-suggestions");
+    if(!text){ sugEl.style.display="none"; sugEl.innerHTML=""; return; }
+    nameEnDebounce = setTimeout(async ()=>{
+      try{
+        const res = await fetch(`https://inputtools.google.com/request?text=${encodeURIComponent(text)}&itc=gu-t-i0-und&num=5&cp=0&cs=1&ie=utf-8&oe=utf-8`);
+        const data = await res.json();
+        const suggestions = (data[0]==='SUCCESS' && data[1] && data[1][0]) ? data[1][0][1] : [];
+        if(suggestions.length===0){ sugEl.style.display="none"; sugEl.innerHTML=""; return; }
+        sugEl.style.display="flex";
+        sugEl.innerHTML = suggestions.map(s=>`<span class="chip" data-suggest="${s}" style="cursor:pointer;">${s}</span>`).join("");
+        sugEl.querySelectorAll("[data-suggest]").forEach(chip=>{
+          chip.addEventListener("click", ()=>{
+            document.getElementById("ff-name").value = chip.getAttribute("data-suggest");
+          });
+        });
+      }catch(err){ sugEl.style.display="none"; sugEl.innerHTML=""; }
+    }, 350);
+  });
 
   // Rashi: bilingual search — English or Gujarati both work
   const rashiMatcher = function(params, data){
@@ -1899,19 +2625,23 @@ function renderFormStep1(){
   document.getElementById("form-back").addEventListener("click", ()=>{ state.screen="myProfiles"; render(); });
   document.getElementById("ff-next").addEventListener("click", ()=>{
     const name=document.getElementById("ff-name").value.trim();
+    const nameEnglish=document.getElementById("ff-name-en").value.trim();
     const gender=(typeof $!=='undefined') ? $('#ff-gender').val() : document.getElementById("ff-gender").value;
     const age=document.getElementById("ff-age").value;
     const fatherName=document.getElementById("ff-father").value.trim();
     const motherName=document.getElementById("ff-mother").value.trim();
     const rashi=(typeof $!=='undefined') ? $('#ff-rashi').val() : document.getElementById("ff-rashi").value;
     const errEl=document.getElementById("ff-err");
+    clearFieldErrors(["ff-name","ff-gender","ff-age","ff-father","ff-mother"]);
     if(!name||!gender||!age||!fatherName||!motherName){
-      errEl.innerHTML = `<div class="err-text">${t('fillAllFields')}</div>`; return;
+      errEl.innerHTML = `<div class="err-text">${t('fillAllFields')}</div>`;
+      markFieldErrors([!name&&"ff-name", !gender&&"ff-gender", !age&&"ff-age", !fatherName&&"ff-father", !motherName&&"ff-mother"].filter(Boolean));
+      return;
     }
     if(Number(age) < 18 || Number(age) > 70 || !Number.isInteger(Number(age))){
-      errEl.innerHTML = `<div class="err-text">${t('ageInvalid')}</div>`; return;
+      errEl.innerHTML = `<div class="err-text">${t('ageInvalid')}</div>`; markFieldErrors(["ff-age"]); return;
     }
-    Object.assign(state.formDraft, { name, gender, age:Number(age), fatherName, motherName, rashi });
+    Object.assign(state.formDraft, { name, nameEnglish: nameEnglish||null, gender, age:Number(age), fatherName, motherName, rashi });
     state.screen="formStep2"; render();
   });
 }
@@ -1919,12 +2649,30 @@ function renderFormStep1(){
 function renderFormStep2(){
   const d = state.formDraft;
   const mPh = t('maritalStatusPh');
+  const sPh = t('statePh');
+  const aPh = t('areaPh');
+  const isGujarat = d.state === GUJARAT_GU;
   app.innerHTML = `
     ${formHeaderHtml(2, t('formStep2Title'))}
     <div class="content">
-      <div class="field"><label>${t('education')}</label><div class="input-wrap"><input id="ff-edu" value="${d.education||''}" placeholder="${t('educationPh')}"></div></div>
-      <div class="field"><label>${t('occupation')}</label><div class="input-wrap"><input id="ff-occ" value="${d.occupation||''}" placeholder="${t('occupationPh')}"></div></div>
-      <div class="field"><label>${t('city')}</label><div class="input-wrap"><input id="ff-city" value="${d.city||''}" placeholder="${t('cityPh')}"></div></div>
+      <div class="field"><label>${t('education')}</label><div class="input-wrap"><input id="ff-edu" value="${escapeHtml(d.education||'')}" placeholder="${t('educationPh')}"></div></div>
+      <div class="field"><label>${t('occupation')}</label><div class="input-wrap"><input id="ff-occ" value="${escapeHtml(d.occupation||'')}" placeholder="${t('occupationPh')}"></div></div>
+      <div class="field"><label>${t('stateLbl')}</label>
+        <select id="ff-state" style="width:100%" data-placeholder="${sPh}">
+          <option value=""></option>
+          ${STATES_DATA.map(s=>`<option value="${s.gu}" data-search="${s.en.toLowerCase()} ${s.gu}" ${d.state===s.gu?'selected':''}>${s.gu}</option>`).join("")}
+        </select>
+      </div>
+      <div class="field" id="ff-area-wrap" style="${isGujarat?'':'display:none;'}">
+        <label>${t('areaLbl')}</label>
+        <select id="ff-area" style="width:100%" data-placeholder="${aPh}">
+          <option value=""></option>
+          ${AREAS_DATA.map(a=>`<option value="${a.gu}" data-search="${a.en.toLowerCase()} ${a.gu}" ${d.city===a.gu?'selected':''}>${a.gu}</option>`).join("")}
+        </select>
+      </div>
+      <div class="field" id="ff-city-wrap" style="${isGujarat?'display:none;':''}">
+        <label>${t('city')}</label><div class="input-wrap"><input id="ff-city" value="${!isGujarat?(d.city||''):''}" placeholder="${t('cityPh')}"></div>
+      </div>
       <div class="field"><label>${t('maritalStatus')}</label>
         <select id="ff-status" style="width:100%" data-placeholder="${mPh}">
           <option value=""></option>
@@ -1932,22 +2680,83 @@ function renderFormStep2(){
           <option value="છૂટાછેડા" ${d.maritalStatus==='છૂટાછેડા'?'selected':''}>↩️ છૂટાછેડા (Divorced)</option>
         </select>
       </div>
-      <div class="field"><label>${t('siblings')}</label><div class="input-wrap"><input id="ff-sib" value="${d.siblings||''}" placeholder="${t('siblingsPh')}"></div></div>
+      <div class="field"><label>${t('siblings')}</label><div class="input-wrap"><input id="ff-sib" value="${escapeHtml(d.siblings||'')}" placeholder="${t('siblingsPh')}"></div></div>
       <div id="ff2-err"></div>
       <button class="btn btn-primary" id="ff2-next">${t('nextBtn')}</button>
     </div>
   `;
   initSelect2('ff-status', { minimumResultsForSearch: Infinity, placeholder: mPh, allowClear: true });
+
+  const bilingualMatcher = function(params, data){
+    if(!params.term || params.term.trim() === '') return data;
+    if(!data.element) return null;
+    const q = params.term.trim().toLowerCase();
+    const guText  = (data.text || '').toLowerCase();
+    const enText  = ($(data.element).data('search') || '').toLowerCase();
+    return (guText.includes(q) || enText.includes(q)) ? data : null;
+  };
+
+  initSelect2('ff-state', {
+    placeholder: sPh, allowClear: true, matcher: bilingualMatcher,
+    templateResult: function(data){
+      if(!data.id) return data.text;
+      const entry = STATES_DATA.find(s => s.gu === data.id);
+      if(!entry) return data.text;
+      const $el = $('<span></span>');
+      $el.append($('<strong></strong>').text(entry.gu));
+      $el.append($('<span style="color:#8A6B6F;font-size:11px;margin-left:8px;font-weight:400;"></span>').text(entry.en));
+      return $el;
+    },
+    templateSelection: function(data){
+      if(!data.id) return $('<span style="color:#B5A29C;">'+sPh+'</span>');
+      return state.lang==='en' ? (STATES_DATA.find(s=>s.gu===data.id)?.en || data.id) : data.id;
+    }
+  });
+  initSelect2('ff-area', {
+    placeholder: aPh, allowClear: true, matcher: bilingualMatcher,
+    templateResult: function(data){
+      if(!data.id) return data.text;
+      const entry = AREAS_DATA.find(a => a.gu === data.id);
+      if(!entry) return data.text;
+      const $el = $('<span></span>');
+      $el.append($('<strong></strong>').text(entry.gu));
+      $el.append($('<span style="color:#8A6B6F;font-size:11px;margin-left:8px;font-weight:400;"></span>').text(entry.en));
+      return $el;
+    },
+    templateSelection: function(data){
+      if(!data.id) return $('<span style="color:#B5A29C;">'+aPh+'</span>');
+      return data.id;
+    }
+  });
+
+  function toggleAreaOrCity(){
+    const stateVal = (typeof $!=='undefined') ? $('#ff-state').val() : document.getElementById("ff-state").value;
+    const gujaratSelected = stateVal === GUJARAT_GU;
+    document.getElementById("ff-area-wrap").style.display = gujaratSelected ? "" : "none";
+    document.getElementById("ff-city-wrap").style.display = gujaratSelected ? "none" : "";
+  }
+  if(typeof $!=='undefined') $('#ff-state').on('change', toggleAreaOrCity);
+  else document.getElementById("ff-state").addEventListener("change", toggleAreaOrCity);
+
   document.getElementById("form-back").addEventListener("click", ()=>{ state.screen="formStep1"; render(); });
   document.getElementById("ff2-next").addEventListener("click", ()=>{
     const education=document.getElementById("ff-edu").value.trim();
     const occupation=document.getElementById("ff-occ").value.trim();
-    const city=document.getElementById("ff-city").value.trim();
+    const stateVal=(typeof $!=='undefined') ? $('#ff-state').val() : document.getElementById("ff-state").value;
+    const gujaratSelected = stateVal === GUJARAT_GU;
+    const areaVal=(typeof $!=='undefined') ? $('#ff-area').val() : document.getElementById("ff-area").value;
+    const cityVal=document.getElementById("ff-city").value.trim();
+    const city = gujaratSelected ? areaVal : cityVal;
     const maritalStatus=(typeof $!=='undefined') ? $('#ff-status').val() : document.getElementById("ff-status").value;
     const siblings=document.getElementById("ff-sib").value.trim();
     const errEl=document.getElementById("ff2-err");
-    if(!education||!city){ errEl.innerHTML = `<div class="err-text">${t('eduCityRequired')}</div>`; return; }
-    Object.assign(state.formDraft, { education, occupation, city, maritalStatus, siblings: siblings||null });
+    clearFieldErrors(["ff-edu","ff-state","ff-area","ff-city"]);
+    if(!education||!stateVal||!city){
+      errEl.innerHTML = `<div class="err-text">${t('eduCityRequired')}</div>`;
+      markFieldErrors([!education&&"ff-edu", !stateVal&&"ff-state", !city&&(gujaratSelected?"ff-area":"ff-city")].filter(Boolean));
+      return;
+    }
+    Object.assign(state.formDraft, { education, occupation, state: stateVal, city, maritalStatus, siblings: siblings||null });
     state.screen="formReview"; render();
   });
 }
@@ -1959,16 +2768,16 @@ function renderFormReview(){
     ${formHeaderHtml(3, isEdit ? t('reviewEditTitle') : t('reviewTitle'))}
     <div class="content">
       <div style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:10px;">${t('reviewCheck')}</div>
-      <div class="detail-row"><span class="k">${t('candidateName')}</span><span class="v">${d.name}</span></div>
+      <div class="detail-row"><span class="k">${t('candidateName')}</span><span class="v">${escapeHtml(d.name)}</span></div>
       <div class="detail-row"><span class="k">${t('gender')}</span><span class="v">${d.gender}</span></div>
       <div class="detail-row"><span class="k">${t('age')}</span><span class="v">${d.age}</span></div>
-      <div class="detail-row"><span class="k">${t('fatherName')}</span><span class="v">${d.fatherName}</span></div>
-      <div class="detail-row"><span class="k">${t('motherName')}</span><span class="v">${d.motherName}</span></div>
-      <div class="detail-row"><span class="k">${t('rashi')}</span><span class="v">${d.rashi||'-'}</span></div>
-      <div class="detail-row"><span class="k">${t('education')}</span><span class="v">${d.education}</span></div>
-      <div class="detail-row"><span class="k">${t('occupation')}</span><span class="v">${d.occupation||'-'}</span></div>
-      <div class="detail-row"><span class="k">${t('city')}</span><span class="v">${d.city}</span></div>
-      <div class="detail-row"><span class="k">${t('maritalStatus')}</span><span class="v">${d.maritalStatus}</span></div>
+      <div class="detail-row"><span class="k">${t('fatherName')}</span><span class="v">${escapeHtml(d.fatherName)}</span></div>
+      <div class="detail-row"><span class="k">${t('motherName')}</span><span class="v">${escapeHtml(d.motherName)}</span></div>
+      <div class="detail-row"><span class="k">${t('rashi')}</span><span class="v">${escapeHtml(d.rashi||'-')}</span></div>
+      <div class="detail-row"><span class="k">${t('education')}</span><span class="v">${escapeHtml(d.education)}</span></div>
+      <div class="detail-row"><span class="k">${t('occupation')}</span><span class="v">${escapeHtml(d.occupation||'-')}</span></div>
+      <div class="detail-row"><span class="k">${t('city')}</span><span class="v">${escapeHtml(d.city)}</span></div>
+      <div class="detail-row"><span class="k">${t('maritalStatus')}</span><span class="v">${escapeHtml(d.maritalStatus)}</span></div>
       <div class="declaration" style="margin-top:16px;">
         <span style="font-size:16px;">🔒</span>
         <p>${isEdit ? t('reviewEditNote') : t('reviewNote')}</p>
@@ -1992,11 +2801,12 @@ function renderFormReview(){
         state.uploadCandidateId = result.id;
         state.uploadCandidatePhotos = [];
         state.uploadCandidatePhotoVisible = false;
-        showToast("✓ Basic details save થયા! હવે Photo/Documents ઉમેરો");
+        state.uploadCandidateDocs = {};
+        showToast(t('submitSuccess'));
         state.screen="formDocs"; render();
       }
     }catch(err){
-      e.target.disabled=false; e.target.textContent = isEdit ? "Update કરો ✓" : "Submit કરો ✓";
+      e.target.disabled=false; e.target.textContent = isEdit ? t('updateBtn') : t('submitBtn');
       document.getElementById("ff3-err").innerHTML = `<div class="err-text">${err.message}</div>`;
     }
   });
@@ -2020,6 +2830,29 @@ function renderFormDocs(){
     ` : `<div style="width:78px;height:78px;border-radius:12px;background:var(--ice);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--text-mid);text-align:center;padding:4px;">મહત્તમ 5/5</div>`;
     return `<div style="display:flex;gap:10px;flex-wrap:wrap;">${tiles}${addTile}</div>`;
   }
+  function docRowHtml(key, label){
+    const doc = (state.uploadCandidateDocs || {})[key];
+    if(doc){
+      return `
+        <div style="border:1.5px solid var(--border);border-radius:14px;padding:13px;margin-bottom:10px;background:#fff;">
+          <div style="font-size:12.5px;font-weight:700;color:var(--navy);margin-bottom:8px;">${label}</div>
+          <div style="display:flex;align-items:center;gap:10px;background:var(--ice);border-radius:10px;padding:8px 10px;">
+            <span style="font-size:16px;">✓</span>
+            <span style="flex:1;font-size:11.5px;color:var(--text-dark);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(doc.name||'file')}</span>
+            <div data-remove-doc="${key}" style="width:24px;height:24px;border-radius:50%;background:var(--danger);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer;flex-shrink:0;">✕</div>
+          </div>
+          <div id="doc-status-${key}" style="font-size:10.5px;margin-top:6px;font-weight:600;"></div>
+        </div>
+      `;
+    }
+    return `
+      <div style="border:1.5px solid var(--border);border-radius:14px;padding:13px;margin-bottom:10px;background:#fff;">
+        <div style="font-size:12.5px;font-weight:700;color:var(--navy);margin-bottom:6px;">${label}</div>
+        <input type="file" accept="image/*,.pdf" data-doc="${key}" style="font-size:11px;">
+        <div id="doc-status-${key}" style="font-size:10.5px;color:var(--success);margin-top:6px;font-weight:600;"></div>
+      </div>
+    `;
+  }
   app.innerHTML = `
     ${formHeaderHtml(4, t('docsTitle'))}
     <div class="content">
@@ -2036,15 +2869,11 @@ function renderFormDocs(){
       </div>
 
       <div style="font-size:12px;font-weight:700;color:var(--navy);margin:6px 0 10px;">જરૂરી Documents</div>
-      ${["aadhar","education","lc"].map(key=>`
-        <div style="border:1.5px solid var(--border);border-radius:14px;padding:13px;margin-bottom:10px;background:#fff;">
-          <div style="font-size:12.5px;font-weight:700;color:var(--navy);margin-bottom:6px;">
-            ${key==='aadhar'?'🪪 Aadhar Card':key==='education'?'🎓 શિક્ષણ પ્રમાણપત્ર':'📄 જન્મ તારીખ દાખલો / LC'}
-          </div>
-          <input type="file" accept="image/*,.pdf" data-doc="${key}" style="font-size:11px;">
-          <div id="doc-status-${key}" style="font-size:10.5px;color:var(--success);margin-top:6px;font-weight:600;"></div>
-        </div>
-      `).join("")}
+      <div id="docs-list">
+        ${docRowHtml("aadhar","🪪 આધાર કાર્ડ")}
+        ${docRowHtml("education","🎓 શિક્ષણ પ્રમાણપત્ર")}
+        ${docRowHtml("lc","📄 જન્મ તારીખ દાખલો / LC")}
+      </div>
 
       <div class="declaration" style="margin-top:10px;">
         <span style="font-size:16px;">🔒</span>
@@ -2060,11 +2889,13 @@ function renderFormDocs(){
     if(input) input.addEventListener("change", async (e)=>{
       const file = e.target.files[0]; if(!file) return;
       const statusEl = document.getElementById("photo-status");
+      const err = validateUploadFile(file, { maxMB: 5, allowedTypes: ["image/*"], label: "Photo" });
+      if(err){ statusEl.style.color="var(--danger)"; statusEl.textContent = err; e.target.value=""; return; }
       statusEl.style.color = "var(--success)"; statusEl.textContent = "Upload થઈ રહ્યું છે...";
       try{
         const result = await dataService.uploadCandidatePhoto(candidateId, file);
         state.uploadCandidatePhotos = result.photos;
-        statusEl.textContent = "✓ Photo ઉમેરાયો";
+        statusEl.textContent = "✓ ફોટો ઉમેરાયો";
         document.getElementById("photo-grid").innerHTML = photoGridHtml();
         attachPhotoGridEvents();
       }catch(err){ statusEl.style.color="var(--danger)"; statusEl.textContent = "Error: "+err.message; }
@@ -2078,7 +2909,7 @@ function renderFormDocs(){
         try{
           await dataService.removeCandidatePhoto(candidateId, photo);
           state.uploadCandidatePhotos.splice(idx,1);
-          statusEl.style.color="var(--success)"; statusEl.textContent = "✓ Photo remove થયો";
+          statusEl.style.color="var(--success)"; statusEl.textContent = "✓ ફોટો રિમૂવ થયો";
           document.getElementById("photo-grid").innerHTML = photoGridHtml();
           attachPhotoGridEvents();
         }catch(err){ statusEl.style.color="var(--danger)"; statusEl.textContent = "Error: "+err.message; }
@@ -2092,20 +2923,46 @@ function renderFormDocs(){
     catch(err){ showToast("Error: "+err.message); e.target.checked = !e.target.checked; }
   });
 
-  document.querySelectorAll("[data-doc]").forEach(input=>{
-    input.addEventListener("change", async (e)=>{
-      const key = input.getAttribute("data-doc");
-      const file = e.target.files[0]; if(!file) return;
-      const statusEl = document.getElementById("doc-status-"+key);
-      statusEl.textContent = "Upload થઈ રહ્યું છે...";
-      try{ await dataService.uploadDocument(candidateId, key, file); statusEl.textContent = "✓ Uploaded"; }
-      catch(err){ statusEl.style.color="var(--danger)"; statusEl.textContent = "Error: "+err.message; }
+  function attachDocEvents(){
+    document.querySelectorAll("[data-doc]").forEach(input=>{
+      input.addEventListener("change", async (e)=>{
+        const key = input.getAttribute("data-doc");
+        const file = e.target.files[0]; if(!file) return;
+        const statusEl = document.getElementById("doc-status-"+key);
+        const err = validateUploadFile(file, { maxMB: 8, allowedTypes: ["image/*","application/pdf"], label: "Document" });
+        if(err){ statusEl.style.color="var(--danger)"; statusEl.textContent = err; e.target.value=""; return; }
+        statusEl.style.color = "var(--success)"; statusEl.textContent = "Upload થઈ રહ્યું છે...";
+        try{
+          await dataService.uploadDocument(candidateId, key, file);
+          state.uploadCandidateDocs = state.uploadCandidateDocs || {};
+          state.uploadCandidateDocs[key] = { name: file.name };
+          document.getElementById("docs-list").innerHTML =
+            docRowHtml("aadhar","🪪 આધાર કાર્ડ") + docRowHtml("education","🎓 શિક્ષણ પ્રમાણપત્ર") + docRowHtml("lc","📄 જન્મ તારીખ દાખલો / LC");
+          attachDocEvents();
+        }catch(err2){ statusEl.style.color="var(--danger)"; statusEl.textContent = "Error: "+err2.message; }
+      });
     });
-  });
+    document.querySelectorAll("[data-remove-doc]").forEach(btn=>{
+      btn.addEventListener("click", async ()=>{
+        const key = btn.getAttribute("data-remove-doc");
+        if(!confirm("આ Document remove કરવો છે?")) return;
+        const statusEl = document.getElementById("doc-status-"+key);
+        try{
+          await dataService.removeDocument(candidateId, key);
+          delete state.uploadCandidateDocs[key];
+          document.getElementById("docs-list").innerHTML =
+            docRowHtml("aadhar","🪪 આધાર કાર્ડ") + docRowHtml("education","🎓 શિક્ષણ પ્રમાણપત્ર") + docRowHtml("lc","📄 જન્મ તારીખ દાખલો / LC");
+          attachDocEvents();
+        }catch(err){ statusEl.style.color="var(--danger)"; statusEl.textContent = "Error: "+err.message; }
+      });
+    });
+  }
+  attachDocEvents();
 
   document.getElementById("docs-done").addEventListener("click", ()=>{
     state.uploadCandidateId = null;
     state.uploadCandidatePhotos = [];
+    state.uploadCandidateDocs = {};
     state.screen="myProfiles"; render();
   });
 }
